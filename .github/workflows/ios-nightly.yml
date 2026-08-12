@@ -1,0 +1,28 @@
+# macOS build of the blind-authored iOS layer. Manual or nightly only —
+# macOS runners bill at 10× Linux minutes. Red here is a "fix queue for the
+# next Mac session" (tracked in docs/IOS-NOTES.md), never a merge blocker.
+name: iOS nightly build
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * *"
+
+jobs:
+  ios-build:
+    name: xcodegen + xcodebuild
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate project
+        run: cd App && xcodegen generate
+      - name: Build for iOS Simulator
+        run: |
+          cd App && xcodebuild build \
+            -project SmoooothOperator.xcodeproj \
+            -scheme SmoooothOperator \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO
