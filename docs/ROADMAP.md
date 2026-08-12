@@ -13,7 +13,7 @@ sharing → subscriptions. UI is authored alongside but never blocks engine work
 |---|---|---|
 | **L0 Foundation** | Toolchains, Kit scaffold, migrations 0001–0002, pgTAP, docs, CI | ✅ done (2026-08-12) |
 | **L1 Telemetry** | Fusion, orientation estimator, trajectory, events, simulator profiles | ✅ done (2026-08-12) |
-| **L2 Courses** | Course model, checkpoints, validation, geometric map matching | ⚪ pending |
+| **L2 Courses** | Course model, checkpoints, validation, geometric map matching | ✅ done (2026-08-12) |
 | **L3 Verification** | RunIntegrityEngine, cheat profiles, verdict matrix | ⚪ pending |
 | **L4 Scoring + server** | ScoringEngine, sogen, score-run edge fn, TS ports, xval | ⚪ pending |
 | **L5 Leaderboards** | leaderboard_entries, ranks, Smooooth Rating, achievements | ⚪ pending |
@@ -28,6 +28,21 @@ sharing → subscriptions. UI is authored alongside but never blocks engine work
 syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
+
+### 2026-08-12 — L2 complete ✅ (161 Kit tests green)
+- **CourseMatcher**: local-ENU polyline projection with cursor-windowed
+  matching — self-crossing/out-and-back courses can't snap to the wrong pass.
+- **CourseValidator**: spec §25 rules, all limits configurable, reports every
+  issue in one pass. Same rules get a TS port in `validate-course` (L8).
+- **CourseProgressTracker**: monotone progress (never accrues off-course —
+  corner-cutting buys nothing), in-order checkpoint gating, deviation grace,
+  finish detection, `progressFraction` = the ghost axis (L6).
+- Provider seams (`RoutingProvider`/`MapMatchingProvider`/`SpeedLimitProvider`)
+  + deterministic fakes; v1 needs no external map vendor (cost control §90).
+- Integration: clean sim profiles finish 4/4 gates; routeDeviation flagged;
+  missingGPS cannot fake progress; demo course passes validation.
+- DB side (0003–0004) landed earlier with 40 pgTAP tests.
+- **Next: L3** — RunIntegrityEngine consuming L1/L2 signals → verdicts.
 
 ### 2026-08-12 — L1 complete ✅ (136 Kit tests green)
 - **VehicleOrientationEstimator**: gravity from quasi-static EMA; forward from
