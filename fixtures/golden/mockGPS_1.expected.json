@@ -1,0 +1,20 @@
+{
+  "complianceBps" : 10000,
+  "confidenceScore" : 100,
+  "controlBps" : 10000,
+  "deviationDetected" : false,
+  "eventCounts" : {
+
+  },
+  "finalScore" : 8950,
+  "flags" : [
+    "mockLocation",
+    "sensorMismatch"
+  ],
+  "gatesHit" : 4,
+  "hasComplianceData" : false,
+  "paceBps" : 7001,
+  "scoringVersion" : "1.0.0",
+  "smoothnessBps" : 10000,
+  "verdict" : "invalid"
+}

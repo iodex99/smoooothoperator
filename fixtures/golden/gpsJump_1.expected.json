@@ -1,0 +1,19 @@
+{
+  "complianceBps" : 10000,
+  "confidenceScore" : 91,
+  "controlBps" : 10000,
+  "deviationDetected" : false,
+  "eventCounts" : {
+    "acceleration" : 1
+  },
+  "finalScore" : 8285,
+  "flags" : [
+    "gpsJump"
+  ],
+  "gatesHit" : 4,
+  "hasComplianceData" : false,
+  "paceBps" : 7002,
+  "scoringVersion" : "1.0.0",
+  "smoothnessBps" : 8099,
+  "verdict" : "questionable"
+}

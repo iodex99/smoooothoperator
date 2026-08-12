@@ -1,0 +1,19 @@
+{
+  "complianceBps" : 10000,
+  "confidenceScore" : 100,
+  "controlBps" : 10000,
+  "deviationDetected" : false,
+  "eventCounts" : {
+    "acceleration" : 1
+  },
+  "finalScore" : 8268,
+  "flags" : [
+
+  ],
+  "gatesHit" : 4,
+  "hasComplianceData" : false,
+  "paceBps" : 7002,
+  "scoringVersion" : "1.0.0",
+  "smoothnessBps" : 8052,
+  "verdict" : "verified"
+}

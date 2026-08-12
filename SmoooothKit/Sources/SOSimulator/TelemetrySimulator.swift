@@ -1,5 +1,6 @@
 import Foundation
 import SOCore
+import SOCourse
 import SOTelemetry
 
 /// What the simulator knows to be true about the run it generated — the
@@ -190,7 +191,7 @@ public struct TelemetrySimulator: Sendable {
             fixHeadings.append(state.heading)
         }
 
-        gps = applyInjector(to: gps, fractions: fixFractions, headings: fixHeadings, rng: &injector)
+        gps = applyInjector(to: gps, fractions: fixFractions, headings: fixHeadings, route: route, rng: &injector)
 
         return SimulatedRun(
             gps: gps,
@@ -213,6 +214,7 @@ public struct TelemetrySimulator: Sendable {
         to fixes: [GPSSample],
         fractions: [Double],
         headings: [Double],
+        route: [GeoCoordinate],
         rng: inout GaussianRandom
     ) -> [GPSSample] {
         guard fixes.count > 20 else { return fixes }
@@ -257,12 +259,27 @@ public struct TelemetrySimulator: Sendable {
             output = output.enumerated().filter { !drop.contains($0.offset) }.map(\.element)
 
         case .routeDeviation:
+            // Deviate toward whichever side genuinely LEAVES the course —
+            // on a winding route, offsetting into a bend can stay within
+            // the corridor of another course leg.
+            var side = 90.0
+            if let matcher = CourseMatcher(polyline: route),
+               let peakIndex = fractions.firstIndex(where: { $0 >= 0.5 }) {
+                let peak = output[peakIndex]
+                let rightLateral = matcher.nearestMatch(
+                    to: peak.coordinate.destination(bearingDegrees: headings[peakIndex] + 90, distanceMeters: 250)
+                ).lateralOffsetMeters
+                let leftLateral = matcher.nearestMatch(
+                    to: peak.coordinate.destination(bearingDegrees: headings[peakIndex] - 90, distanceMeters: 250)
+                ).lateralOffsetMeters
+                side = rightLateral >= leftLateral ? 90 : -90
+            }
             for index in output.indices {
                 let fraction = fractions[index]
                 guard fraction > 0.4 && fraction < 0.6 else { continue }
                 let magnitude = 250 * sin(.pi * (fraction - 0.4) / 0.2)
                 output[index].coordinate = output[index].coordinate.destination(
-                    bearingDegrees: headings[index] + 90,
+                    bearingDegrees: headings[index] + side,
                     distanceMeters: magnitude
                 )
             }

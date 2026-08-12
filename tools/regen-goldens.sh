@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
-# Regenerate all golden fixtures via sogen. This is a deliberate act:
-# the resulting diff encodes a scoring/pipeline behavior change and must be
-# reviewed. Implementation lands in Phase L4 alongside `sogen generate`.
+# Regenerate all golden fixtures via sogen. This is a deliberate act: the
+# resulting diff encodes a pipeline behavior change and must be reviewed
+# like code. CI fails if committed goldens drift from the pipeline.
 set -euo pipefail
+cd "$(dirname "$0")/.."
 
-echo "regen-goldens: not implemented until Phase L4 (sogen generate/score)" >&2
-exit 1
+(cd SmoooothKit && swift build)
+SmoooothKit/.build/debug/sogen goldens --out fixtures/golden --config configs/scoring/v1.json
+echo
+echo "regen-goldens: review the diff (git diff fixtures/golden) before committing."
