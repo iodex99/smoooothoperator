@@ -35,6 +35,24 @@ Thresholds are contextual (hard braking at 60 mph ≠ at 10 mph) and configurabl
    App Attest/DeviceCheck integration is a planned hardening step (post-MVP).
 4. **Uncertainty never accuses.** Weak data → `questionable`, not `invalid`.
 
+## v1 detector notes (L3, implemented)
+
+- **Streak gating**: impossible *implied* speed/acceleration must persist
+  across consecutive pairs — isolated violations are honest multipath jumps
+  (already rejected by the trajectory gate; surfaced as warnings via the
+  rejection-rate check).
+- **Mock location** needs ≥2 combined signatures (zero accuracy variance,
+  metronome fix clock, dead IMU while moving) — one alone is a warning.
+- **Gyro ↔ GPS heading consistency** (p95 ratio over ~1 s heading spans)
+  catches scaled/injected IMU without false-flagging aggressive driving.
+- **Clock manipulation**: raw timestamp regressions, plus the median
+  implied/reported speed ratio leaving 0.7–1.3.
+- **Route**: missed gates or corridor deviation (judged against the whole
+  course, progress window-gated) → critical.
+- **Known v1 limitation:** slow correlated GPS drift (position bias with an
+  honest accuracy field) is not detectable without map context; such runs
+  verify. A map/road-context check is future hardening. Pinned by test.
+
 ## Test coverage
 
 Every cheat simulator profile (mockGPS, impossiblePhysics,

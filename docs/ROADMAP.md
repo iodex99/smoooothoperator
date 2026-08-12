@@ -14,7 +14,7 @@ sharing → subscriptions. UI is authored alongside but never blocks engine work
 | **L0 Foundation** | Toolchains, Kit scaffold, migrations 0001–0002, pgTAP, docs, CI | ✅ done (2026-08-12) |
 | **L1 Telemetry** | Fusion, orientation estimator, trajectory, events, simulator profiles | ✅ done (2026-08-12) |
 | **L2 Courses** | Course model, checkpoints, validation, geometric map matching | ✅ done (2026-08-12) |
-| **L3 Verification** | RunIntegrityEngine, cheat profiles, verdict matrix | ⚪ pending |
+| **L3 Verification** | RunIntegrityEngine, cheat profiles, verdict matrix | ✅ done (2026-08-12) |
 | **L4 Scoring + server** | ScoringEngine, sogen, score-run edge fn, TS ports, xval | ⚪ pending |
 | **L5 Leaderboards** | leaderboard_entries, ranks, Smooooth Rating, achievements | ⚪ pending |
 | **L6 Ghosts** | Ghost generation, gap math, privacy controls | ⚪ pending |
@@ -28,6 +28,21 @@ sharing → subscriptions. UI is authored alongside but never blocks engine work
 syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
+
+### 2026-08-12 — L3 complete ✅ (180 Kit tests green)
+- **RunIntegrityEngine**: full check suite → VERIFIED/QUESTIONABLE/INVALID.
+  Design principles proven by tests: streak gating so isolated honest GPS
+  jumps never accuse; mock detection needs ≥2 combined signatures; gyro↔GPS
+  heading consistency catches scaled sensors without flagging aggressive
+  driving; uncertainty never accuses (warning ⇒ questionable only).
+- **Verdict matrix green**: 4 clean profiles verify (6-seed false-positive
+  sweep), 3 cheat profiles invalid, degraded profiles questionable,
+  routeDeviation invalid. gpsDrift documented as undetectable-in-v1.
+- Matrix testing surfaced 2 real bugs: tracker off-course now judged against
+  the whole course (progress still window-gated), open excursions at run end
+  count; simulator course field made continuous.
+- **Next: L4** — ScoringEngine + versioned config + sogen golden vectors +
+  server path (migration 0005, score-run edge fn, TS ports, xval).
 
 ### 2026-08-12 — L2 complete ✅ (161 Kit tests green)
 - **CourseMatcher**: local-ENU polyline projection with cursor-windowed
