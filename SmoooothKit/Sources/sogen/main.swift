@@ -108,6 +108,35 @@ case "score":
         fail("sogen score: \(error)")
     }
 
+case "benchmark":
+    // sogen benchmark --input route.json
+    // route.json: [[lat, lon], ...] — real road geometry.
+    // Emits the course reference benchmark (spec §57): a strong smooth
+    // driver simulated over the actual geometry, tightened 3% — clearly a
+    // REFERENCE BENCHMARK, never a fabricated human record.
+    guard let inputPath = argumentValue("--input", in: arguments) else {
+        fail("sogen benchmark: --input <route.json> is required")
+    }
+    guard let data = FileManager.default.contents(atPath: inputPath) else {
+        fail("sogen benchmark: cannot read \(inputPath)")
+    }
+    do {
+        let pairs = try JSONDecoder().decode([[Double]].self, from: data)
+        let route = pairs.map { GeoCoordinate(latitude: $0[0], longitude: $0[1]) }
+        let run = TelemetrySimulator(profile: .fastSmooth, seed: 100).simulate(route: route)
+        guard run.groundTruth.routeDistanceMeters > 0 else {
+            fail("sogen benchmark: degenerate route in \(inputPath)")
+        }
+        let benchmark = (run.groundTruth.expectedDurationSeconds * 0.97).rounded()
+        print(
+            """
+            {"benchmarkSeconds": \(Int(benchmark)), "distanceMeters": \(Int(run.groundTruth.routeDistanceMeters.rounded()))}
+            """
+        )
+    } catch {
+        fail("sogen benchmark: \(error)")
+    }
+
 case nil, "help", "--help":
     print(
         """
