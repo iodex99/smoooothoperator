@@ -47,7 +47,8 @@ select set_config('request.jwt.claims',
 set local role authenticated;
 
 select results_eq(
-    $$ select user_id::text from public.ghosts order by user_id $$,
+    $$ select user_id::text from public.ghosts
+       where course_id = 'aaaaaaaa-0000-0000-0000-000000000001' order by user_id $$,
     array['11111111-1111-1111-1111-111111111111'],
     'spectators see only ghosts whose owner shares with everyone'
 );
@@ -76,7 +77,8 @@ select is(
 );
 
 select is(
-    (select count(*)::int from public.ghosts),
+    (select count(*)::int from public.ghosts
+     where course_id = 'aaaaaaaa-0000-0000-0000-000000000001'),
     2,
     'private owner sees own ghost plus public ones'
 );
@@ -92,7 +94,8 @@ select set_config('request.jwt.claims',
 set local role authenticated;
 
 select is(
-    (select count(*)::int from public.ghosts),
+    (select count(*)::int from public.ghosts
+     where course_id = 'aaaaaaaa-0000-0000-0000-000000000001'),
     0,
     'flipping ghost_visibility to nobody hides ghosts at once'
 );

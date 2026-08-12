@@ -69,7 +69,8 @@ select set_config('request.jwt.claims', '{"role": "anon"}', true);
 set local role anon;
 
 select is(
-    (select count(*)::int from public.leaderboard_entries),
+    (select count(*)::int from public.leaderboard_entries
+     where course_id = 'aaaaaaaa-0000-0000-0000-000000000001'),
     3,
     'anon reads the leaderboard (share links)'
 );

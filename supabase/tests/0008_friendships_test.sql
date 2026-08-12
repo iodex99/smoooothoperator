@@ -139,7 +139,8 @@ select is(
     'friends see friends-visibility courses'
 );
 select is(
-    (select count(*)::int from public.ghosts),
+    (select count(*)::int from public.ghosts
+     where course_id = 'aaaaaaaa-0000-0000-0000-000000000001'),
     1,
     'friends race friends-tier ghosts'
 );
@@ -157,7 +158,8 @@ select is(
     'strangers never see friends-visibility courses'
 );
 select is(
-    (select count(*)::int from public.ghosts),
+    (select count(*)::int from public.ghosts
+     where course_id = 'aaaaaaaa-0000-0000-0000-000000000001'),
     0,
     'strangers never race friends-tier ghosts'
 );

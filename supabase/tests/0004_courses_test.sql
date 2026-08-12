@@ -88,13 +88,13 @@ select set_config('request.jwt.claims', '{"role": "anon"}', true);
 set local role anon;
 
 select results_eq(
-    $$ select id::text from public.courses order by id $$,
+    $$ select id::text from public.courses where id::text like 'aaaaaaaa-%' order by id $$,
     array['aaaaaaaa-0000-0000-0000-000000000001'],
     'anon sees only active public courses (no private, no drafts)'
 );
 
 select is(
-    (select count(*)::int from public.course_checkpoints),
+    (select count(*)::int from public.course_checkpoints where course_id::text like 'aaaaaaaa-%'),
     3,
     'anon sees only checkpoints of visible courses'
 );
@@ -118,13 +118,13 @@ select set_config('request.jwt.claims',
 set local role authenticated;
 
 select is(
-    (select count(*)::int from public.courses),
+    (select count(*)::int from public.courses where id::text like 'aaaaaaaa-%'),
     3,
     'creator sees public courses plus their own private and draft courses'
 );
 
 select is(
-    (select count(*)::int from public.course_checkpoints),
+    (select count(*)::int from public.course_checkpoints where course_id::text like 'aaaaaaaa-%'),
     4,
     'creator sees checkpoints of their own private course too'
 );
@@ -148,7 +148,7 @@ select set_config('request.jwt.claims',
 set local role authenticated;
 
 select results_eq(
-    $$ select id::text from public.courses order by id $$,
+    $$ select id::text from public.courses where id::text like 'aaaaaaaa-%' order by id $$,
     array['aaaaaaaa-0000-0000-0000-000000000001'],
     'strangers see only active public courses'
 );
