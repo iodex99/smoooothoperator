@@ -60,17 +60,30 @@ jobs:
         with:
           deno-version: v2.x
       - name: Test
-        run: |
-          if compgen -G "supabase/functions/**/*.ts" >/dev/null 2>&1; then
-            cd supabase/functions && deno test --allow-read=../../fixtures,../../configs
-          else
-            echo "no edge functions yet — skipping"
-          fi
+        run: cd supabase/functions && deno test --allow-read=../../fixtures,../../configs
 
   xval:
     name: Swift ≡ TypeScript cross-validation
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+      - name: Cache Swift toolchain
+        id: cache-swift
+        uses: actions/cache@v4
+        with:
+          path: ~/toolchains/swift-${{ env.SWIFT_VERSION }}
+          key: swift-${{ env.SWIFT_VERSION }}-ubuntu2404
+      - name: Install Swift toolchain
+        if: steps.cache-swift.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/toolchains
+          curl -sL "https://download.swift.org/swift-${SWIFT_VERSION}-release/ubuntu2404/swift-${SWIFT_VERSION}-RELEASE/swift-${SWIFT_VERSION}-RELEASE-ubuntu24.04.tar.gz" \
+            | tar -xz -C ~/toolchains
+          mv ~/toolchains/swift-${SWIFT_VERSION}-RELEASE-ubuntu24.04 ~/toolchains/swift-${SWIFT_VERSION}
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
       - name: Cross-validate golden vectors
-        run: tools/xval.sh
+        run: |
+          export PATH=$HOME/toolchains/swift-${SWIFT_VERSION}/usr/bin:$PATH
+          tools/xval.sh
