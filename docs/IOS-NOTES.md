@@ -30,9 +30,13 @@ layer and **never move logic out of the Kit to work around an error**.
 | Area | Risk | Status |
 |---|---|---|
 | `App/project.yml` | XcodeGen schema drift | authored L0, never generated |
-| Adapters (CoreLocation/CoreMotion/StoreKit/SwiftData) | compile errors | not yet written |
-| SwiftUI views | compile + layout | not yet written |
+| SensorFeed (CoreLocation+CoreMotion) | compile + timestamp-domain bridging (CMLogItem boot-time → epoch) needs device validation | authored, parse-gated |
+| SupabaseAPI / RunUploader | compile; SUPABASE_URL/ANON_KEY must be added via xcconfig → Info.plist | authored, parse-gated |
+| StoreKitSubscriptionService | compile; sandbox purchase/restore untested | authored, parse-gated |
+| SwiftUI views (all 4 tabs + drive loop + paywall) | compile + layout; server feeds for Home/Explore/Friends are placeholders wired to real endpoints later | authored, parse-gated |
+| MockSensorFeed (DEBUG) | drives the full DriveSession loop in the simulator without a car — use it on day 1 | authored |
 | Products.storekit | product ids must match App Store Connect | authored L0 |
+| Bundled `scoring-v1.json` fallback | add configs/scoring/v1.json to app resources in project.yml | TODO on Mac |
 
 ## Decisions that constrain this layer
 

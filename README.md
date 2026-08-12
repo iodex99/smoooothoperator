@@ -35,4 +35,4 @@ The iOS app itself is generated on a Mac: see [docs/IOS-NOTES.md](docs/IOS-NOTES
 
 ## Project status
 
-See [docs/ROADMAP.md](docs/ROADMAP.md) for the phase ledger. Current phase: **L0 — Foundation**.
+See [docs/ROADMAP.md](docs/ROADMAP.md) for the phase ledger. Current status: **engine + backend complete; awaiting first Mac session** (see docs/ROADMAP.md ledger).

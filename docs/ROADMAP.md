@@ -16,18 +16,41 @@ sharing → subscriptions. UI is authored alongside but never blocks engine work
 | **L2 Courses** | Course model, checkpoints, validation, geometric map matching | ✅ done (2026-08-12) |
 | **L3 Verification** | RunIntegrityEngine, cheat profiles, verdict matrix | ✅ done (2026-08-12) |
 | **L4 Scoring + server** | ScoringEngine, sogen, score-run edge fn, TS ports, xval | ✅ done (2026-08-12) |
-| **L5 Leaderboards** | leaderboard_entries, ranks (DB ✅); Smooooth Rating, achievements | 🟡 DB done |
+| **L5 Leaderboards** | leaderboard_entries + ranks + RatingEngine + achievements | ✅ done (2026-08-12) |
 | **L6 Ghosts** | Ghost generation, gap math, privacy controls (Kit ✅ + DB ✅ + server ✅) | ✅ done (2026-08-12) |
-| **L7 Friends** | Friendships, challenges (DB ✅); invitations/flows | 🟡 DB done |
-| **L8 Custom courses** | Creation, validation, publishing, reporting | ⚪ pending |
-| **L9 Sharing** | Challenge codes, resolve-challenge, universal links (AASA) | ⚪ pending |
-| **M1–M5 iOS layer** | project.yml, adapters, feature views, StoreKit — authored alongside L-phases | 🟡 ongoing |
+| **L7 Friends** | Friendships + challenges + participants (DB, state machines) | ✅ done (2026-08-12) |
+| **L8 Custom courses** | validate-course edge fn, shared rejection fixtures | ✅ done (2026-08-12) |
+| **L9 Sharing** | Challenge codes, resolve-challenge (anon-safe), AASA content | ✅ done (2026-08-12) |
+| **M1–M5 iOS layer** | project.yml/entitlements/.storekit + adapters + DriveSession binding + feature views + StoreKit + mock mode | ✅ authored, parse-gated (2026-08-12) |
 | **M-final Mac session** | xcodegen, compile fixes, device sanity, StoreKit sandbox, TestFlight | ⚪ pending (needs a Mac) |
 
 **Definition of done for every phase:** `make test` green (Kit + pgTAP + Deno +
 syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
+
+### 2026-08-12 — Phase 1 engine + backend COMPLETE; iOS layer authored (225 Kit tests, 132 pgTAP, 29 Deno, e2e green)
+- **DriveSession (SOSync)**: the app's core loop as a Linux-tested actor —
+  idle→calibrating→ready→active(live ghost gap)→processing→finished.
+  mockGPS can never calibrate; deviation reported; self-ghost gap ≈ 0.
+- **RatingEngine**: difficulty-weighted best-window Smooooth Rating + tiers.
+- **Migrations 0011–0012**: achievements; subscriptions mirror (clients can
+  never self-report entitlement) + has_active_pro().
+- **validate-course** (L8): Pro-gated, TS validator pinned by 12 shared
+  contract fixtures — server rejects exactly what the client rejects.
+- **resolve-challenge** (L9): anonymous share-link resolution, dead codes
+  404 like unknown ones, zero geometry/coordinate leakage. AASA content in
+  web/.well-known/.
+- **iOS app layer authored** (17 files, parse-gated): SensorFeed,
+  SupabaseAPI, RunUploader, StoreKit service, mock mode; all four tabs,
+  safety gate, pre-flight checklist, minimal driving screen, result screen
+  with provisional→authoritative handoff, paywall (App Store prices only),
+  ghost privacy controls. First compile happens on a Mac (IOS-NOTES.md).
+- **Remaining for launch:** Mac hardening session (compile + device truth +
+  StoreKit sandbox + TestFlight), App Store Server Notifications webhook,
+  home/explore server feeds, friend-flow API wiring in views, deploy to a
+  Supabase cloud project. Engine-side Phase 1 (spec §§86-87 priorities
+  1-10) is done and tested.
 
 ### 2026-08-12 — L4 complete ✅ + L5/L6/L7 DB layers (212 Kit tests, 122 pgTAP, 14 Deno, e2e green)
 - **ScoringEngine** (configs/scoring/v1.json curves): spec §59 synthetic
