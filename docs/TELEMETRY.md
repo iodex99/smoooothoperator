@@ -1,6 +1,22 @@
 # Telemetry
 
-> Living document. Grows substantially in Phase L1.
+> Living document. L1 engines implemented — see modules in `SmoooothKit/Sources/SOTelemetry` and `SOSimulator`.
+
+## Hard-won modeling truths (L1 integration findings)
+
+1. **GPS position error is time-correlated.** Modeling it as independent
+   per-fix noise makes reconstructed paths zig-zag and inflates distance ~2×
+   at 10 Hz. The simulator uses an Ornstein–Uhlenbeck bias walk
+   (σ≈1.5 m, τ≈60 s); any future noise reasoning must respect this.
+2. **Never difference consecutive high-rate GPS speeds.** dv/dt between
+   10 Hz fixes has σ≈2 m/s² from speed noise alone — sign flips destroy
+   orientation evidence. The estimator uses anchored ≥0.8 s windows.
+3. **A course without hairpins can't separate drivers.** Gentle sweepers never
+   force braking, so smooth and aggressive look identical. Demo/synthetic
+   courses need sharp-corner clusters (real courses: "23 meaningful turns").
+4. **Mock GPS looks *too* clean**: metronome fix clock (honest receivers
+   jitter by ms), zero accuracy variance, and a dead IMU while GPS claims
+   motion. All three are integrity signals (L3).
 
 ## Pipeline (spec §22)
 

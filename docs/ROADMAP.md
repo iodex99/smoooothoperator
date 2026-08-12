@@ -12,7 +12,7 @@ sharing → subscriptions. UI is authored alongside but never blocks engine work
 | Phase | Scope | Status |
 |---|---|---|
 | **L0 Foundation** | Toolchains, Kit scaffold, migrations 0001–0002, pgTAP, docs, CI | ✅ done (2026-08-12) |
-| **L1 Telemetry** | Fusion, orientation estimator, trajectory, events, simulator profiles | ⚪ pending |
+| **L1 Telemetry** | Fusion, orientation estimator, trajectory, events, simulator profiles | ✅ done (2026-08-12) |
 | **L2 Courses** | Course model, checkpoints, validation, geometric map matching | ⚪ pending |
 | **L3 Verification** | RunIntegrityEngine, cheat profiles, verdict matrix | ⚪ pending |
 | **L4 Scoring + server** | ScoringEngine, sogen, score-run edge fn, TS ports, xval | ⚪ pending |
@@ -28,6 +28,26 @@ sharing → subscriptions. UI is authored alongside but never blocks engine work
 syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
+
+### 2026-08-12 — L1 complete ✅ (136 Kit tests green)
+- **VehicleOrientationEstimator**: gravity from quasi-static EMA; forward from
+  GPS-corroborated acceleration windows (anchored ≥0.8 s — consecutive-fix
+  dv/dt at 10 Hz is noise); property-tested under 20 random mounts.
+- **TrajectoryProcessor + LocationConfidenceScorer**: 3-gate filtering
+  (accuracy/monotonic-time/teleport), curve-based confidence (TS-port exact).
+- **DrivingEventDetector**: speed-contextual thresholds — 0.4 g at 30 m/s is
+  hardBraking, the same brake at 4 m/s is ordinary.
+- **TelemetrySimulator**: all 12 spec §58 profiles; kinematic ground truth with
+  corner-anticipating, jerk-aware speed follower; correlated (OU) GPS noise;
+  honest ms clock jitter vs mockGPS's metronome clock; hairpin demo routes.
+- **Pipeline integration suite** (spec §59): calibration recovers the actual
+  simulated mount; fast+smooth has zero hard events while fast+aggressive
+  trips them; mock GPS fails calibration; degraded GPS lowers confidence.
+  The e2e tests caught 3 real modeling flaws before commit — see TELEMETRY.md.
+- Migrations 0003–0004 (scoring_configs, courses+checkpoints) landed early
+  with 24 new pgTAP tests (40 total).
+- **Next: L2** — SOCourse engine (course model, validation, checkpoint
+  matching, progress); then L3 integrity.
 
 ### 2026-08-12 — L0 complete ✅
 - Full Linux gate green: `make test` = 37 Swift tests + 16 pgTAP tests + 2 Deno
