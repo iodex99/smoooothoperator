@@ -15,10 +15,10 @@ sharing → subscriptions. UI is authored alongside but never blocks engine work
 | **L1 Telemetry** | Fusion, orientation estimator, trajectory, events, simulator profiles | ✅ done (2026-08-12) |
 | **L2 Courses** | Course model, checkpoints, validation, geometric map matching | ✅ done (2026-08-12) |
 | **L3 Verification** | RunIntegrityEngine, cheat profiles, verdict matrix | ✅ done (2026-08-12) |
-| **L4 Scoring + server** | ScoringEngine, sogen, score-run edge fn, TS ports, xval | ⚪ pending |
-| **L5 Leaderboards** | leaderboard_entries, ranks, Smooooth Rating, achievements | ⚪ pending |
-| **L6 Ghosts** | Ghost generation, gap math, privacy controls | ⚪ pending |
-| **L7 Friends** | Friendships, challenges, invitations | ⚪ pending |
+| **L4 Scoring + server** | ScoringEngine, sogen, score-run edge fn, TS ports, xval | ✅ done (2026-08-12) |
+| **L5 Leaderboards** | leaderboard_entries, ranks (DB ✅); Smooooth Rating, achievements | 🟡 DB done |
+| **L6 Ghosts** | Ghost generation, gap math, privacy controls (Kit ✅ + DB ✅ + server ✅) | ✅ done (2026-08-12) |
+| **L7 Friends** | Friendships, challenges (DB ✅); invitations/flows | 🟡 DB done |
 | **L8 Custom courses** | Creation, validation, publishing, reporting | ⚪ pending |
 | **L9 Sharing** | Challenge codes, resolve-challenge, universal links (AASA) | ⚪ pending |
 | **M1–M5 iOS layer** | project.yml, adapters, feature views, StoreKit — authored alongside L-phases | 🟡 ongoing |
@@ -28,6 +28,29 @@ sharing → subscriptions. UI is authored alongside but never blocks engine work
 syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
+
+### 2026-08-12 — L4 complete ✅ + L5/L6/L7 DB layers (212 Kit tests, 122 pgTAP, 14 Deno, e2e green)
+- **ScoringEngine** (configs/scoring/v1.json curves): spec §59 synthetic
+  competition holds — fastSmooth > fastAggressive via smoothness (not pace),
+  slowSmooth loses on pace alone, ordering stable across seeds.
+- **Golden vectors**: 12 committed pairs pin the whole pipeline; regeneration
+  only via deliberate `make regen-goldens`.
+- **TypeScript port** (agent-built, human-verified): all 13 pipeline modules,
+  zero deps; **xval green — Swift ≡ TS on 12/12 vectors, first run.**
+  (Note: the TS port files landed inside the friendships commit f3d989f.)
+- **score-run edge function**: claim → blob → sha256 → pipeline →
+  `apply_run_result` (atomic: run fields + best-only leaderboard + ghost +
+  job). **E2E test green** against the live local stack incl. idempotency.
+- **Migrations 0005–0010**: runs/telemetry/scoring_jobs (client can never
+  write a score), leaderboards + ranked view, ghosts with live privacy
+  controls, friendships (state machine + friends-tier visibility upgrades),
+  challenges (spec §69 state machine), scoring infra (bucket, geometry RPC,
+  stale-job recovery cron).
+- **GhostEngine (Kit)**: start-line-anchored, staging never counts, ≤200
+  points, no coordinates (privacy-tested), self-gap ≡ 0.
+- **Next**: RatingEngine + achievements (L5 Kit), SOSync upload queue,
+  validate-course (L8), sharing/resolve-challenge (L9), subscriptions 0011,
+  iOS M-track adapters/features.
 
 ### 2026-08-12 — L3 complete ✅ (180 Kit tests green)
 - **RunIntegrityEngine**: full check suite → VERIFIED/QUESTIONABLE/INVALID.
