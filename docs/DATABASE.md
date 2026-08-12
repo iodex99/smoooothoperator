@@ -27,12 +27,27 @@ to `^[a-z0-9_]{3,20}$`, country to ISO alpha-2. Ghost privacy control column
 Policies: world-readable (leaderboard + share-link identity), self-update only,
 no direct insert/delete (trigger + auth cascade handle lifecycle).
 
+### 0003 — scoring_configs
+Versioned ScoringConfig JSON, semver-checked, partial unique index guarantees
+at most one `active` row. World-readable (clients need it for provisional
+scores); service-role-only writes. Config content lands in L4.
+
+### 0004 — courses + course_checkpoints
+PostGIS geography (linestring route, point start/finish/checkpoint centers,
+GiST index). NULL `creator_id` = platform course. `benchmark_seconds` is a
+reference benchmark, never a fabricated user record (spec §57). Client roles
+are **read-only**: course creation goes exclusively through the validated
+edge-function path (L8), so unvalidated geometry can never enter the catalog.
+Visibility: active+public world-readable; creators see their own drafts and
+private courses; `friends` visibility deliberately behaves as creator-only
+until migration 0008 introduces friendships and replaces the policy.
+Checkpoints inherit course visibility; radius constrained 5–500 m; unique
+(course_id, sequence).
+
 ## Planned (from approved architecture)
 
 | # | Tables | Phase |
 |---|---|---|
-| 0003 | scoring_configs (versioned config JSON) | L4 |
-| 0004 | courses, checkpoints (postgis geography) | L2 |
 | 0005 | runs, telemetry (pointer/envelope), scoring_jobs | L4 |
 | 0006 | leaderboard_entries | L5 |
 | 0007 | ghosts (normalized trajectory JSONB) | L6 |
