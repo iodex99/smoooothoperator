@@ -11,7 +11,7 @@ sharing → subscriptions. UI is authored alongside but never blocks engine work
 
 | Phase | Scope | Status |
 |---|---|---|
-| **L0 Foundation** | Toolchains, Kit scaffold, migrations 0001–0002, pgTAP, docs, CI | 🟡 in progress |
+| **L0 Foundation** | Toolchains, Kit scaffold, migrations 0001–0002, pgTAP, docs, CI | ✅ done (2026-08-12) |
 | **L1 Telemetry** | Fusion, orientation estimator, trajectory, events, simulator profiles | ⚪ pending |
 | **L2 Courses** | Course model, checkpoints, validation, geometric map matching | ⚪ pending |
 | **L3 Verification** | RunIntegrityEngine, cheat profiles, verdict matrix | ⚪ pending |
@@ -28,6 +28,19 @@ sharing → subscriptions. UI is authored alongside but never blocks engine work
 syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
+
+### 2026-08-12 — L0 complete ✅
+- Full Linux gate green: `make test` = 37 Swift tests + 16 pgTAP tests + 2 Deno
+  tests + iOS syntax gate + kit purity check.
+- pgTAP surfaced a real security gap: CLI-created tables carry no client grants;
+  fixed with **explicit column-level grants** — `rating`/`rating_tier` are now
+  unwritable by clients even on their own row (test enforces it).
+- M1 done alongside: `App/project.yml` (XcodeGen), entitlements (Sign in with
+  Apple, applinks), `Products.storekit` (weekly/monthly/yearly), app entry point.
+- CI authored: Linux jobs kit/db/edge/xval on every push; macOS iOS build
+  nightly/manual only.
+- **Next: L1 telemetry engine** — SOCore math, orientation estimator,
+  trajectory processing, event detection, simulator profiles, golden fixtures.
 
 ### 2026-08-12 — L0 started
 - Architecture approved (see plan + ADR-0001, ADR-0002).
