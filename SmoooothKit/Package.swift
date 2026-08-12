@@ -31,7 +31,7 @@ let package = Package(
         .target(name: "SOCore"),
         .target(name: "SOModels", dependencies: ["SOCore"]),
         .target(name: "SOTelemetry", dependencies: ["SOModels"]),
-        .target(name: "SOCourse", dependencies: ["SOModels"]),
+        .target(name: "SOCourse", dependencies: ["SOModels", "SOTelemetry"]),
         .target(name: "SOScoring", dependencies: ["SOTelemetry", "SOCourse"]),
         .target(name: "SOIntegrity", dependencies: ["SOTelemetry"]),
         .target(name: "SOGhost", dependencies: ["SOTelemetry", "SOCourse"]),
