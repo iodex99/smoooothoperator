@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["TEAMID.app.smooooth.operator"],
+        "components": [
+          {
+            "/": "/challenge/*",
+            "comment": "Challenge share links open in the app (spec §79)."
+          }
+        ]
+      }
+    ]
+  }
+}
