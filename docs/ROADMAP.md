@@ -1,0 +1,36 @@
+# Roadmap & Phase Ledger
+
+> Living document. The ledger is updated at the end of every phase — it is the
+> project's memory. Newest entries at the top of the log.
+
+## Phase plan
+
+Engine priority order is mandated by spec §86: telemetry → course validation →
+run verification → scoring → leaderboards → ghosts → friends → custom courses →
+sharing → subscriptions. UI is authored alongside but never blocks engine work.
+
+| Phase | Scope | Status |
+|---|---|---|
+| **L0 Foundation** | Toolchains, Kit scaffold, migrations 0001–0002, pgTAP, docs, CI | 🟡 in progress |
+| **L1 Telemetry** | Fusion, orientation estimator, trajectory, events, simulator profiles | ⚪ pending |
+| **L2 Courses** | Course model, checkpoints, validation, geometric map matching | ⚪ pending |
+| **L3 Verification** | RunIntegrityEngine, cheat profiles, verdict matrix | ⚪ pending |
+| **L4 Scoring + server** | ScoringEngine, sogen, score-run edge fn, TS ports, xval | ⚪ pending |
+| **L5 Leaderboards** | leaderboard_entries, ranks, Smooooth Rating, achievements | ⚪ pending |
+| **L6 Ghosts** | Ghost generation, gap math, privacy controls | ⚪ pending |
+| **L7 Friends** | Friendships, challenges, invitations | ⚪ pending |
+| **L8 Custom courses** | Creation, validation, publishing, reporting | ⚪ pending |
+| **L9 Sharing** | Challenge codes, resolve-challenge, universal links (AASA) | ⚪ pending |
+| **M1–M5 iOS layer** | project.yml, adapters, feature views, StoreKit — authored alongside L-phases | 🟡 ongoing |
+| **M-final Mac session** | xcodegen, compile fixes, device sanity, StoreKit sandbox, TestFlight | ⚪ pending (needs a Mac) |
+
+**Definition of done for every phase:** `make test` green (Kit + pgTAP + Deno +
+syntax gate), docs updated, ledger entry added, work committed in small chunks.
+
+## Ledger
+
+### 2026-08-12 — L0 started
+- Architecture approved (see plan + ADR-0001, ADR-0002).
+- Toolchains installed on Linux: Swift 6.1.3 (Ubuntu 24.04), Supabase CLI 2.113, Deno 2.9.5.
+- `SmoooothKit` scaffolded: 9 modules + `sogen` CLI, **37 tests passing** on Linux.
+- Migrations 0001 (extensions) + 0002 (profiles, RLS, signup trigger) authored with 15 pgTAP assertions.
