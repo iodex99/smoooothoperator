@@ -92,8 +92,19 @@ struct RoutePath: Sendable {
         )
     }
 
+    /// Heading interpolated along the segment toward the next segment's
+    /// heading — vehicles (and receiver course fields) turn continuously,
+    /// never step-wise at vertices.
     func heading(at s: Double) -> Double {
-        vertices[segmentIndex(at: min(max(s, 0), totalDistance))].heading
+        let clamped = min(max(s, 0), totalDistance)
+        let index = segmentIndex(at: clamped)
+        let a = vertices[index]
+        let b = vertices[min(index + 1, vertices.count - 1)]
+        let span = b.distance - a.distance
+        guard span > 0 else { return a.heading }
+        let t = (clamped - a.distance) / span
+        let turn = Self.signedAngleDelta(from: a.heading, to: b.heading)
+        return (a.heading + t * turn + 360).truncatingRemainder(dividingBy: 360)
     }
 
     /// Curvature linearly interpolated between vertices.

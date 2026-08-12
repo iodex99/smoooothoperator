@@ -76,6 +76,7 @@ public struct CourseProgressTracker: Sendable {
 
     private var openExcursionStart: Double?
     private var openExcursionMaxOffset = 0.0
+    private var lastIngestTimestamp: Double?
 
     /// Fails on degenerate course geometry.
     public init?(
@@ -107,20 +108,37 @@ public struct CourseProgressTracker: Sendable {
     }
 
     /// True once any excursion exceeded the deviation grace — the run left
-    /// the course (spec §78: won't appear on the leaderboard).
+    /// the course (spec §78: won't appear on the leaderboard). An excursion
+    /// still open at the last ingested fix counts: a run that leaves the
+    /// course and never properly returns must not read as clean.
     public var deviationDetected: Bool {
-        offCourseExcursions.contains { $0.duration > config.deviationGraceSeconds }
+        if offCourseExcursions.contains(where: { $0.duration > config.deviationGraceSeconds }) {
+            return true
+        }
+        if let start = openExcursionStart, let last = lastIngestTimestamp {
+            return last - start > config.deviationGraceSeconds
+        }
+        return false
     }
 
     public mutating func ingest(_ point: TrajectoryPoint) {
-        let match = matcher.match(
+        lastIngestTimestamp = point.timestamp
+
+        // Two different questions, two different matches:
+        // "am I on the course at all?" — judged against the WHOLE course
+        // (a deviated path can wander near a later bend inside the progress
+        // window and must still count as off-course when it isn't near any
+        // of it); "where along the course am I?" — judged inside the cursor
+        // window so self-crossing courses can't teleport progress.
+        let global = matcher.nearestMatch(to: point.coordinate)
+        let windowed = matcher.match(
             point.coordinate,
             near: progressMeters,
             backtrackMeters: config.backtrackMeters,
             lookaheadMeters: config.lookaheadMeters
         )
 
-        if match.lateralOffsetMeters <= config.corridorWidthMeters {
+        if global.lateralOffsetMeters <= config.corridorWidthMeters {
             if let start = openExcursionStart {
                 offCourseExcursions.append(OffCourseExcursion(
                     startTime: start,
@@ -131,14 +149,18 @@ public struct CourseProgressTracker: Sendable {
                 openExcursionMaxOffset = 0
             }
             isOffCourse = false
-            progressMeters = max(progressMeters, match.distanceAlongCourseMeters)
+            // Progress advances only when the windowed match agrees the fix
+            // is on the local stretch — corner-cutting and rejoin-far-ahead
+            // buy nothing.
+            if windowed.lateralOffsetMeters <= config.corridorWidthMeters {
+                progressMeters = max(progressMeters, windowed.distanceAlongCourseMeters)
+            }
         } else {
             if openExcursionStart == nil {
                 openExcursionStart = point.timestamp
             }
-            openExcursionMaxOffset = max(openExcursionMaxOffset, match.lateralOffsetMeters)
+            openExcursionMaxOffset = max(openExcursionMaxOffset, global.lateralOffsetMeters)
             isOffCourse = true
-            // No progress while off-course: corner-cutting buys nothing.
         }
 
         // Gate the next expected checkpoint only — later gates entered out
