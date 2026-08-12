@@ -22,6 +22,11 @@ db-test:
 edge-test:
 	cd supabase/functions && $(DENO) test --allow-read=../../fixtures,../../configs
 
+## End-to-end: golden run through storage + score-run against the LOCAL stack
+## (requires `supabase start`; skips itself when the stack is down).
+e2e-test:
+	cd supabase/functions && $(DENO) test --allow-read=../../fixtures,../../configs --allow-net tests/score_run_integration_test.ts
+
 ## Cross-validate Swift reference scorer against the TS port on all golden vectors.
 xval:
 	tools/xval.sh
