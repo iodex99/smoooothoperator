@@ -14,8 +14,14 @@ public struct SimulationConfig: Codable, Sendable, Equatable {
     public var startTimestamp: Double
     /// Nominal reported horizontal accuracy, meters.
     public var gpsAccuracyMeters: Double
-    /// 1-sigma of the position noise applied to clean fixes, meters.
+    /// Stationary 1-sigma of the *correlated* position error, meters.
+    /// Receiver error is a slow bias walk (Ornstein–Uhlenbeck), NOT
+    /// independent per-fix noise — independent noise would zig-zag the path
+    /// and inflate reconstructed distance ~2× at 10 Hz, which real GPS
+    /// does not do.
     public var gpsPositionNoiseMeters: Double
+    /// Correlation time of the position-error walk, seconds.
+    public var gpsNoiseCorrelationSeconds: Double
     /// 1-sigma of the reported-speed noise, m/s.
     public var gpsSpeedNoiseMps: Double
     /// 1-sigma accelerometer noise, g.
@@ -32,6 +38,7 @@ public struct SimulationConfig: Codable, Sendable, Equatable {
         startTimestamp: Double,
         gpsAccuracyMeters: Double,
         gpsPositionNoiseMeters: Double,
+        gpsNoiseCorrelationSeconds: Double,
         gpsSpeedNoiseMps: Double,
         imuAccelNoiseG: Double,
         imuGyroNoiseRadPerSec: Double,
@@ -42,6 +49,7 @@ public struct SimulationConfig: Codable, Sendable, Equatable {
         self.startTimestamp = startTimestamp
         self.gpsAccuracyMeters = gpsAccuracyMeters
         self.gpsPositionNoiseMeters = gpsPositionNoiseMeters
+        self.gpsNoiseCorrelationSeconds = gpsNoiseCorrelationSeconds
         self.gpsSpeedNoiseMps = gpsSpeedNoiseMps
         self.imuAccelNoiseG = imuAccelNoiseG
         self.imuGyroNoiseRadPerSec = imuGyroNoiseRadPerSec
@@ -54,6 +62,7 @@ public struct SimulationConfig: Codable, Sendable, Equatable {
         startTimestamp: 1_754_982_000,
         gpsAccuracyMeters: 5,
         gpsPositionNoiseMeters: 1.5,
+        gpsNoiseCorrelationSeconds: 60,
         gpsSpeedNoiseMps: 0.15,
         imuAccelNoiseG: 0.015,
         imuGyroNoiseRadPerSec: 0.01,

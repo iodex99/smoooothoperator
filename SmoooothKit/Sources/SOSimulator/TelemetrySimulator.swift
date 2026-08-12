@@ -56,12 +56,28 @@ public struct TelemetrySimulator: Sendable {
         for _ in 0..<4 {  // 400 m calibration straight
             route.append(route[route.count - 1].destination(bearingDegrees: heading, distanceMeters: 100))
         }
-        for segment in 0..<18 {
-            let turn = segment % 4 == 3
-                ? Double.random(in: -5...5, using: &rng)          // breather straight
-                : Double.random(in: -38...38, using: &rng)         // real corner
+        // Two hairpin clusters (consecutive short, sharp segments) make the
+        // course demand real braking — a course with only sweepers never
+        // separates smooth from aggressive drivers.
+        let hairpinSegments: Set<Int> = [5, 6, 7, 12, 13, 14]
+        var hairpinSign = 1.0
+        for segment in 0..<20 {
+            let turn: Double
+            let length: Double
+            if hairpinSegments.contains(segment) {
+                if segment == 5 || segment == 12 {  // new cluster: pick a direction
+                    hairpinSign = Bool.random(using: &rng) ? 1 : -1
+                }
+                turn = hairpinSign * Double.random(in: 42...55, using: &rng)
+                length = Double.random(in: 50...70, using: &rng)
+            } else if segment % 4 == 3 {
+                turn = Double.random(in: -5...5, using: &rng)      // breather straight
+                length = Double.random(in: 150...300, using: &rng)
+            } else {
+                turn = Double.random(in: -38...38, using: &rng)    // sweeper
+                length = Double.random(in: 120...350, using: &rng)
+            }
             heading += turn
-            let length = Double.random(in: 120...350, using: &rng)
             route.append(route[route.count - 1].destination(bearingDegrees: heading, distanceMeters: length))
         }
         return route
@@ -111,6 +127,13 @@ public struct TelemetrySimulator: Sendable {
         var fixFractions: [Double] = []   // path progress per emitted fix (injector input)
         var fixHeadings: [Double] = []
 
+        // Ornstein–Uhlenbeck position-error walk (see SimulationConfig).
+        let fixInterval = 1 / config.gpsHz
+        let pull = min(1, fixInterval / config.gpsNoiseCorrelationSeconds)
+        let stepSigma = config.gpsPositionNoiseMeters * (2 * pull).squareRoot()
+        var biasNorth = 0.0
+        var biasEast = 0.0
+
         for (index, state) in states.enumerated() {
             let timestamp = config.startTimestamp + config.stationaryLeadSeconds + state.time
 
@@ -147,11 +170,9 @@ public struct TelemetrySimulator: Sendable {
             }
             var coordinate = path.coordinate(at: state.distance)
             if !mock {
-                coordinate = Self.offset(
-                    coordinate,
-                    north: noise.next(sigma: config.gpsPositionNoiseMeters),
-                    east: noise.next(sigma: config.gpsPositionNoiseMeters)
-                )
+                biasNorth += -biasNorth * pull + noise.next(sigma: stepSigma)
+                biasEast += -biasEast * pull + noise.next(sigma: stepSigma)
+                coordinate = Self.offset(coordinate, north: biasNorth, east: biasEast)
             }
             let speed = mock ? state.speed : max(0, state.speed + noise.next(sigma: config.gpsSpeedNoiseMps))
             let accuracy = mock

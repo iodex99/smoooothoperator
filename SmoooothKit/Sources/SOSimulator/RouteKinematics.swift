@@ -178,8 +178,33 @@ struct GroundTruthIntegrator: Sendable {
         var a = 0.0
         var t = 0.0
 
+        // How far ahead this driver looks: reaction lag, plus the time the
+        // jerk limit needs to build full braking, plus the full braking
+        // maneuver itself — a horizon that only covers part of the brake
+        // zone means arriving at corners too fast.
+        let lookaheadSeconds = followTau
+            + dynamics.maxBrakeMps2 / max(dynamics.jerkLimitMps3, 0.1)
+            + dynamics.vMaxMps / dynamics.maxBrakeMps2
+
+        // Time to build full braking against the jerk limit; the distance
+        // covered during that build-up is unavailable for slowing down.
+        let jerkBuildupSeconds = dynamics.maxBrakeMps2 / max(dynamics.jerkLimitMps3, 0.1)
+
         while s < path.totalDistance - 0.5 && t < 3600 {
-            let target = targetSpeed(at: s, plan: plan)
+            // Anticipatory target: the speed that still allows slowing to the
+            // plan at every sampled point within the lookahead horizon,
+            // accounting for the jerk build-up dead distance (0.85 margin
+            // leaves the follower room to track the ramp).
+            var target = targetSpeed(at: s, plan: plan)
+            let horizon = max(v, 1) * lookaheadSeconds
+            let deadDistance = v * jerkBuildupSeconds
+            for step in 1...8 {
+                let ahead = Double(step) / 8 * horizon
+                let planned = targetSpeed(at: s + ahead, plan: plan)
+                let brakingRoom = max(0, ahead - deadDistance)
+                let allowable = (planned * planned + 2 * dynamics.maxBrakeMps2 * 0.85 * brakingRoom).squareRoot()
+                target = min(target, allowable)
+            }
             let error = target - v
             var desired = error / followTau
             if dynamics.oscillationMps2 > 0 && v > 1 {

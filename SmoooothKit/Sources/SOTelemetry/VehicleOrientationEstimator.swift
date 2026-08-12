@@ -26,9 +26,15 @@ public struct OrientationConfig: Codable, Sendable, Equatable {
     /// gravity direction (and thus the up axis) is trusted.
     public var minStationaryDurationSeconds: Double
 
-    /// Minimum |dv/dt| between consecutive GPS speeds, in m/s², for the
-    /// window between those fixes to count as straight-line acceleration.
+    /// Minimum |dv/dt| across an acceleration window, in m/s², for it to
+    /// count as straight-line acceleration.
     public var minAccelerationMps2: Double
+
+    /// Minimum span of an acceleration window, in seconds. Windows are
+    /// anchored (non-overlapping): dv/dt measured across ≥ this span, never
+    /// between consecutive high-rate fixes — at 10 Hz, per-fix speed noise
+    /// would make consecutive-fix dv/dt sign-flip and cancel the evidence.
+    public var accelerationWindowSeconds: Double
 
     /// Maximum |yaw rate| about the estimated up axis, in rad/s, anywhere
     /// inside an acceleration window; above this the whole window is
@@ -57,6 +63,7 @@ public struct OrientationConfig: Codable, Sendable, Equatable {
         quasiStaticDebounceSeconds: Double,
         minStationaryDurationSeconds: Double,
         minAccelerationMps2: Double,
+        accelerationWindowSeconds: Double,
         maxYawRateRadPerSec: Double,
         maxGPSGapSeconds: Double,
         minForwardEvidenceGSeconds: Double,
@@ -68,6 +75,7 @@ public struct OrientationConfig: Codable, Sendable, Equatable {
         self.quasiStaticDebounceSeconds = quasiStaticDebounceSeconds
         self.minStationaryDurationSeconds = minStationaryDurationSeconds
         self.minAccelerationMps2 = minAccelerationMps2
+        self.accelerationWindowSeconds = accelerationWindowSeconds
         self.maxYawRateRadPerSec = maxYawRateRadPerSec
         self.maxGPSGapSeconds = maxGPSGapSeconds
         self.minForwardEvidenceGSeconds = minForwardEvidenceGSeconds
@@ -83,6 +91,7 @@ public struct OrientationConfig: Codable, Sendable, Equatable {
         quasiStaticDebounceSeconds: 0.05,
         minStationaryDurationSeconds: 1.0,
         minAccelerationMps2: 0.8,
+        accelerationWindowSeconds: 0.8,
         maxYawRateRadPerSec: 0.15,
         maxGPSGapSeconds: 3.0,
         minForwardEvidenceGSeconds: 0.5,
@@ -166,7 +175,9 @@ public struct VehicleOrientationEstimator: Sendable {
     }
 
     private var pending: [PendingSample] = []
-    private var lastGPSFix: (timestamp: Double, speedMps: Double)?
+    /// Start of the current acceleration window; advances only when a window
+    /// completes or the GPS stream gaps out (windows never overlap).
+    private var anchorFix: (timestamp: Double, speedMps: Double)?
     /// Vector sum of sign(dv/dt)-corrected horizontal acceleration, g·s.
     private var accumulatedForward: Vector3 = .zero
     /// Scalar sum of horizontal acceleration norms, g·s (consistency denominator).
@@ -222,23 +233,31 @@ public struct VehicleOrientationEstimator: Sendable {
     /// missing/negative speed are ignored (invalid per platform convention).
     public mutating func ingest(gps: GPSSample) {
         guard gps.horizontalAccuracy >= 0, let speed = gps.speed, speed >= 0 else { return }
-        guard let last = lastGPSFix else {
-            lastGPSFix = (gps.timestamp, speed)
+        guard let anchor = anchorFix else {
+            anchorFix = (gps.timestamp, speed)
             discardPending(upTo: gps.timestamp)
             return
         }
-        let dtGPS = gps.timestamp - last.timestamp
-        guard dtGPS > 0 else { return }   // out-of-order or duplicate fix
+        let span = gps.timestamp - anchor.timestamp
+        guard span > 0 else { return }   // out-of-order or duplicate fix
+        if span > config.maxGPSGapSeconds {
+            // Stream gapped out; restart the window here.
+            anchorFix = (gps.timestamp, speed)
+            discardPending(upTo: gps.timestamp)
+            return
+        }
+        // Keep accumulating until the window is long enough for dv/dt to
+        // rise above per-fix speed noise.
+        guard span >= config.accelerationWindowSeconds else { return }
         defer {
-            lastGPSFix = (gps.timestamp, speed)
+            anchorFix = (gps.timestamp, speed)
             discardPending(upTo: gps.timestamp)
         }
-        guard dtGPS <= config.maxGPSGapSeconds else { return }
 
-        let dvdt = (speed - last.speedMps) / dtGPS
+        let dvdt = (speed - anchor.speedMps) / span
         guard abs(dvdt) >= config.minAccelerationMps2, let up = upFromGravity else { return }
 
-        let window = pending.filter { $0.timestamp > last.timestamp && $0.timestamp <= gps.timestamp }
+        let window = pending.filter { $0.timestamp > anchor.timestamp && $0.timestamp <= gps.timestamp }
         guard !window.isEmpty,
               window.allSatisfy({ abs($0.gyro.dot(up)) <= config.maxYawRateRadPerSec })
         else { return }
