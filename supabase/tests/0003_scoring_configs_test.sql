@@ -11,15 +11,18 @@ select ok(
     'RLS is enabled on scoring_configs'
 );
 
--- Fixtures (as superuser — represents the service role path).
+-- Fixtures (as superuser — represents the service role path). The local
+-- seed ships an active 1.0.0 row; park it so this test owns "active".
+update public.scoring_configs set active = false;
+
 insert into public.scoring_configs (version, config, active)
 values
-    ('1.0.0', '{"weights": {"paceBps": 3500}}', false),
-    ('1.1.0', '{"weights": {"paceBps": 3500}}', true);
+    ('9.0.0', '{"weights": {"paceBps": 3500}}', false),
+    ('9.1.0', '{"weights": {"paceBps": 3500}}', true);
 
 select throws_ok(
     $$ insert into public.scoring_configs (version, config, active)
-       values ('1.2.0', '{}', true) $$,
+       values ('9.2.0', '{}', true) $$,
     '23505',
     null,
     'only one config can be active at a time'
@@ -38,7 +41,7 @@ select set_config('request.jwt.claims', '{"role": "anon"}', true);
 set local role anon;
 
 select is(
-    (select count(*)::int from public.scoring_configs),
+    (select count(*)::int from public.scoring_configs where version like '9.%'),
     2,
     'anon can read scoring configs'
 );
@@ -60,12 +63,12 @@ set local role authenticated;
 
 select is(
     (select version from public.scoring_configs where active),
-    '1.1.0',
+    '9.1.0',
     'authenticated can read the active config'
 );
 
 select throws_ok(
-    $$ update public.scoring_configs set active = false where version = '1.1.0' $$,
+    $$ update public.scoring_configs set active = false where version = '9.1.0' $$,
     '42501',
     null,
     'authenticated cannot modify scoring configs'
