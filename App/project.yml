@@ -1,0 +1,75 @@
+# XcodeGen manifest — the entire iOS project definition lives in this file.
+# On a Mac: `brew install xcodegen && xcodegen generate` (the .xcodeproj is
+# gitignored). Authored on Linux; see docs/IOS-NOTES.md for the first-Mac
+# session checklist.
+name: SmoooothOperator
+
+options:
+  bundleIdPrefix: app.smooooth
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  xcodeVersion: "16.0"
+
+packages:
+  SmoooothKit:
+    path: ../SmoooothKit
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    TARGETED_DEVICE_FAMILY: "1"        # iPhone only in V1
+    CURRENT_PROJECT_VERSION: 1
+    MARKETING_VERSION: 0.1.0
+
+targets:
+  SmoooothOperator:
+    type: application
+    platform: iOS
+    sources:
+      - Sources
+    dependencies:
+      - package: SmoooothKit
+        product: SmoooothKit
+    entitlements:
+      path: Configs/SmoooothOperator.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.smooooth.operator
+        INFOPLIST_KEY_UIUserInterfaceStyle: Dark   # dark mode is the primary experience (spec §12)
+    info:
+      path: Configs/Info.plist
+      properties:
+        CFBundleDisplayName: Smooooth Operator
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        ITSAppUsesNonExemptEncryption: false
+        # Background location is used ONLY during an active challenge run.
+        UIBackgroundModes:
+          - location
+        NSLocationWhenInUseUsageDescription: >-
+          Smooooth Operator uses your location during a challenge to verify
+          your run on the course and score your drive. Location is never
+          tracked outside an active challenge.
+        NSLocationAlwaysAndWhenInUseUsageDescription: >-
+          Smooooth Operator keeps recording your active challenge if you lock
+          the screen or switch apps, so your run isn't lost. Location is never
+          tracked outside an active challenge.
+        NSMotionUsageDescription: >-
+          Motion sensors measure how smoothly you accelerate, brake and corner
+          during a challenge. This is the core of your driving score.
+
+schemes:
+  SmoooothOperator:
+    build:
+      targets:
+        SmoooothOperator: all
+    run:
+      config: Debug
+      storeKitConfiguration: Configs/Products.storekit
+    test:
+      config: Debug
+    archive:
+      config: Release
