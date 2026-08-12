@@ -32,10 +32,13 @@ let package = Package(
         .target(name: "SOModels", dependencies: ["SOCore"]),
         .target(name: "SOTelemetry", dependencies: ["SOModels"]),
         .target(name: "SOCourse", dependencies: ["SOModels", "SOTelemetry"]),
-        .target(name: "SOScoring", dependencies: ["SOTelemetry", "SOCourse"]),
+        .target(name: "SOScoring", dependencies: ["SOTelemetry", "SOCourse", "SOIntegrity"]),
         .target(name: "SOIntegrity", dependencies: ["SOModels", "SOTelemetry"]),
         .target(name: "SOGhost", dependencies: ["SOTelemetry", "SOCourse"]),
-        .target(name: "SOSync", dependencies: ["SOModels"]),
+        .target(
+            name: "SOSync",
+            dependencies: ["SOModels", "SOTelemetry", "SOCourse", "SOScoring", "SOIntegrity", "SOGhost"]
+        ),
         .target(
             name: "SOSimulator",
             dependencies: ["SOTelemetry", "SOCourse", "SOScoring", "SOIntegrity", "SOGhost"]
@@ -52,7 +55,7 @@ let package = Package(
         .testTarget(name: "SOScoringTests", dependencies: ["SOScoring"]),
         .testTarget(name: "SOIntegrityTests", dependencies: ["SOIntegrity"]),
         .testTarget(name: "SOGhostTests", dependencies: ["SOGhost"]),
-        .testTarget(name: "SOSyncTests", dependencies: ["SOSync"]),
+        .testTarget(name: "SOSyncTests", dependencies: ["SOSync", "SOSimulator"]),
         .testTarget(name: "SOSimulatorTests", dependencies: ["SOSimulator"]),
     ]
 )
