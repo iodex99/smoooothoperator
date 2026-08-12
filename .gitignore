@@ -1,0 +1,26 @@
+# Swift / SwiftPM
+.build/
+.swiftpm/
+*.xcodeproj
+*.xcworkspace
+DerivedData/
+
+# macOS
+.DS_Store
+
+# Node / Deno
+node_modules/
+
+# Supabase local state
+supabase/.temp/
+supabase/.branches/
+
+# Secrets — never commit
+.env
+.env.*
+*.pem
+*.p8
+
+# Logs & scratch
+*.log
+.scratch/
