@@ -49,10 +49,10 @@ struct DemoTourView: View {
         }
         .task {
             for tab in 1...3 {
-                try? await Task.sleep(for: .seconds(5))
+                try? await Task.sleep(for: .seconds(6))
                 selection = tab
             }
-            try? await Task.sleep(for: .seconds(5))
+            try? await Task.sleep(for: .seconds(6))
             showDrive = true
         }
     }

@@ -23,11 +23,17 @@ enum MockSensorFeed {
                     continuation.finish()
                     return
                 }
-                let start = first.timestamp
+                // Chunked pacing: one sleep per ~50ms of wall time, then a
+                // burst of events. Per-event sleeps drown in the simulator's
+                // timer coalescing (~10ms each × 15k events = minutes).
+                var flushedAt = first.timestamp
                 for event in events {
                     if Task.isCancelled { break }
-                    let delay = (event.timestamp - start) / speedup
-                    try? await Task.sleep(nanoseconds: UInt64(max(0, delay) * 1e9))
+                    let wallDelay = (event.timestamp - flushedAt) / speedup
+                    if wallDelay >= 0.05 {
+                        try? await Task.sleep(nanoseconds: UInt64(wallDelay * 1e9))
+                        flushedAt = event.timestamp
+                    }
                     continuation.yield(event)
                 }
                 continuation.finish()
