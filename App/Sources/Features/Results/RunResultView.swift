@@ -187,8 +187,9 @@ struct ScoreBarRow: View {
             Text("\(bps / 100).\(bps % 100 / 10)")
                 .font(.system(.subheadline, design: .rounded).weight(.heavy))
                 .monospacedDigit()
+                .lineLimit(1)
                 .foregroundStyle(.white)
-                .frame(width: 44, alignment: .trailing)
+                .frame(width: 52, alignment: .trailing)
         }
     }
 }

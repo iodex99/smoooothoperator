@@ -199,7 +199,7 @@ final class HomeModel {
         todaysChallenge = Challenge(
             courseId: "demo",
             name: "Malibu #042",
-            distanceText: Measurement(value: 20.6, unit: UnitLength.kilometers)
+            distanceText: Measurement(value: 4.3, unit: UnitLength.kilometers)
                 .formatted(.measurement(width: .abbreviated)),
             difficulty: 4,
             turnCount: 23,
