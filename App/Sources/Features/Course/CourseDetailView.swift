@@ -8,6 +8,9 @@ import SwiftUI
 /// no per-open routing calls (spec §90).
 struct CourseDetailView: View {
     let courseId: String
+    /// Server-fetched course handed over by the caller (Today's Challenge
+    /// arrives fully drive-ready) — skips a second fetch.
+    var preloaded: CourseDetailModel.Course? = nil
 
     @State private var model = CourseDetailModel()
 
@@ -93,7 +96,7 @@ struct CourseDetailView: View {
         .background(SOTheme.ground)
         .navigationTitle(model.course?.name ?? "")
         .navigationBarTitleDisplayMode(.inline)
-        .task { await model.load(courseId: courseId) }
+        .task { await model.load(courseId: courseId, preloaded: preloaded) }
     }
 }
 
@@ -166,9 +169,13 @@ final class CourseDetailModel {
 
     var course: Course?
 
-    func load(courseId: String) async {
-        // Server fetch lands with device wiring; the demo course keeps the
-        // full drive loop usable in mock mode today.
+    func load(courseId: String, preloaded: Course? = nil) async {
+        if let preloaded {
+            course = preloaded
+            return
+        }
+        // Standalone server fetch lands with device wiring; the demo course
+        // keeps the full drive loop usable in mock mode today.
         #if DEBUG
         if courseId == "demo" {
             let route = DemoCourse.route

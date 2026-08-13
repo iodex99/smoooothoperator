@@ -1,9 +1,13 @@
 import SOCore
+import SOCourse
 import SwiftUI
 
 /// Competition first (spec §§14, 53): today's challenge hero, friend
-/// challenges, nearby — never an analytics dashboard.
+/// challenges, nearby — never an analytics dashboard. The hero is assigned
+/// dynamically by the server from courses near the user (directive
+/// 2026-08-13); the client just asks and renders.
 struct HomeView: View {
+    @Environment(AppEnvironment.self) private var environment
     @State private var model = HomeModel()
 
     var body: some View {
@@ -22,11 +26,15 @@ struct HomeView: View {
                     }
                     .padding(.top, 8)
 
-                    if let challenge = model.todaysChallenge {
-                        TodaysChallengeCard(challenge: challenge)
-                    } else {
+                    switch model.state {
+                    case .loading:
                         ProgressView()
+                            .tint(SOTheme.heatStart)
                             .frame(maxWidth: .infinity, minHeight: 260)
+                    case .ready(let challenge):
+                        TodaysChallengeCard(challenge: challenge)
+                    case .empty(let message):
+                        ChallengeEmptyCard(message: message)
                     }
 
                     SectionHeader(title: "Friend challenges")
@@ -52,7 +60,8 @@ struct HomeView: View {
             }
             .background(SOTheme.ground)
             .toolbar(.hidden, for: .navigationBar)
-            .task { await model.load() }
+            .task { await model.load(api: environment.api) }
+            .refreshable { await model.load(api: environment.api) }
         }
     }
 }
@@ -63,7 +72,7 @@ struct TodaysChallengeCard: View {
 
     var body: some View {
         NavigationLink {
-            CourseDetailView(courseId: challenge.courseId)
+            CourseDetailView(courseId: challenge.courseId, preloaded: challenge.detail)
         } label: {
             VStack(alignment: .leading, spacing: 14) {
                 HStack {
@@ -80,9 +89,19 @@ struct TodaysChallengeCard: View {
                         .foregroundStyle(SOTheme.heatEnd)
                 }
 
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(challenge.formatTitle.uppercased())
+                        .font(.system(.subheadline, design: .rounded).weight(.black))
+                        .tracking(1.2)
+                        .foregroundStyle(SOTheme.heat)
+                    Text(challenge.tagline)
+                        .font(.caption)
+                        .foregroundStyle(SOTheme.textSecondary)
+                }
+
                 if let route = challenge.route {
                     RoutePreview(route: route)
-                        .frame(height: 128)
+                        .frame(height: 118)
                 }
 
                 Text(challenge.name)
@@ -91,20 +110,50 @@ struct TodaysChallengeCard: View {
 
                 HStack(spacing: 8) {
                     SOChip(icon: "road.lanes", text: challenge.distanceText)
-                    SOChip(icon: "arrow.triangle.turn.up.right.diamond", text: "\(challenge.turnCount) turns")
+                    if let duration = challenge.durationText {
+                        SOChip(icon: "timer", text: duration)
+                    }
+                    if challenge.participantsToday > 0 {
+                        SOChip(icon: "person.2", text: "\(challenge.participantsToday) today")
+                    }
                     Spacer()
                 }
 
                 HStack(alignment: .center) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("YOUR BEST")
-                            .font(.caption2.weight(.bold))
-                            .tracking(1)
-                            .foregroundStyle(SOTheme.textSecondary)
-                        Text(challenge.yourBest.map(String.init) ?? "—")
-                            .font(.system(.title3, design: .rounded).weight(.heavy))
-                            .monospacedDigit()
-                            .foregroundStyle(.white)
+                    if challenge.firstRecord {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("FIRST RECORD")
+                                .font(.caption2.weight(.bold))
+                                .tracking(1)
+                                .foregroundStyle(SOTheme.textSecondary)
+                            Text("Set the benchmark")
+                                .font(.system(.subheadline, design: .rounded).weight(.heavy))
+                                .foregroundStyle(SOTheme.verified)
+                        }
+                    } else {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("YOUR BEST")
+                                .font(.caption2.weight(.bold))
+                                .tracking(1)
+                                .foregroundStyle(SOTheme.textSecondary)
+                            Text(challenge.yourBest.map { "\($0)" } ?? "—")
+                                .font(.system(.title3, design: .rounded).weight(.heavy))
+                                .monospacedDigit()
+                                .foregroundStyle(.white)
+                        }
+                        if let friend = challenge.friendBest {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(friend.username.uppercased())
+                                    .font(.caption2.weight(.bold))
+                                    .tracking(1)
+                                    .foregroundStyle(SOTheme.textSecondary)
+                                Text("\(friend.score)")
+                                    .font(.system(.title3, design: .rounded).weight(.heavy))
+                                    .monospacedDigit()
+                                    .foregroundStyle(SOTheme.heatEnd)
+                            }
+                            .padding(.leading, 18)
+                        }
                     }
                     Spacer()
                     Text("DRIVE")
@@ -136,6 +185,40 @@ struct TodaysChallengeCard: View {
             )
         }
         .buttonStyle(.plain)
+    }
+}
+
+/// Honest no-challenge states (directive §§20-21): coming-soon areas and
+/// missing location — never a fabricated challenge.
+struct ChallengeEmptyCard: View {
+    let message: String
+
+    var body: some View {
+        VStack(spacing: 14) {
+            ZStack {
+                GlowRing(progress: 1, lineWidth: 5)
+                    .frame(width: 74, height: 74)
+                Image(systemName: "flag.checkered")
+                    .font(.system(size: 26))
+                    .foregroundStyle(SOTheme.heat)
+            }
+            Text("TODAY'S CHALLENGE")
+                .font(.caption.weight(.black))
+                .tracking(1.6)
+                .foregroundStyle(SOTheme.heatStart)
+            Text(message)
+                .font(.subheadline)
+                .foregroundStyle(SOTheme.textSecondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 34)
+        .padding(.horizontal, 18)
+        .background(SOTheme.surface, in: RoundedRectangle(cornerRadius: 24))
+        .overlay(
+            RoundedRectangle(cornerRadius: 24)
+                .strokeBorder(SOTheme.hairline, lineWidth: 1)
+        )
     }
 }
 
@@ -173,11 +256,18 @@ final class HomeModel {
         var id: String { courseId }
         var courseId: String
         var name: String
+        var formatTitle: String
+        var tagline: String
         var distanceText: String
+        var durationText: String?
         var difficulty: Int
-        var turnCount: Int
+        var participantsToday: Int
         var yourBest: Int?
+        var friendBest: (score: Int, username: String)?
+        var firstRecord: Bool
         var route: [GeoCoordinate]?
+        /// Drive-ready handoff for the course screen.
+        var detail: CourseDetailModel.Course?
     }
 
     struct FriendChallenge: Identifiable {
@@ -186,25 +276,152 @@ final class HomeModel {
         var score: Int
     }
 
-    var todaysChallenge: Challenge?
+    enum State {
+        case loading
+        case ready(Challenge)
+        case empty(String)
+    }
+
+    var state: State = .loading
     var friendChallenges: [FriendChallenge] = []
 
-    func load() async {
-        // Server-driven home feed lands with the API wiring on device;
-        // placeholder keeps the screen structurally real.
+    func load(api: SupabaseAPI?) async {
+        guard let api else {
+            loadDemo()
+            return
+        }
+        do {
+            let location = LastKnownLocation.coordinate()
+            let data = try await api.invokeTodayChallenge(
+                latitude: location?.latitude,
+                longitude: location?.longitude,
+                timezone: TimeZone.current.identifier
+            )
+            let payload = try JSONDecoder().decode(TodayChallengePayload.self, from: data)
+            apply(payload)
+        } catch {
+            state = .empty("Today's Challenge couldn't load. Pull to retry.")
+        }
+    }
+
+    private func apply(_ payload: TodayChallengePayload) {
+        guard payload.state == "ready", let course = payload.course else {
+            state = .empty(payload.message ?? "Today's Challenge is coming to your area.")
+            return
+        }
+        // GeoJSON order is [lon, lat].
+        let route = course.polyline.compactMap { pair -> GeoCoordinate? in
+            guard pair.count >= 2 else { return nil }
+            return GeoCoordinate(latitude: pair[1], longitude: pair[0])
+        }
+        let gates = course.gates.map {
+            Checkpoint(
+                sequence: $0.sequence,
+                center: GeoCoordinate(latitude: $0.latitude, longitude: $0.longitude),
+                radiusMeters: $0.radiusMeters
+            )
+        }
+        let durationSeconds = course.estimatedDurationSeconds ?? course.benchmarkSeconds
+        state = .ready(Challenge(
+            courseId: course.id,
+            name: course.name,
+            formatTitle: payload.format?.title ?? "Smooth Sprint",
+            tagline: payload.format?.tagline ?? "Find your fastest smooth drive.",
+            distanceText: Measurement(value: course.distanceMeters, unit: UnitLength.meters)
+                .converted(to: .kilometers)
+                .formatted(.measurement(width: .abbreviated)),
+            durationText: durationSeconds.map { "~\(Int((Double($0) / 60).rounded())) min" },
+            difficulty: course.difficulty,
+            participantsToday: payload.participantsToday ?? 0,
+            yourBest: payload.yourBest,
+            friendBest: payload.friendBest.map { ($0.score, $0.username) },
+            firstRecord: payload.firstRecord ?? false,
+            route: route,
+            detail: CourseDetailModel.Course(
+                name: course.name,
+                polyline: route,
+                gates: gates,
+                distanceText: Measurement(value: course.distanceMeters, unit: UnitLength.meters)
+                    .converted(to: .kilometers)
+                    .formatted(.measurement(width: .abbreviated)),
+                difficulty: course.difficulty,
+                turnCount: course.turnCount,
+                drivers: payload.participantsToday ?? 0,
+                benchmarkSeconds: course.benchmarkSeconds.map(Double.init)
+            )
+        ))
+    }
+
+    /// Offline/demo mode (no server configured): the bundled demo course,
+    /// honestly labeled — no participants, first record open.
+    private func loadDemo() {
         var route: [GeoCoordinate]?
+        var detail: CourseDetailModel.Course?
         #if DEBUG
         route = DemoCourse.route
+        detail = nil // CourseDetailModel resolves "demo" itself
         #endif
-        todaysChallenge = Challenge(
+        state = .ready(Challenge(
             courseId: "demo",
             name: "Malibu #042",
+            formatTitle: "Smooth Sprint",
+            tagline: "Find your fastest smooth drive.",
             distanceText: Measurement(value: 4.3, unit: UnitLength.kilometers)
                 .formatted(.measurement(width: .abbreviated)),
+            durationText: "~5 min",
             difficulty: 4,
-            turnCount: 23,
+            participantsToday: 0,
             yourBest: nil,
-            route: route
-        )
+            friendBest: nil,
+            firstRecord: true,
+            route: route,
+            detail: detail
+        ))
+    }
+}
+
+/// Wire shape of the today-challenge edge function response.
+struct TodayChallengePayload: Decodable {
+    var state: String
+    var localDate: String?
+    var format: Format?
+    var course: Course?
+    var yourBest: Int?
+    var friendBest: FriendBest?
+    var participantsToday: Int?
+    var firstRecord: Bool?
+    var radiusKm: Int?
+    var message: String?
+
+    struct Format: Decodable {
+        var key: String
+        var title: String
+        var tagline: String
+    }
+
+    struct FriendBest: Decodable {
+        var score: Int
+        var username: String
+    }
+
+    struct Course: Decodable {
+        var id: String
+        var name: String
+        var city: String?
+        var country: String?
+        var distanceMeters: Double
+        var estimatedDurationSeconds: Int?
+        var difficulty: Int
+        var turnCount: Int
+        var benchmarkSeconds: Int?
+        var polyline: [[Double]]
+        var gates: [Gate]
+
+        struct Gate: Decodable {
+            var sequence: Int
+            var latitude: Double
+            var longitude: Double
+            var radiusMeters: Double
+        }
     }
 }

@@ -135,6 +135,25 @@ actor SupabaseAPI {
         )
     }
 
+    /// Today's Challenge (directive 2026-08-13): the server locates, ranks
+    /// and assigns the user's local course for the day.
+    func invokeTodayChallenge(
+        latitude: Double?,
+        longitude: Double?,
+        timezone: String
+    ) async throws -> Data {
+        var body: [String: Any] = ["timezone": timezone]
+        if let latitude, let longitude {
+            body["latitude"] = latitude
+            body["longitude"] = longitude
+        }
+        return try await send(
+            path: "functions/v1/today-challenge",
+            method: "POST",
+            body: try JSONSerialization.data(withJSONObject: body)
+        )
+    }
+
     // MARK: - Core request
 
     private func send(
