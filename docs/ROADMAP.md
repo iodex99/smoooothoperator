@@ -22,12 +22,22 @@ sharing → subscriptions. UI is authored alongside but never blocks engine work
 | **L8 Custom courses** | validate-course edge fn, shared rejection fixtures | ✅ done (2026-08-12) |
 | **L9 Sharing** | Challenge codes, resolve-challenge (anon-safe), AASA content | ✅ done (2026-08-12) |
 | **M1–M5 iOS layer** | project.yml/entitlements/.storekit + adapters + DriveSession binding + feature views + StoreKit + mock mode | ✅ authored, parse-gated (2026-08-12) |
-| **M-final Mac session** | xcodegen, compile fixes, device sanity, StoreKit sandbox, TestFlight | ⚪ pending (needs a Mac) |
+| **M-final Mac session** | ~~compile fixes~~ ✅ compiles + boots in Simulator on CI Mac (2026-08-13); remaining: device sensor truth, StoreKit sandbox, TestFlight | 🟡 CI-verified |
 
 **Definition of done for every phase:** `make test` green (Kit + pgTAP + Deno +
 syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
+
+### 2026-08-13 — The app runs: CI Mac builds, boots, and screenshots it
+- One compile error existed across the entire blind-authored iOS layer
+  (SensorFeed @Sendable capture). After the fix: xcodegen ✅ build ✅
+  simulator install/launch ✅ — screenshot artifact shows the spec §77
+  DRIVE SAFE gate rendering correctly in dark mode.
+- Workflow accepts `main:ios-build` pushes (Codespace tokens can't
+  dispatch); each run uploads simulator screenshots. Remaining untestable
+  without hardware: real GPS/IMU truth, StoreKit sandbox, TestFlight.
+
 
 ### 2026-08-13 — Catalog doubled for revenue markets: 397 courses / 30 countries
 - Doubling directive applied: US 53→106, GB 20→40, AU 17→33, DE 11→23,

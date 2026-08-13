@@ -6,7 +6,14 @@
 ## Why this file exists
 
 The iOS layer (`App/`) is authored on Linux where it cannot be compiled.
-Expect compile errors on first Mac open — that is planned, not failure.
+**Status 2026-08-13: the app COMPILES, INSTALLS, LAUNCHES and renders in
+the iOS Simulator on the CI Mac** (ios-nightly workflow: xcodegen → build →
+simctl boot/install/launch → screenshot artifact). Across 17 blind-authored
+files, exactly one compile error existed (SensorFeed Sendable). Trigger a
+cycle with `git push origin main:ios-build`; screenshots land as run
+artifacts. The user owns no Apple hardware — CI Macs are the only window,
+and real-device sensor truth (one physical iPhone drive) remains the
+launch-blocking gap no simulation can close.
 The Kit (`SmoooothKit/`) is fully tested; keep fixes in the thin adapter/UI
 layer and **never move logic out of the Kit to work around an error**.
 
