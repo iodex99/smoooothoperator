@@ -135,7 +135,10 @@ Deno.test({
           latest_transaction_id: `e2e-${crypto.randomUUID()}`,
           status: "active",
           expires_at: new Date(Date.now() + 86_400_000).toISOString(),
-          environment: "sandbox",
+          // Must be production: has_active_pro deliberately refuses sandbox
+          // rows so a TestFlight subscription can't grant production Pro
+          // (migration 0015).
+          environment: "production",
         }),
       }),
       "subscription insert",
