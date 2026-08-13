@@ -9,10 +9,21 @@ struct SmoooothOperatorApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView()
-                .environment(environment)
-                .preferredColorScheme(.dark)
-                .task { await environment.loadScoringConfig() }
+            Group {
+                #if DEBUG
+                if DemoTourView.isRequested {
+                    DemoTourView()
+                        .onAppear { environment.hasAcknowledgedSafety = true }
+                } else {
+                    RootView()
+                }
+                #else
+                RootView()
+                #endif
+            }
+            .environment(environment)
+            .preferredColorScheme(.dark)
+            .task { await environment.loadScoringConfig() }
         }
     }
 }

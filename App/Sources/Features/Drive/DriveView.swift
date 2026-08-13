@@ -2,6 +2,7 @@ import SOCore
 import SOCourse
 import SOGhost
 import SOSync
+import SOTelemetry
 import SwiftUI
 
 /// Pre-flight checks then the minimal driving screen (spec §§16-17):
@@ -15,6 +16,9 @@ struct DriveView: View {
     let benchmarkSeconds: Double
     let ghost: GhostTrajectory?
     let courseId: String
+    /// Injected sensor stream for development/simulator demos (mock mode,
+    /// spec §89); nil = real sensors.
+    var debugEvents: AsyncStream<SensorEvent>? = nil
 
     @State private var session: DriveSession?
     @State private var state: DriveSessionState = .idle
@@ -81,9 +85,11 @@ struct DriveView: View {
             return
         }
         self.session = session
-        environment.sensors.requestPermissions()
+        if debugEvents == nil {
+            environment.sensors.requestPermissions()
+        }
         let states = await session.states()
-        await session.start(events: environment.sensors.start())
+        await session.start(events: debugEvents ?? environment.sensors.start())
         for await newState in states {
             state = newState
         }

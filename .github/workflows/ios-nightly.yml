@@ -43,19 +43,27 @@ jobs:
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO
 
-      - name: Launch app in simulator and screenshot
+      - name: Demo tour — capture the whole app
         run: |
           APP=$(find App/build/Build/Products -name "*.app" -maxdepth 2 | head -1)
           xcrun simctl install "${{ steps.sim.outputs.udid }}" "$APP"
+          mkdir -p shots
+          # First launch without the tour: the spec §77 safety gate.
           xcrun simctl launch "${{ steps.sim.outputs.udid }}" app.smooooth.operator
-          sleep 10
-          xcrun simctl io "${{ steps.sim.outputs.udid }}" screenshot launch-screen.png
-          xcrun simctl launch "${{ steps.sim.outputs.udid }}" app.smooooth.operator || true
+          sleep 8
+          xcrun simctl io "${{ steps.sim.outputs.udid }}" screenshot shots/00-safety-gate.png
+          xcrun simctl terminate "${{ steps.sim.outputs.udid }}" app.smooooth.operator || true
+          # Scripted tour: tabs, then a full mock drive to the result screen.
+          SIMCTL_CHILD_SMOOOOTH_DEMO_TOUR=1 xcrun simctl launch "${{ steps.sim.outputs.udid }}" app.smooooth.operator
+          for i in $(seq -w 1 40); do
+            sleep 2
+            xcrun simctl io "${{ steps.sim.outputs.udid }}" screenshot "shots/tour-$i.png" || true
+          done
 
       - name: Upload screenshot artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: simulator-screenshots
-          path: launch-screen.png
+          path: shots/
           if-no-files-found: ignore
