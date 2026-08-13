@@ -33,8 +33,12 @@ struct HomeView: View {
                             .frame(maxWidth: .infinity, minHeight: 260)
                     case .ready(let challenge):
                         TodaysChallengeCard(challenge: challenge)
-                    case .empty(let message):
-                        ChallengeEmptyCard(message: message)
+                    case .empty(let message, let needsLocation):
+                        ChallengeEmptyCard(
+                            message: message,
+                            needsLocation: needsLocation,
+                            onGranted: { Task { await model.load(api: environment.api) } }
+                        )
                     }
 
                     SectionHeader(title: "Friend challenges")
@@ -190,8 +194,15 @@ struct TodaysChallengeCard: View {
 
 /// Honest no-challenge states (directive §§20-21): coming-soon areas and
 /// missing location — never a fabricated challenge.
+///
+/// When the blocker is permission, this card must be able to FIX it. It
+/// previously said "Allow location and Today's Challenge finds your local
+/// course" with no button anywhere — a new user's hardest dead end.
 struct ChallengeEmptyCard: View {
+    @Environment(AppEnvironment.self) private var environment
     let message: String
+    var needsLocation = false
+    var onGranted: () -> Void = {}
 
     var body: some View {
         VStack(spacing: 14) {
@@ -210,6 +221,26 @@ struct ChallengeEmptyCard: View {
                 .font(.subheadline)
                 .foregroundStyle(SOTheme.textSecondary)
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if needsLocation {
+                Button("Allow location") {
+                    environment.sensors.requestPermissions()
+                    // The prompt is async; re-ask shortly after so the card
+                    // becomes the challenge without needing a manual refresh.
+                    Task {
+                        try? await Task.sleep(for: .seconds(2))
+                        onGranted()
+                    }
+                }
+                .buttonStyle(HeatButtonStyle())
+                .padding(.horizontal, 8)
+
+                Text("Used only during a challenge, never in the background.")
+                    .font(.caption2)
+                    .foregroundStyle(SOTheme.textSecondary)
+                    .multilineTextAlignment(.center)
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 34)
@@ -279,7 +310,8 @@ final class HomeModel {
     enum State {
         case loading
         case ready(Challenge)
-        case empty(String)
+        /// The Bool marks the one empty state the user can actually resolve.
+        case empty(String, needsLocation: Bool)
     }
 
     var state: State = .loading
@@ -299,14 +331,20 @@ final class HomeModel {
             )
             let payload = try JSONDecoder().decode(TodayChallengePayload.self, from: data)
             apply(payload)
+        } catch SupabaseAPI.APIError.notAuthenticated {
+            // Pulling to refresh can never fix this; say what will.
+            state = .empty("Sign in to get your daily challenge.", needsLocation: false)
         } catch {
-            state = .empty("Today's Challenge couldn't load. Pull to retry.")
+            state = .empty("Today's Challenge couldn't load. Pull to retry.", needsLocation: false)
         }
     }
 
     private func apply(_ payload: TodayChallengePayload) {
         guard payload.state == "ready", let course = payload.course else {
-            state = .empty(payload.message ?? "Today's Challenge is coming to your area.")
+            state = .empty(
+                payload.message ?? "Today's Challenge is coming to your area.",
+                needsLocation: payload.state == "unavailable"
+            )
             return
         }
         // GeoJSON order is [lon, lat].

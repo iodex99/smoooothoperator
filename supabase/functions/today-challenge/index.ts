@@ -320,9 +320,13 @@ async function liveExtras(
   );
   const yourBest = ((await bestResponse.json()) as { score: number }[])[0]?.score ?? null;
 
+  // Verified runs only — clients can insert run rows, so an unfiltered count
+  // is inflatable. Migration 0014 closed this on the cache-MISS path; this is
+  // the cache-hit path, which serves every request after the day's first.
   const participantsResponse = await rest(
     deps,
-    `runs?course_id=eq.${courseId}&created_at=gte.${dayStart.toISOString()}&select=user_id`,
+    `runs?course_id=eq.${courseId}&created_at=gte.${dayStart.toISOString()}`
+      + `&verification=eq.verified&select=user_id`,
   );
   const participantRows = (await participantsResponse.json()) as { user_id: string }[];
   const participantsToday = new Set(participantRows.map((r) => r.user_id)).size;

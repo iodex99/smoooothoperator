@@ -124,7 +124,7 @@ struct ProfileView: View {
                                     .font(.system(.headline, design: .rounded).weight(.black))
                                     .tracking(1)
                                     .foregroundStyle(.black)
-                                Text("Ghost racing · custom courses · analytics")
+                                Text("Unlimited challenges · ghost racing")
                                     .font(.caption.weight(.semibold))
                                     .foregroundStyle(.black.opacity(0.7))
                             }
@@ -164,6 +164,20 @@ struct ProfileView: View {
                             }
                             .buttonStyle(.plain)
                         }
+                        Divider().overlay(SOTheme.hairline)
+                        NavigationLink {
+                            EditProfileView()
+                        } label: {
+                            AccountRow(icon: "person.text.rectangle", title: "Your profile", showsChevron: true)
+                        }
+                        .buttonStyle(.plain)
+                        Divider().overlay(SOTheme.hairline)
+                        NavigationLink {
+                            AboutView()
+                        } label: {
+                            AccountRow(icon: "info.circle", title: "About", showsChevron: true)
+                        }
+                        .buttonStyle(.plain)
                         Divider().overlay(SOTheme.hairline)
                         NavigationLink {
                             PrivacySettingsView()

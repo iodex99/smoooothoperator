@@ -243,8 +243,14 @@ struct DriveView: View {
             "Run abandoned. Your data was not submitted."
         case let message where message.contains("stream ended"):
             "Your device stopped providing sensor data. This run can't be verified."
+        case "course geometry invalid":
+            "This course's route data is unusable. Please pick another course."
+        case "scoring configuration unavailable":
+            "Scoring rules couldn't be loaded. Check your connection and try again."
         default:
-            "This run couldn't be completed: \(reason)"
+            // Never show a raw internal token. Anything unrecognised gets
+            // human words; the code goes to the log, not the windscreen.
+            "This run couldn't be completed. Please try again."
         }
     }
 

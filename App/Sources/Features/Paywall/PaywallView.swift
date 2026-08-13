@@ -40,8 +40,8 @@ struct PaywallView: View {
                         text: "Unlimited daily challenges — the free tier allows \(DailyRunAllowance.freeRunsPerDay) runs a day"
                     )
                     Benefit(
-                        icon: "point.topleft.down.curvedto.point.bottomright.up",
-                        text: "Create custom courses and challenge friends"
+                        icon: "figure.wave",
+                        text: "Race any rival's ghost, on any course"
                     )
                     Benefit(
                         icon: "square.and.arrow.up",
