@@ -29,6 +29,39 @@ syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
 
+### 2026-08-13 — Third audit: payments, permissions, logins
+A dedicated review of the three areas the user named. Both definitive
+questions came back badly, and both are fixed:
+
+- **Money could never have reached the server.** The App Store webhook wrote
+  five columns; `user_id` and `latest_transaction_id` are NOT NULL and were
+  not among them, so every notification 500'd. Nothing linked an Apple
+  transaction to a user at all. Now: `appAccountToken` carries the user id,
+  migration 0015 allows unattributed rows plus a `claim_subscription` RPC
+  that can only take unowned rows, `has_active_pro` requires production +
+  a real expiry (sandbox granted production Pro; a null expiry granted
+  PERMANENT Pro), and Apple's TEST notification returns 200 so the URL can
+  be verified.
+- **The free tier was not enforceable** — UserDefaults only, reset by
+  reinstall or a clock change, checked nowhere on the server. `score-run`
+  now enforces it on a server-derived UTC day.
+- **Nobody could sign in**: `[auth.external.apple]` was `enabled = false`.
+  Apple enabled, Google configured, callback allow-listed.
+- Auth lifecycle: transient refresh failures no longer sign users out,
+  refresh is single-flight (concurrent 401s double-spent the token, which
+  rotation can treat as reuse and revoke the family), account deletion
+  clears session state, sign-out clears entitlement/run-count/queue badge.
+- **A queued run could upload to the wrong account** — one device, two
+  drivers. PendingRun now records its owner; the queue skips (never
+  deletes) other accounts' runs.
+- **The no-GPS watchdog I added yesterday was dead code** and the checklist
+  claimed "GPS locked" with zero fixes — the trapped-drive-screen bug
+  reintroduced through a different door. Fixed properly this time.
+- Built alongside: ghost pin on the drive map (needed a new engine inverse,
+  `progress(atElapsed:)`), Google sign-in with no SDK added, and a
+  rebuilt share card that no longer posts a raw UUID.
+- Added `PrivacyInfo.xcprivacy` (submission blocker since May 2024).
+
 ### 2026-08-13 — The last mile: sign-in, and the features that were missing
 - **Sign in with Apple** (the audit's #1 blocker). Hashed-nonce challenge,
   Keychain session (ThisDeviceOnly), token refresh with one retry on 401,

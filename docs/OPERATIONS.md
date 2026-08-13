@@ -64,7 +64,7 @@ Once enrolled, in the Apple Developer portal:
 1. Create a project at supabase.com. **Pick the region closest to your first users** — this is the single decision you can't easily change later.
 2. Settings → API gives you two values: the **Project URL** and the **anon key**. Both are public and safe in the app binary; row-level security is what protects data.
 3. There is also a **service role key**. It bypasses every security policy. It goes in Supabase's own edge-function secrets and *nowhere else* — never in the app, never in git, never in a message to me.
-4. Deploy what's already written: `supabase link --project-ref <ref>` then `supabase db push` (14 migrations) and `supabase functions deploy` (4 functions), then load the 397-course seed.
+4. Deploy what's already written: `supabase link --project-ref <ref>` then `supabase db push` (15 migrations) and `supabase functions deploy` (5 functions), then load the 397-course seed.
 
 **Free tier limits:** 500 MB database, 1 GB storage, 50k monthly actives — genuinely enough for launch and early beta. Pro ($25/mo) raises that to 8 GB database and 100 GB storage.
 
@@ -137,6 +137,18 @@ Revenue for comparison: at 10,000 users and a 3% conversion to $5/month,
 that's ~$1,500/month gross, ~$1,275 after Apple's 15% small-business rate.
 
 ---
+
+## How a subscription actually reaches you
+
+Worth understanding, because the chain has one non-obvious link:
+
+1. The user taps a price. The app attaches **their Supabase user id as `appAccountToken`** to the purchase. This is the *only* thing that ties an Apple transaction to an account in your database — Apple never tells a webhook who the buyer is.
+2. Apple charges them and, separately, POSTs a signed notification to your webhook.
+3. The webhook verifies Apple's signature (and refuses everything it can't verify), then writes a `subscriptions` row keyed on the subscription's stable id.
+4. `has_active_pro()` reads that row. It requires a **production** environment and a **real future expiry** — a sandbox subscription grants nothing in production, and an unknown expiry is treated as *not* entitled rather than *forever*.
+5. Purchases that arrive with no token (promo codes, another device, a purchase made before signing in) land unattributed and are claimed by their owner on next launch — and a claim can only ever take a row nobody owns.
+
+**Money reaches you through Apple regardless** — the App Store pays out on the purchase, not on your webhook. What the webhook decides is whether the *server* knows to unlock Pro features. Both matter, but they fail independently.
 
 ## Is it ready?
 
