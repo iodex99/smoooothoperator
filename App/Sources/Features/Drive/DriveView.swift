@@ -5,8 +5,10 @@ import SOSync
 import SOTelemetry
 import SwiftUI
 
-/// Pre-flight checks then the minimal driving screen (spec §§16-17):
-/// progress, optional ghost gap, nothing that invites interaction.
+/// Pre-flight checks then the driving screen (spec §§16-17): the glanceable
+/// map with the next turns (user directive 2026-08-13), progress, optional
+/// ghost gap. Nothing invites interaction while moving; the only control is
+/// an explicit end-run escape hatch behind a confirmation.
 struct DriveView: View {
     @Environment(AppEnvironment.self) private var environment
     @Environment(\.dismiss) private var dismiss
@@ -22,10 +24,19 @@ struct DriveView: View {
 
     @State private var session: DriveSession?
     @State private var state: DriveSessionState = .idle
+    @State private var confirmEnd = false
 
     var body: some View {
         ZStack {
             SOTheme.ground.ignoresSafeArea()
+            if showsMap {
+                DriveMapView(
+                    route: polyline,
+                    progress: activeProgress ?? 0,
+                    follow: activeProgress != nil
+                )
+                .ignoresSafeArea()
+            }
             content
         }
         .task { await run() }
@@ -33,28 +44,56 @@ struct DriveView: View {
         .preferredColorScheme(.dark)
         // Keep the screen awake during an active challenge.
         .persistentSystemOverlays(.hidden)
+        .confirmationDialog("End this run?", isPresented: $confirmEnd, titleVisibility: .visible) {
+            Button("End run", role: .destructive) {
+                Task { await session?.abort() }
+                dismiss()
+            }
+            Button("Keep driving", role: .cancel) {}
+        } message: {
+            Text("Ended runs are never submitted. Only do this once you're safely stopped.")
+        }
+    }
+
+    private var showsMap: Bool {
+        switch state {
+        case .idle, .calibrating, .ready, .active: true
+        default: false
+        }
+    }
+
+    private var activeProgress: Double? {
+        if case .active(let progress, _, _) = state { return progress }
+        return nil
     }
 
     @ViewBuilder
     private var content: some View {
         switch state {
         case .idle, .calibrating:
-            ChecklistView(step: state)
+            stateOverlay {
+                ChecklistView(step: state)
+            }
         case .ready:
-            VStack(spacing: 18) {
-                Text("READY")
-                    .font(.system(size: 52, weight: .black, design: .rounded))
-                    .foregroundStyle(SOTheme.heat)
-                Text("Cross the start line to begin.")
-                    .foregroundStyle(SOTheme.textSecondary)
+            stateOverlay {
+                VStack(spacing: 8) {
+                    Text("READY")
+                        .font(.system(size: 44, weight: .black, design: .rounded))
+                        .foregroundStyle(SOTheme.heat)
+                    Text("Cross the start line to begin.")
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(.white)
+                }
+                .frame(maxWidth: .infinity)
+                .soCard(padding: 22)
+                .padding(24)
             }
         case .active(let progress, let elapsed, let gap):
-            ActiveDriveView(
-                route: polyline,
+            ActiveDriveOverlay(
                 progress: progress,
                 elapsed: elapsed,
                 ghostGap: gap
-            )
+            ) { confirmEnd = true }
         case .processing:
             VStack(spacing: 16) {
                 ProgressView()
@@ -79,6 +118,23 @@ struct DriveView: View {
             }
             .padding(24)
         }
+    }
+
+    /// Pre-drive overlays sit at the bottom over a dimmed course map.
+    private func stateOverlay<Overlay: View>(@ViewBuilder overlay: () -> Overlay) -> some View {
+        VStack {
+            Spacer()
+            overlay()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(
+            LinearGradient(
+                colors: [.clear, SOTheme.ground.opacity(0.9)],
+                startPoint: .center,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+        )
     }
 
     private func run() async {
@@ -166,54 +222,85 @@ struct ChecklistRow: View {
     }
 }
 
-/// Spec §17: the ONLY things shown while driving. The course trace lights
-/// up as you cover it — glanceable, never interactive.
-struct ActiveDriveView: View {
-    let route: [GeoCoordinate]
+/// Spec §17: what's shown while driving — progress, time, ghost gap, and
+/// the map underneath. Every element is glanceable; the single control is
+/// the end-run hatch, deliberately small and confirmed.
+struct ActiveDriveOverlay: View {
     let progress: Double
     let elapsed: Double
     let ghostGap: Double?
+    let onEnd: () -> Void
 
     var body: some View {
-        ZStack {
-            RoutePreview(
-                route: route,
-                progress: progress,
-                lineWidth: 5,
-                showsGates: true
-            )
-            .opacity(0.5)
-            .padding(24)
-
-            VStack(spacing: 26) {
-                Text("CHALLENGE ACTIVE")
-                    .font(.caption.weight(.black))
-                    .tracking(2.4)
-                    .foregroundStyle(SOTheme.heatStart)
-
-                Text("\(Int(progress * 100))%")
-                    .font(.system(size: 104, weight: .black, design: .rounded))
-                    .monospacedDigit()
-                    .foregroundStyle(.white)
-                    .shadow(color: .black.opacity(0.6), radius: 12)
-
+        VStack {
+            // Top: progress + time on a scrim, readable over any map.
+            VStack(spacing: 10) {
+                HStack(alignment: .firstTextBaseline) {
+                    Text("\(Int(progress * 100))%")
+                        .font(.system(size: 64, weight: .black, design: .rounded))
+                        .monospacedDigit()
+                        .foregroundStyle(.white)
+                        .shadow(color: .black.opacity(0.8), radius: 8)
+                    Spacer()
+                    VStack(alignment: .trailing, spacing: 2) {
+                        Text("CHALLENGE ACTIVE")
+                            .font(.caption2.weight(.black))
+                            .tracking(1.6)
+                            .foregroundStyle(SOTheme.heatStart)
+                        Text(Duration.seconds(elapsed).formatted(.time(pattern: .minuteSecond)))
+                            .font(.system(.title2, design: .rounded).weight(.heavy))
+                            .monospacedDigit()
+                            .foregroundStyle(.white)
+                            .shadow(color: .black.opacity(0.8), radius: 6)
+                    }
+                }
                 HeatBar(progress: progress)
-                    .padding(.horizontal, 44)
+            }
+            .padding(.horizontal, 22)
+            .padding(.top, 8)
+            .padding(.bottom, 18)
+            .background(
+                LinearGradient(
+                    colors: [SOTheme.ground.opacity(0.92), .clear],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .ignoresSafeArea(edges: .top)
+            )
 
-                Text(Duration.seconds(elapsed).formatted(.time(pattern: .minuteSecond)))
-                    .font(.system(.title3, design: .rounded).weight(.bold))
-                    .monospacedDigit()
-                    .foregroundStyle(SOTheme.textSecondary)
+            Spacer()
 
+            // Bottom: ghost gap + the end-run hatch.
+            VStack(spacing: 14) {
                 if let gap = ghostGap {
                     Text(gap >= 0
                         ? "+\(gap, specifier: "%.1f")s"
                         : "\(gap, specifier: "%.1f")s")
-                        .font(.system(size: 42, weight: .heavy, design: .rounded))
+                        .font(.system(size: 40, weight: .heavy, design: .rounded))
                         .monospacedDigit()
                         .foregroundStyle(gap <= 0 ? SOTheme.verified : SOTheme.caution)
+                        .shadow(color: .black.opacity(0.8), radius: 8)
+                }
+                Button(action: onEnd) {
+                    Label("End run", systemImage: "xmark")
+                        .font(.footnote.weight(.bold))
+                        .foregroundStyle(SOTheme.textSecondary)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 9)
+                        .background(SOTheme.ground.opacity(0.85), in: Capsule())
+                        .overlay(Capsule().strokeBorder(SOTheme.hairline, lineWidth: 1))
                 }
             }
+            .padding(.bottom, 26)
+            .frame(maxWidth: .infinity)
+            .background(
+                LinearGradient(
+                    colors: [.clear, SOTheme.ground.opacity(0.9)],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .ignoresSafeArea(edges: .bottom)
+            )
         }
     }
 }
