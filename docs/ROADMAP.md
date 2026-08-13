@@ -29,6 +29,29 @@ syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
 
+### 2026-08-13 — The last mile: sign-in, and the features that were missing
+- **Sign in with Apple** (the audit's #1 blocker). Hashed-nonce challenge,
+  Keychain session (ThisDeviceOnly), token refresh with one retry on 401,
+  and signing in immediately flushes the offline run queue. Optional by
+  design: the app drives, scores and queues signed out.
+- **Run history + real records.** The app recorded every drive and had
+  nowhere to show them; Profile's rating/wins/top-10 were hardcoded zeros.
+- **Ghost racing now genuinely ships** — the course screen fetches the best
+  ghost the privacy rules allow and hands it to DriveView, lighting up a
+  live gap readout that had been dead code.
+- **Friends works.** Send/accept/decline/remove were empty function bodies.
+- **App Store Server Notifications V2**, fail-closed: JWS signature +
+  pinned Apple root CA, 503 rather than trusting an unverifiable payload.
+  Without it the server never learned about subscriptions and refused
+  *paying* users the one Pro feature.
+- A second sweep for genuinely-missing features found the worst remaining
+  hole: **a new user could not grant location anywhere in the app**, so
+  Home dead-ended on first launch. Fixed, along with: no way to set a
+  username (everyone was `driver_8f3a1c9e2b7d`), missing OpenStreetMap
+  attribution (an ODbL obligation), a paywall still selling custom courses,
+  and raw internal reason codes leaking into user-facing copy.
+- See **docs/OPERATIONS.md** for where data lives, setup, and costs.
+
 ### 2026-08-13 — Production-readiness audit: 4 domains, 40+ findings, criticals fixed
 Four parallel adversarial reviews (data/server, iOS completeness, engine,
 monetization/compliance) against the live stack and the real code. Full
