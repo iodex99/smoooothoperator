@@ -38,11 +38,14 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.smooooth.operator
         INFOPLIST_KEY_UIUserInterfaceStyle: Dark   # dark mode is the primary experience (spec §12)
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
     info:
       path: Configs/Info.plist
       properties:
-        CFBundleDisplayName: Smooooth Operator
-        UILaunchScreen: {}
+        # Home screen truncates ~12 chars — "Smooooth" stays whole.
+        CFBundleDisplayName: Smooooth
+        UILaunchScreen:
+          UIColorName: LaunchBackground
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         ITSAppUsesNonExemptEncryption: false
