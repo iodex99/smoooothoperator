@@ -168,6 +168,60 @@ actor SupabaseAPI {
         persistSession()
     }
 
+    /// The provider OAuth entry point (Google, and any provider enabled in
+    /// the Supabase dashboard later). We deliberately avoid provider SDKs:
+    /// ASWebAuthenticationSession + this URL is the whole integration, so
+    /// there is no third-party code in the binary and nothing new to audit.
+    nonisolated func authorizeURL(provider: String, redirectScheme: String) -> URL? {
+        var components = URLComponents(
+            url: configuration.baseURL.appendingPathComponent("auth/v1/authorize"),
+            resolvingAgainstBaseURL: false
+        )
+        components?.queryItems = [
+            URLQueryItem(name: "provider", value: provider),
+            URLQueryItem(name: "redirect_to", value: "\(redirectScheme)://auth-callback"),
+        ]
+        return components?.url
+    }
+
+    /// Completes an OAuth round trip. Supabase returns the tokens in the
+    /// URL fragment of the callback.
+    func completeOAuth(callbackURL: URL) throws {
+        guard
+            let fragment = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false)?.fragment
+        else { throw APIError.notAuthenticated }
+        var values: [String: String] = [:]
+        for pair in fragment.split(separator: "&") {
+            let parts = pair.split(separator: "=", maxSplits: 1)
+            guard parts.count == 2 else { continue }
+            values[String(parts[0])] = String(parts[1])
+                .removingPercentEncoding ?? String(parts[1])
+        }
+        guard
+            let accessToken = values["access_token"],
+            let refreshToken = values["refresh_token"]
+        else { throw APIError.notAuthenticated }
+        // The subject is inside the JWT; decoding it locally avoids an extra
+        // round trip, and the token is only trusted by the server anyway.
+        let userId = Self.subject(ofJWT: accessToken) ?? ""
+        guard !userId.isEmpty else { throw APIError.notAuthenticated }
+        session = Session(accessToken: accessToken, refreshToken: refreshToken, userId: userId)
+        persistSession()
+    }
+
+    private static func subject(ofJWT token: String) -> String? {
+        let parts = token.split(separator: ".")
+        guard parts.count >= 2 else { return nil }
+        var payload = String(parts[1]).replacingOccurrences(of: "-", with: "+")
+            .replacingOccurrences(of: "_", with: "/")
+        while payload.count % 4 != 0 { payload += "=" }
+        guard
+            let data = Data(base64Encoded: payload),
+            let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+        else { return nil }
+        return json["sub"] as? String
+    }
+
     func signOut() {
         session = nil
         persistSession()

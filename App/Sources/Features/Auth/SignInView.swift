@@ -2,10 +2,10 @@ import AuthenticationServices
 import CryptoKit
 import SwiftUI
 
-/// Sign in with Apple (spec §§29, 95). Apple is the only provider: it is the
-/// least data we can ask for, it satisfies the App Store requirement that a
-/// third-party-login app also offer Apple, and it gives us a stable user id
-/// without ever holding a password.
+/// Sign in (spec §§29, 95). Apple and Google, and never a password of our
+/// own — we hold no credentials at all. Apple is listed first because the
+/// App Store requires it wherever a third-party login is offered, and
+/// because it is the least data we can ask for.
 ///
 /// Signing in is OPTIONAL. Driving, scoring and the local run queue all work
 /// signed out — an account is what makes a run *count*: uploaded, verified,
@@ -86,6 +86,23 @@ struct SignInView: View {
                     .clipShape(Capsule())
                     .disabled(working)
 
+                    Button {
+                        Task { await signInWithGoogle() }
+                    } label: {
+                        HStack(spacing: 10) {
+                            Image(systemName: "globe")
+                                .font(.headline)
+                            Text("Continue with Google")
+                                .font(.system(.headline, design: .rounded).weight(.semibold))
+                        }
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 52)
+                        .background(SOTheme.elevated, in: Capsule())
+                        .overlay(Capsule().strokeBorder(SOTheme.hairline, lineWidth: 1))
+                    }
+                    .disabled(working)
+
                     Button(isOnboardingStep ? "Not now — just let me drive" : "Cancel") {
                         dismiss()
                     }
@@ -93,7 +110,7 @@ struct SignInView: View {
                     .tint(SOTheme.textSecondary)
                     .padding(.vertical, 8)
 
-                    Text("We store your Apple user id and the runs you record. Nothing else.")
+                    Text("We store the id your provider gives us and the runs you record. Nothing else — no password, no contacts.")
                         .font(.caption2)
                         .foregroundStyle(SOTheme.textSecondary)
                         .multilineTextAlignment(.center)
@@ -132,6 +149,37 @@ struct SignInView: View {
             }
         }
     }
+
+    /// Google (and any other provider enabled later) goes through
+    /// ASWebAuthenticationSession — no provider SDK in the binary. The
+    /// system browser owns the credentials; we only ever see the callback.
+    @MainActor
+    private func signInWithGoogle() async {
+        guard let api = environment.api,
+              let url = api.authorizeURL(provider: "google", redirectScheme: Self.callbackScheme)
+        else {
+            error = "Sign-in isn't configured in this build."
+            return
+        }
+        working = true
+        defer { working = false }
+        do {
+            let callback = try await WebAuthenticator.authenticate(
+                url: url,
+                callbackScheme: Self.callbackScheme
+            )
+            try await environment.completeOAuth(callbackURL: callback)
+            dismiss()
+        } catch WebAuthenticator.Failure.cancelled {
+            // The user backed out; not an error.
+        } catch {
+            self.error = "Google sign-in didn't complete. Please try again."
+        }
+    }
+
+    /// Must match CFBundleURLSchemes in project.yml and the redirect URL
+    /// allow-list in the Supabase dashboard.
+    static let callbackScheme = "smooothoperator"
 
     // MARK: - Nonce
 

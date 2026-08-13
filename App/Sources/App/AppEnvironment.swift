@@ -134,6 +134,15 @@ final class AppEnvironment {
         await flushPendingRuns()
     }
 
+    /// Completes a provider (Google) sign-in from the OAuth callback.
+    func completeOAuth(callbackURL: URL) async throws {
+        guard let api else { throw SupabaseAPI.APIError.notConfigured }
+        try await api.completeOAuth(callbackURL: callbackURL)
+        isSignedIn = await api.isSignedIn
+        hasSeenSignIn = true
+        await flushPendingRuns()
+    }
+
     func signOut() async {
         await api?.signOut()
         isSignedIn = false

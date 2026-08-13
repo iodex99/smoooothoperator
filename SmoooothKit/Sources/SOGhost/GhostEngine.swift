@@ -38,6 +38,32 @@ public struct GhostTrajectory: Codable, Sendable, Equatable {
         let t = (progress - a.progress) / span
         return a.elapsedSeconds + t * (b.elapsedSeconds - a.elapsedSeconds)
     }
+
+    /// The inverse: where the ghost IS at a given elapsed time (0...1 course
+    /// fraction). This is what lets the drive map draw the rival's pin
+    /// alongside your own, rather than only reporting a gap in seconds.
+    ///
+    /// Clamps at both ends: before the ghost started it sits at the line,
+    /// and once it has finished it stays at the finish rather than running
+    /// off the end of the course.
+    public func progress(atElapsed elapsed: Double) -> Double {
+        guard let first = points.first, let last = points.last else { return 0 }
+        if elapsed <= first.elapsedSeconds { return first.progress }
+        if elapsed >= last.elapsedSeconds { return last.progress }
+
+        var low = 0
+        var high = points.count - 1
+        while high - low > 1 {
+            let mid = (low + high) / 2
+            if points[mid].elapsedSeconds <= elapsed { low = mid } else { high = mid }
+        }
+        let a = points[low]
+        let b = points[high]
+        let span = b.elapsedSeconds - a.elapsedSeconds
+        guard span > 0 else { return a.progress }
+        let t = (elapsed - a.elapsedSeconds) / span
+        return a.progress + t * (b.progress - a.progress)
+    }
 }
 
 /// Ghost generation parameters.

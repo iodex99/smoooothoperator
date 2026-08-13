@@ -69,6 +69,11 @@ struct DriveMapView: View {
     let progress: Double
     /// nil = pre-drive states: frame the whole course instead of following.
     var follow: Bool = true
+    /// Where the rival is right now, as a course fraction. Drawn as a second
+    /// pin so the race is visible on the road rather than only as a number.
+    var ghostProgress: Double? = nil
+    /// Positive = you are behind. Colours the ghost pin.
+    var ghostGapSeconds: Double? = nil
 
     @State private var camera: MapCameraPosition = .automatic
     @State private var lastCameraProgress = -1.0
@@ -98,6 +103,13 @@ struct DriveMapView: View {
             if let finish = route.last {
                 Annotation("", coordinate: coordinate(finish)) {
                     GateMarker(color: .white, icon: "flag.checkered")
+                }
+            }
+            // The rival first, so your own pin always draws on top of it.
+            if let ghostProgress {
+                let (ghostPosition, _) = locator.locate(fraction: ghostProgress)
+                Annotation("", coordinate: coordinate(ghostPosition)) {
+                    GhostPuck(behind: (ghostGapSeconds ?? 0) > 0)
                 }
             }
             if follow {
@@ -138,6 +150,30 @@ struct DriveMapView: View {
                 pitch: 55
             ))
         }
+    }
+}
+
+/// The rival's live position. Deliberately unlike the driver's puck —
+/// translucent, outlined, no glow — so a glance never confuses which one is
+/// you. Green when you're ahead of it, amber when it's ahead of you.
+struct GhostPuck: View {
+    let behind: Bool
+
+    private var tint: Color { behind ? SOTheme.caution : SOTheme.verified }
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(tint.opacity(0.18))
+                .frame(width: 38, height: 38)
+            Circle()
+                .strokeBorder(tint, lineWidth: 2)
+                .frame(width: 26, height: 26)
+            Image(systemName: "figure.wave")
+                .font(.system(size: 11, weight: .bold))
+                .foregroundStyle(tint)
+        }
+        .accessibilityLabel(behind ? "Rival ahead of you" : "Rival behind you")
     }
 }
 

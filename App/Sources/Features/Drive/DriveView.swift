@@ -37,7 +37,9 @@ struct DriveView: View {
                 DriveMapView(
                     route: polyline,
                     progress: activeProgress ?? 0,
-                    follow: activeProgress != nil
+                    follow: activeProgress != nil,
+                    ghostProgress: ghostProgress,
+                    ghostGapSeconds: activeGhostGap
                 )
                 .ignoresSafeArea()
             }
@@ -69,6 +71,19 @@ struct DriveView: View {
     private var activeProgress: Double? {
         if case .active(let progress, _, _) = state { return progress }
         return nil
+    }
+
+    private var activeGhostGap: Double? {
+        if case .active(_, _, let gap) = state { return gap }
+        return nil
+    }
+
+    /// Where the rival is on the course right now. The ghost stores pace
+    /// (progress vs elapsed), so its position is simply its progress at the
+    /// elapsed time of this run.
+    private var ghostProgress: Double? {
+        guard let ghost, case .active(_, let elapsed, _) = state else { return nil }
+        return ghost.progress(atElapsed: elapsed)
     }
 
     @ViewBuilder

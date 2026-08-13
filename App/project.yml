@@ -52,6 +52,12 @@ targets:
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         ITSAppUsesNonExemptEncryption: false
+        # OAuth callback for provider sign-in (Google). Must match the
+        # redirect allow-list in the Supabase dashboard.
+        CFBundleURLTypes:
+          - CFBundleURLName: app.smooooth.operator.auth
+            CFBundleURLSchemes:
+              - smooothoperator
         # Injected from Configs/Supabase.xcconfig (gitignored). Absent in a
         # dev build → the app runs fully offline instead of crashing.
         SUPABASE_URL: $(SUPABASE_URL)
