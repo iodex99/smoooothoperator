@@ -25,7 +25,7 @@ struct DriveView: View {
 
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            SOTheme.ground.ignoresSafeArea()
             content
         }
         .task { await run() }
@@ -41,29 +41,41 @@ struct DriveView: View {
         case .idle, .calibrating:
             ChecklistView(step: state)
         case .ready:
-            VStack(spacing: 16) {
+            VStack(spacing: 18) {
                 Text("READY")
-                    .font(.system(size: 44, weight: .black, design: .rounded))
+                    .font(.system(size: 52, weight: .black, design: .rounded))
+                    .foregroundStyle(SOTheme.heat)
                 Text("Cross the start line to begin.")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(SOTheme.textSecondary)
             }
         case .active(let progress, let elapsed, let gap):
-            ActiveDriveView(progress: progress, elapsed: elapsed, ghostGap: gap)
+            ActiveDriveView(
+                route: polyline,
+                progress: progress,
+                elapsed: elapsed,
+                ghostGap: gap
+            )
         case .processing:
             VStack(spacing: 16) {
                 ProgressView()
-                Text("Scoring your drive…").foregroundStyle(.secondary)
+                    .tint(SOTheme.heatStart)
+                Text("Scoring your drive…")
+                    .foregroundStyle(SOTheme.textSecondary)
             }
         case .finished(let outcome):
-            RunResultView(outcome: outcome, courseId: courseId) { dismiss() }
+            RunResultView(
+                outcome: outcome,
+                courseId: courseId,
+                route: polyline
+            ) { dismiss() }
         case .failed(let reason):
             VStack(spacing: 16) {
                 Image(systemName: "exclamationmark.triangle")
                     .font(.largeTitle)
-                    .foregroundStyle(.yellow)
+                    .foregroundStyle(SOTheme.caution)
                 Text(failureMessage(reason)).multilineTextAlignment(.center)
                 Button("Back") { dismiss() }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(GhostButtonStyle())
             }
             .padding(24)
         }
@@ -123,11 +135,11 @@ struct ChecklistView: View {
     let step: DriveSessionState
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: 20) {
             Text("BEFORE YOU START")
-                .font(.caption.weight(.bold))
-                .tracking(1.4)
-                .foregroundStyle(.secondary)
+                .font(.caption.weight(.black))
+                .tracking(1.8)
+                .foregroundStyle(SOTheme.heatStart)
             ChecklistRow(done: true, text: "Mount your phone securely")
             ChecklistRow(
                 done: false,
@@ -135,7 +147,8 @@ struct ChecklistView: View {
             )
             ChecklistRow(done: false, text: "Waiting for GPS lock")
         }
-        .padding(28)
+        .soCard(padding: 24)
+        .padding(24)
     }
 }
 
@@ -146,40 +159,60 @@ struct ChecklistRow: View {
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: done ? "checkmark.circle.fill" : "circle.dashed")
-                .foregroundStyle(done ? .green : .secondary)
+                .foregroundStyle(done ? SOTheme.verified : SOTheme.textSecondary)
             Text(text)
+                .foregroundStyle(done ? .white : SOTheme.textSecondary)
         }
     }
 }
 
-/// Spec §17: the ONLY things shown while driving.
+/// Spec §17: the ONLY things shown while driving. The course trace lights
+/// up as you cover it — glanceable, never interactive.
 struct ActiveDriveView: View {
+    let route: [GeoCoordinate]
     let progress: Double
     let elapsed: Double
     let ghostGap: Double?
 
     var body: some View {
-        VStack(spacing: 28) {
-            Text("CHALLENGE ACTIVE")
-                .font(.caption.weight(.bold))
-                .tracking(2)
-                .foregroundStyle(.secondary)
+        ZStack {
+            RoutePreview(
+                route: route,
+                progress: progress,
+                lineWidth: 5,
+                showsGates: true
+            )
+            .opacity(0.5)
+            .padding(24)
 
-            Text("\(Int(progress * 100))%")
-                .font(.system(size: 96, weight: .black, design: .rounded))
-                .monospacedDigit()
+            VStack(spacing: 26) {
+                Text("CHALLENGE ACTIVE")
+                    .font(.caption.weight(.black))
+                    .tracking(2.4)
+                    .foregroundStyle(SOTheme.heatStart)
 
-            ProgressView(value: progress)
-                .tint(.green)
-                .padding(.horizontal, 40)
-
-            if let gap = ghostGap {
-                Text(gap >= 0
-                    ? "+\(gap, specifier: "%.1f")s"
-                    : "\(gap, specifier: "%.1f")s")
-                    .font(.system(size: 42, weight: .heavy, design: .rounded))
+                Text("\(Int(progress * 100))%")
+                    .font(.system(size: 104, weight: .black, design: .rounded))
                     .monospacedDigit()
-                    .foregroundStyle(gap <= 0 ? .green : .orange)
+                    .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.6), radius: 12)
+
+                HeatBar(progress: progress)
+                    .padding(.horizontal, 44)
+
+                Text(Duration.seconds(elapsed).formatted(.time(pattern: .minuteSecond)))
+                    .font(.system(.title3, design: .rounded).weight(.bold))
+                    .monospacedDigit()
+                    .foregroundStyle(SOTheme.textSecondary)
+
+                if let gap = ghostGap {
+                    Text(gap >= 0
+                        ? "+\(gap, specifier: "%.1f")s"
+                        : "\(gap, specifier: "%.1f")s")
+                        .font(.system(size: 42, weight: .heavy, design: .rounded))
+                        .monospacedDigit()
+                        .foregroundStyle(gap <= 0 ? SOTheme.verified : SOTheme.caution)
+                }
             }
         }
     }

@@ -3,7 +3,9 @@ import SOCore
 import SOCourse
 import SwiftUI
 
-/// Course screen (spec §15): route, stats, bests, leaderboard, START.
+/// Course screen (spec §15): the real map with the route trace, stats,
+/// benchmark, START. The map is view-only — course geometry is cached,
+/// no per-open routing calls (spec §90).
 struct CourseDetailView: View {
     let courseId: String
 
@@ -11,27 +13,61 @@ struct CourseDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: 16) {
                 if let course = model.course {
-                    Map {
-                        MapPolyline(coordinates: course.polyline.map {
-                            CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude)
-                        })
-                        .stroke(.green, lineWidth: 4)
-                    }
-                    .frame(height: 220)
-                    .clipShape(RoundedRectangle(cornerRadius: 18))
-                    .allowsHitTesting(false)
+                    CourseMapView(course: course)
+                        .frame(height: 300)
+                        .clipShape(RoundedRectangle(cornerRadius: 24))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 24)
+                                .strokeBorder(SOTheme.hairline, lineWidth: 1)
+                        )
 
-                    HStack(spacing: 18) {
-                        Stat(label: "Distance", value: course.distanceText)
-                        Stat(label: "Difficulty", value: String(repeating: "★", count: course.difficulty))
-                        Stat(label: "Turns", value: "\(course.turnCount)")
-                        Stat(label: "Drivers", value: "\(course.drivers)")
+                    HStack {
+                        Text(course.name)
+                            .font(.system(size: 28, weight: .black, design: .rounded))
+                            .foregroundStyle(.white)
+                        Spacer()
+                        Text(String(repeating: "★", count: course.difficulty))
+                            .font(.headline)
+                            .foregroundStyle(SOTheme.heatEnd)
+                    }
+
+                    HStack(spacing: 10) {
+                        StatTile(label: "Distance", value: course.distanceText)
+                        StatTile(label: "Turns", value: "\(course.turnCount)")
+                        StatTile(label: "Drivers", value: "\(course.drivers)")
                     }
 
                     if let benchmark = course.benchmarkText {
-                        Stat(label: "Course benchmark", value: benchmark)
+                        HStack(spacing: 14) {
+                            Image(systemName: "timer")
+                                .font(.title3.weight(.semibold))
+                                .foregroundStyle(SOTheme.heatStart)
+                                .frame(width: 44, height: 44)
+                                .background(SOTheme.heatStart.opacity(0.13), in: Circle())
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("COURSE BENCHMARK")
+                                    .font(.caption2.weight(.bold))
+                                    .tracking(1)
+                                    .foregroundStyle(SOTheme.textSecondary)
+                                Text(benchmark)
+                                    .font(.system(.title3, design: .rounded).weight(.heavy))
+                                    .monospacedDigit()
+                                    .foregroundStyle(.white)
+                            }
+                            Spacer()
+                            VStack(alignment: .trailing, spacing: 2) {
+                                Text("PACE TARGET")
+                                    .font(.caption2.weight(.bold))
+                                    .tracking(1)
+                                    .foregroundStyle(SOTheme.textSecondary)
+                                Text("Match it, smoothly")
+                                    .font(.footnote)
+                                    .foregroundStyle(SOTheme.textSecondary)
+                            }
+                        }
+                        .soCard(padding: 14)
                     }
 
                     NavigationLink {
@@ -45,33 +81,66 @@ struct CourseDetailView: View {
                         .navigationBarBackButtonHidden()
                     } label: {
                         Text("START CHALLENGE")
-                            .font(.headline.weight(.heavy))
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 16)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(HeatButtonStyle())
+                    .padding(.top, 6)
                 } else {
                     ProgressView().frame(maxWidth: .infinity, minHeight: 300)
                 }
             }
-            .padding(16)
+            .padding(18)
         }
-        .navigationTitle(model.course?.name ?? "Course")
+        .background(SOTheme.ground)
+        .navigationTitle(model.course?.name ?? "")
+        .navigationBarTitleDisplayMode(.inline)
         .task { await model.load(courseId: courseId) }
     }
 }
 
-private struct Stat: View {
-    let label: String
-    let value: String
+/// The real map: dark tiles, heat route, start/finish gate markers.
+struct CourseMapView: View {
+    let course: CourseDetailModel.Course
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(label.uppercased())
-                .font(.caption2.weight(.bold))
-                .foregroundStyle(.secondary)
-            Text(value).font(.headline)
+        Map(interactionModes: [.pan, .zoom]) {
+            MapPolyline(coordinates: coordinates)
+                .stroke(
+                    SOTheme.heatStart,
+                    style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round)
+                )
+            if let start = coordinates.first {
+                Annotation("START", coordinate: start) {
+                    GateMarker(color: SOTheme.verified, icon: "flag.fill")
+                }
+            }
+            if let finish = coordinates.last {
+                Annotation("FINISH", coordinate: finish) {
+                    GateMarker(color: .white, icon: "flag.checkered")
+                }
+            }
         }
+        .mapStyle(.standard(pointsOfInterest: .excludingAll))
+    }
+
+    private var coordinates: [CLLocationCoordinate2D] {
+        course.polyline.map {
+            CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude)
+        }
+    }
+}
+
+struct GateMarker: View {
+    let color: Color
+    let icon: String
+
+    var body: some View {
+        Image(systemName: icon)
+            .font(.caption.weight(.bold))
+            .foregroundStyle(.black)
+            .frame(width: 26, height: 26)
+            .background(color, in: Circle())
+            .overlay(Circle().strokeBorder(.black.opacity(0.35), lineWidth: 1))
+            .shadow(color: .black.opacity(0.5), radius: 4, y: 2)
     }
 }
 
