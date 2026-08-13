@@ -36,7 +36,7 @@ sogen (CLI) ──► SOSimulator, SOSync
 | `SOScoring` | `ScoringEngine` (pace/smoothness/control/compliance → integer bps), `RatingEngine`. |
 | `SOIntegrity` | `RunIntegrityEngine`: anti-cheat flags → verification verdict. |
 | `SOGhost` | Normalized ghost trajectories, live gap math. Never raw GPS. |
-| `SOSync` | Offline-first upload queue state machine, retry policy, API DTOs. |
+| `SOSync` | Offline-first upload queue (PendingRun/RunStore/UploadQueue — durable, retrying, wired into the app since 2026-08-13), drive session state machine, entitlement seam. |
 | `SOSimulator` | Synthetic driving profiles feeding the **same** pipeline as real sensors. |
 | `sogen` | CLI: simulate / score / verify / emit golden vectors. |
 

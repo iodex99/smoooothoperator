@@ -29,6 +29,40 @@ syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
 
+### 2026-08-13 — Production-readiness audit: 4 domains, 40+ findings, criticals fixed
+Four parallel adversarial reviews (data/server, iOS completeness, engine,
+monetization/compliance) against the live stack and the real code. Full
+report: **docs/AUDIT-2026-08-13.md**. What the audit changed:
+
+- **The docs were ahead of the code and the UI was lying.** ARCHITECTURE.md
+  and TELEMETRY.md described an offline upload queue that did not exist;
+  RunResultView told users "Your run is safely stored" while the finished
+  drive lived only in a SwiftUI @State and was destroyed on dismiss. Built
+  for real: PendingRun/RunStore/UploadQueue with enqueue-before-network,
+  crash recovery, corruption quarantine and capped backoff (10 tests).
+- **A remote-triggered fleet crash.** One malformed row in `scoring_configs`
+  would SIGILL every client at the end of every drive (precondition on
+  weight validity + the client decoding the config raw). Now degrades.
+- **Two security holes.** score-run authenticated nobody and checked no
+  ownership (any user could read another's score + anti-cheat flags);
+  `telemetry.storage_path` was unvalidated and interpolated into a
+  service-role storage URL (traversal accepted live). Both closed, plus a
+  runs.status transition guard, the missing friends branch on checkpoint
+  RLS, and verified-only participant counts.
+- **A NaN GPS fix voided whole runs** (0 m, 0 gates) — no finiteness gate.
+- **The app was unusable in a Release build**: the only course path was
+  `#if DEBUG`, so the primary CTA led to a permanent spinner. And the drive
+  screen could trap a driver with no exit when location was denied.
+- **The subscription sold nothing**: `hasPro()` had zero call sites. There
+  is now a real free tier (3 runs/day) and the paywall sells only what
+  exists — ghost racing was being sold and is not implemented.
+- Fixed too: leaderboards mixing every course into one "rank 1" list,
+  account deletion as an empty closure, ghost privacy that never persisted.
+
+**Ledger correction:** earlier entries marked the L-phases complete while
+SOSync's upload queue was never built. Status claims in this file now track
+what is wired into the app, not what is authored in the Kit.
+
 ### 2026-08-13 — Today's Challenge: dynamic location-based assignment
 - No more hand-authored daily challenges: `today-challenge` edge fn finds
   eligible courses near the user (radius ladder 10/25/50/100 km), ranks

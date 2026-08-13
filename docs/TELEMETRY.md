@@ -55,7 +55,7 @@ product: "Verified using location and motion data."
 
 ## Recording durability (spec §60)
 
-In-flight samples append to a crash-safe, length-prefixed file — no database in
+PLANNED (not yet built): in-flight samples appending to a crash-safe, length-prefixed file — no database in
 the hot path. A completed run persists locally in the `SOSync` upload queue
 (`pending → uploading → uploaded`, `failed → uploading` retry) and survives
 connectivity loss, app kills, and phone calls. Never lose a completed run.
