@@ -36,14 +36,16 @@ layer and **never move logic out of the Kit to work around an error**.
 
 | Area | Risk | Status |
 |---|---|---|
-| `App/project.yml` | XcodeGen schema drift | authored L0, never generated |
-| SensorFeed (CoreLocation+CoreMotion) | compile + timestamp-domain bridging (CMLogItem boot-time → epoch) needs device validation | authored, parse-gated |
-| SupabaseAPI / RunUploader | compile; SUPABASE_URL/ANON_KEY must be added via xcconfig → Info.plist | authored, parse-gated |
-| StoreKitSubscriptionService | compile; sandbox purchase/restore untested | authored, parse-gated |
-| SwiftUI views (all 4 tabs + drive loop + paywall) | compile + layout; server feeds for Home/Explore/Friends are placeholders wired to real endpoints later | authored, parse-gated |
-| MockSensorFeed (DEBUG) | drives the full DriveSession loop in the simulator without a car — use it on day 1 | authored |
+| `App/project.yml` | XcodeGen schema drift | ✅ generates + builds on CI Mac (2026-08-13) |
+| SensorFeed (CoreLocation+CoreMotion) | timestamp-domain bridging (CMLogItem boot-time → epoch) needs device validation | compiles on CI; device truth pending |
+| SupabaseAPI / RunUploader | SUPABASE_URL/ANON_KEY must be added via xcconfig → Info.plist | compiles on CI |
+| StoreKitSubscriptionService | sandbox purchase/restore untested | compiles on CI |
+| SwiftUI views (all screens, heat design system) | layout verified via CI simulator screenshots; server feeds for Home/Explore/Friends are placeholders wired to real endpoints later | ✅ renders on CI simulator |
+| CourseMapView (MapKit) | tiles need network; polyline/annotation rendering verified via CI screenshots | authored 2026-08-13 |
+| RunShareCard (ImageRenderer @3×) | render output needs one visual check on device/simulator share sheet | authored 2026-08-13 |
+| MockSensorFeed (DEBUG) | drives the full DriveSession loop in the simulator without a car — use it on day 1 | ✅ proven in CI demo tour |
 | Products.storekit | product ids must match App Store Connect | authored L0 |
-| Bundled `scoring-v1.json` fallback | add configs/scoring/v1.json to app resources in project.yml | TODO on Mac |
+| Bundled `scoring-v1.json` fallback | keep in sync with configs/scoring/v1.json on scoring version bumps | ✅ bundled + proven in CI mock drive |
 
 ## Decisions that constrain this layer
 

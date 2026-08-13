@@ -29,6 +29,24 @@ syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
 
+### 2026-08-13 — Heat design system: premium UI, map view, share card
+- Full visual identity in `App/Sources/DesignSystem/` (user directive: the
+  UI "shall look premium, rich, aesthetic"): near-black ground, blaze→amber
+  **heat gradient** for brand/CTAs/rings/routes; green reserved strictly for
+  verification semantics. GlowRing (score/rating), HeatBar (sub-scores),
+  RoutePreview (tile-free glowing course trace — works offline, identical
+  in cards/drive/share).
+- New capability, not just paint: **course detail map view** (dark MapKit
+  tiles, heat route polyline, start/finish gate markers) and a **rendered
+  share card** (ImageRenderer @3×: score, course trace, wordmark — never
+  raw location; spec §51 growth loop).
+- Every screen restyled: Home hero challenge card, Explore route-thumbnail
+  cards + filter chips, leaderboard podium medals, profile rating ring +
+  Pro card, paywall, drive screen (route trace lights up with progress),
+  result glow-ring reveal, safety gate.
+- Demo tour v2 adds a 10s course-map stop before the mock drive; CI
+  captures 48 frames.
+
 ### 2026-08-13 — The app runs: CI Mac builds, boots, and screenshots it
 - One compile error existed across the entire blind-authored iOS layer
   (SensorFeed @Sendable capture). After the fix: xcodegen ✅ build ✅
