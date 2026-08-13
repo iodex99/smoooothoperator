@@ -60,9 +60,17 @@ final class StoreKitSubscriptionService: SubscriptionProviding, @unchecked Senda
     /// Purchase with StoreKit 2 verification (never trust unverified
     /// transactions — spec §73). Server-side truth arrives via App Store
     /// Server Notifications → subscriptions table.
-    func purchase(_ product: Product) async -> PurchaseOutcome {
+    /// `appAccountToken` is the ONLY link between an Apple transaction and a
+    /// Supabase account: Apple echoes it back in the signed transaction that
+    /// reaches our webhook. Without it a purchase can never be attributed to
+    /// the person who made it.
+    func purchase(_ product: Product, appAccountToken: UUID?) async -> PurchaseOutcome {
         do {
-            switch try await product.purchase() {
+            var options: Set<Product.PurchaseOption> = []
+            if let appAccountToken {
+                options.insert(.appAccountToken(appAccountToken))
+            }
+            switch try await product.purchase(options: options) {
             case .success(.verified(let transaction)):
                 await transaction.finish()
                 return .success
@@ -85,5 +93,18 @@ final class StoreKitSubscriptionService: SubscriptionProviding, @unchecked Senda
 
     func restore() async throws {
         try await AppStore.sync()
+    }
+
+    /// The subscription's stable identity, for claiming a server row that
+    /// arrived without attribution (a promo code, or a purchase made before
+    /// this device signed in).
+    func currentOriginalTransactionId() async -> String? {
+        for await entitlement in Transaction.currentEntitlements {
+            guard case .verified(let transaction) = entitlement else { continue }
+            if Self.productIds.contains(transaction.productID) {
+                return String(transaction.originalID)
+            }
+        }
+        return nil
     }
 }

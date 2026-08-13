@@ -69,10 +69,6 @@ targets:
           Smooooth Operator uses your location during a challenge to verify
           your run on the course and score your drive. Location is never
           tracked outside an active challenge.
-        NSLocationAlwaysAndWhenInUseUsageDescription: >-
-          Smooooth Operator keeps recording your active challenge if you lock
-          the screen or switch apps, so your run isn't lost. Location is never
-          tracked outside an active challenge.
         NSMotionUsageDescription: >-
           Motion sensors measure how smoothly you accelerate, brake and corner
           during a challenge. This is the core of your driving score.

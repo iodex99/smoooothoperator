@@ -141,7 +141,7 @@ struct PaywallView: View {
         purchasing = true
         Task {
             defer { purchasing = false }
-            switch await environment.subscriptions.purchase(product) {
+            switch await environment.purchase(product) {
             case .success:
                 await environment.refreshEntitlement()
                 dismiss()

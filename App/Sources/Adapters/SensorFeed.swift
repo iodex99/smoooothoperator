@@ -29,6 +29,13 @@ final class SensorFeed: NSObject, CLLocationManagerDelegate, @unchecked Sendable
 
     /// Starts both sensors and returns the unified event stream. One
     /// consumer at a time; `stop()` finishes the stream.
+    /// True when this device can supply the inertial data smoothness and
+    /// control scoring need. Raw accel/gyro need no authorization, but they
+    /// can still be unavailable (Simulator, hardware fault).
+    var motionAvailable: Bool {
+        motionManager.isAccelerometerAvailable && motionManager.isGyroAvailable
+    }
+
     func start() -> AsyncStream<SensorEvent> {
         AsyncStream { continuation in
             self.continuation = continuation

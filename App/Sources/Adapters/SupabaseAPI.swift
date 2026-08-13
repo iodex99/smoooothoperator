@@ -116,7 +116,21 @@ actor SupabaseAPI {
 
     /// Exchanges the refresh token for a fresh access token. Supabase access
     /// tokens expire in an hour, so without this every session dies mid-use.
+    /// Single-flight: two requests that 401 at the same moment must not both
+    /// spend the refresh token. Rotation means the second spend can trip
+    /// GoTrue's reuse detection and revoke the whole token family.
+    private var refreshTask: Task<Bool, Never>?
+
     private func refreshSession() async -> Bool {
+        if let refreshTask { return await refreshTask.value }
+        let task = Task<Bool, Never> { [self] in await performRefresh() }
+        refreshTask = task
+        let result = await task.value
+        refreshTask = nil
+        return result
+    }
+
+    private func performRefresh() async -> Bool {
         guard let refreshToken = session?.refreshToken else { return false }
         var components = URLComponents(
             url: configuration.baseURL.appendingPathComponent("auth/v1/token"),
@@ -132,14 +146,22 @@ actor SupabaseAPI {
         )
         guard
             let (data, response) = try? await URLSession.shared.data(for: request),
-            let http = response as? HTTPURLResponse,
-            (200..<300).contains(http.statusCode),
-            let refreshed = try? JSONDecoder().decode(Session.self, from: data)
+            let http = response as? HTTPURLResponse
         else {
-            // The refresh token itself is dead (revoked, or the user deleted
-            // the account elsewhere): sign out rather than loop.
-            session = nil
-            persistSession()
+            // Offline, captive portal, timeout: the credential is probably
+            // fine. Keep the session — signing the user out over a dropped
+            // connection loses their account for no reason.
+            return false
+        }
+        guard (200..<300).contains(http.statusCode) else {
+            // Only the auth server SAYING the token is bad ends the session.
+            if http.statusCode == 400 || http.statusCode == 401 {
+                session = nil
+                persistSession()
+            }
+            return false
+        }
+        guard let refreshed = try? JSONDecoder().decode(Session.self, from: data) else {
             return false
         }
         session = refreshed

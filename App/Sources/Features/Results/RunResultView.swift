@@ -26,6 +26,7 @@ struct RunResultView: View {
     /// Filled once the server has ranked the run — the single most
     /// share-worthy fact about it.
     @State private var rankText: String?
+    @State private var resolvedCourseName: String?
 
     var body: some View {
         ScrollView {
@@ -113,6 +114,7 @@ struct RunResultView: View {
         .sensoryFeedback(.success, trigger: score)
         .task {
             renderShareCard()
+            await loadCourseName()
             await upload()
             await loadRank()
             renderShareCard()
@@ -123,10 +125,22 @@ struct RunResultView: View {
         authoritative?.score ?? outcome.provisionalScore
     }
 
-    /// Course display names come from the server feed; the demo course is
-    /// the only offline case.
+    /// Never show a UUID to a human — the share card is the growth loop and
+    /// "I scored 8123 on 3f2a1b9c-4d5e…" kills it. Falls back to a neutral
+    /// word until the name arrives.
     private var courseName: String {
-        courseId == "demo" ? "Malibu #042" : courseId
+        if courseId == "demo" { return "Malibu #042" }
+        return resolvedCourseName ?? "this course"
+    }
+
+    private func loadCourseName() async {
+        guard let api = environment.api, courseId != "demo" else { return }
+        struct Row: Decodable { var name: String }
+        if let rows = try? await api.get(
+            "courses?id=eq.\(courseId)&select=name", as: [Row].self
+        ), let row = rows.first {
+            resolvedCourseName = row.name
+        }
     }
 
     private var verdictTitle: String {

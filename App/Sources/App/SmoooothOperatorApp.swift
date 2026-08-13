@@ -46,6 +46,9 @@ struct SmoooothOperatorApp: App {
             .onChange(of: scenePhase) { _, phase in
                 guard phase == .active else { return }
                 Task {
+                    // A session can die while backgrounded; the UI must not
+                    // keep claiming the user is signed in.
+                    await environment.refreshSignInState()
                     await environment.refreshEntitlement()
                     await environment.flushPendingRuns()
                 }

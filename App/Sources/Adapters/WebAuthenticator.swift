@@ -29,8 +29,10 @@ enum WebAuthenticator {
                 }
             }
             session.presentationContextProvider = ContextProvider.shared
-            // A private session means the provider's own cookies don't leak
-            // an existing browser identity into our sign-in.
+            // Deliberately NON-ephemeral: reusing the system browser session
+            // means a user already signed in to Google taps once instead of
+            // retyping a password. (An ephemeral session would be the choice
+            // if we wanted to force an account picker every time.)
             session.prefersEphemeralWebBrowserSession = false
             if !session.start() {
                 continuation.resume(throwing: Failure.failed)

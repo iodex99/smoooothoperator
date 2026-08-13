@@ -1,6 +1,7 @@
 import Foundation
 import SOScoring
 import SOSync
+import StoreKit
 import SwiftUI
 
 /// Composition root: adapters wired to Kit engines, injected via SwiftUI
@@ -119,8 +120,12 @@ final class AppEnvironment {
         pendingRunCount = summary.remaining
     }
 
-    func refreshPendingCount() async {
-        pendingRunCount = (try? await uploadQueue.pendingCount()) ?? 0
+    /// The badge must count only what THIS account can actually upload —
+    /// another driver's queued runs are none of its business.
+    func refreshPendingCount(forCurrentUser: Bool = true) async {
+        let me = await api?.userId
+        let runs = (try? await uploadQueue.pending()) ?? []
+        pendingRunCount = runs.filter { $0.userId == nil || $0.userId == me }.count
     }
 
     // MARK: - Account
@@ -132,6 +137,8 @@ final class AppEnvironment {
         hasSeenSignIn = true
         // Anything recorded while signed out goes up now.
         await flushPendingRuns()
+        // A subscription bought before signing in belongs to this account.
+        await claimSubscriptionIfNeeded()
     }
 
     /// Completes a provider (Google) sign-in from the OAuth callback.
@@ -146,10 +153,41 @@ final class AppEnvironment {
     func signOut() async {
         await api?.signOut()
         isSignedIn = false
+        isPro = false
+        // The next account must not inherit this one's free-run count, and
+        // must not be shown a queue badge for runs it can never upload.
+        runsToday = 0
+        UserDefaults.standard.removeObject(forKey: Self.runCountKey)
+        await refreshPendingCount(forCurrentUser: true)
     }
 
     func refreshSignInState() async {
         isSignedIn = await api?.isSignedIn ?? false
+    }
+
+    /// Purchases with the signed-in user's id attached, so Apple's webhook
+    /// can attribute the subscription to them. A purchase made signed out is
+    /// still honoured locally and claimed on the server after sign-in.
+    func purchase(_ product: Product) async -> StoreKitSubscriptionService.PurchaseOutcome {
+        let token = await api?.userId.flatMap(UUID.init(uuidString:))
+        let outcome = await subscriptions.purchase(product, appAccountToken: token)
+        if case .success = outcome {
+            await claimSubscriptionIfNeeded()
+        }
+        return outcome
+    }
+
+    /// Adopts a server-side subscription row that arrived unattributed
+    /// (promo code, another device, or a purchase made before signing in).
+    /// The RPC only ever claims rows nobody owns.
+    func claimSubscriptionIfNeeded() async {
+        guard let api, await api.userId != nil,
+              let original = await subscriptions.currentOriginalTransactionId()
+        else { return }
+        _ = try? await api.rpc(
+            "claim_subscription",
+            json: ["p_original_transaction_id": original]
+        )
     }
 
     /// Entitlement refresh (launch, foreground, and after any transaction).

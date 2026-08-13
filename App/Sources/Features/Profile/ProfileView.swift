@@ -282,7 +282,10 @@ struct ProfileView: View {
         defer { deleting = false }
         do {
             _ = try await api.rpc("delete_my_account", json: [:])
-            await api.signOut()
+            // Go through the environment so isSignedIn updates and every
+            // view keyed on it refetches — calling api.signOut() directly
+            // left the deleted account's stats on screen.
+            await environment.signOut()
             notice = "Your account and all its data have been deleted."
         } catch {
             notice = "We couldn't delete your account. Please try again, or contact support."

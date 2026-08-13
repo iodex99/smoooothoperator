@@ -1,6 +1,9 @@
 import SOCore
 import SOCourse
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// Competition first (spec §§14, 53): today's challenge hero, friend
 /// challenges, nearby — never an analytics dashboard. The hero is assigned
@@ -224,7 +227,19 @@ struct ChallengeEmptyCard: View {
                 .fixedSize(horizontal: false, vertical: true)
 
             if needsLocation {
-                Button("Allow location") {
+                // Once denied, requestWhenInUseAuthorization() does nothing
+                // at all — the only real fix is Settings.
+                let denied = environment.sensors.authorizationStatus == .denied
+                    || environment.sensors.authorizationStatus == .restricted
+                Button(denied ? "Open Settings" : "Allow location") {
+                    if denied {
+                        #if canImport(UIKit)
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                        #endif
+                        return
+                    }
                     environment.sensors.requestPermissions()
                     // The prompt is async; re-ask shortly after so the card
                     // becomes the challenge without needing a manual refresh.

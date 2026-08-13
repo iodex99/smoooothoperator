@@ -24,10 +24,16 @@ export interface DecodedNotification {
   notificationType: string;
   subtype?: string;
   originalTransactionId: string;
+  /** The most recent transaction — the table requires it. */
+  transactionId: string;
   productId: string;
   expiresDate?: number;
   environment: string;
   revoked: boolean;
+  /** The Supabase user id the client attached at purchase time. Absent for
+   * purchases made outside the app (promo codes, other devices), which land
+   * unattributed and are claimed by the client later. */
+  appAccountToken?: string;
 }
 
 const encoder = new TextEncoder();
@@ -129,7 +135,11 @@ export async function decodeNotification(
     originalTransactionId: String(
       transaction.originalTransactionId ?? renewal.originalTransactionId ?? "",
     ),
+    transactionId: String(transaction.transactionId ?? ""),
     productId: String(transaction.productId ?? renewal.autoRenewProductId ?? ""),
+    appAccountToken: typeof transaction.appAccountToken === "string"
+      ? transaction.appAccountToken
+      : undefined,
     expiresDate: typeof transaction.expiresDate === "number"
       ? transaction.expiresDate
       : undefined,
@@ -175,6 +185,11 @@ export async function handleNotification(
   } catch (error) {
     return { status: 401, body: { error: `rejected: ${error}` } };
   }
+  if (notification.notificationType === "TEST") {
+    // App Store Connect's "Request a Test Notification" carries no
+    // transaction data. It is how the URL gets verified, so it must succeed.
+    return { status: 200, body: { received: "TEST" } };
+  }
   if (notification.originalTransactionId === "") {
     return { status: 400, body: { error: "no transaction identity" } };
   }
@@ -194,6 +209,12 @@ export async function handleNotification(
       },
       body: JSON.stringify({
         original_transaction_id: notification.originalTransactionId,
+        // Required by the table; falls back to the original when Apple's
+        // payload carries only the subscription identity.
+        latest_transaction_id: notification.transactionId ||
+          notification.originalTransactionId,
+        // NULL when we can't attribute yet — the client claims it later.
+        user_id: notification.appAccountToken ?? null,
         product_id: notification.productId,
         status: statusFor(notification),
         expires_at: notification.expiresDate

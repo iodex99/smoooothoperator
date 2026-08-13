@@ -224,8 +224,11 @@ struct DriveView: View {
         }
         for await newState in states {
             state = newState
+            // Only ACTIVE proves fixes are arriving: the session enters
+            // .calibrating unconditionally at start, so treating that as a
+            // lock made the checklist claim "GPS locked" with zero fixes and
+            // left the no-signal watchdog permanently disarmed.
             if case .active = newState { hasFirstFix = true }
-            if case .calibrating = newState { hasFirstFix = true }
         }
     }
 
@@ -235,8 +238,14 @@ struct DriveView: View {
     private func startFixWatchdog() {
         Task {
             try? await Task.sleep(for: .seconds(45))
-            if !hasFirstFix, case .idle = state {
+            // Still not moving through the course after 45s means no usable
+            // signal — say so instead of spinning forever.
+            guard !hasFirstFix else { return }
+            switch state {
+            case .idle, .calibrating, .ready:
                 state = .failed(reason: "no-gps")
+            default:
+                break
             }
         }
     }
@@ -258,6 +267,22 @@ struct DriveView: View {
             "Run abandoned. Your data was not submitted."
         case let message where message.contains("stream ended"):
             "Your device stopped providing sensor data. This run can't be verified."
+        case "location-denied":
+            environment.sensors.authorizationStatus == .restricted
+                ? """
+                Location is restricted on this device, so a drive can't be \
+                scored. If Screen Time or a parental control is set, it has \
+                to be changed there first.
+                """
+                : """
+                Smooooth Operator needs location to score a drive. Turn it \
+                on in Settings, then start the challenge again.
+                """
+        case "no-gps":
+            """
+            No GPS signal yet. Move somewhere with a clear view of the sky \
+            and try again — underground and covered parking won't work.
+            """
         case "course geometry invalid":
             "This course's route data is unusable. Please pick another course."
         case "scoring configuration unavailable":
