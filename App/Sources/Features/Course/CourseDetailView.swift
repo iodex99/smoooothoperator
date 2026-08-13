@@ -1,6 +1,7 @@
 import MapKit
 import SOCore
 import SOCourse
+import SOGhost
 import SwiftUI
 
 /// Course screen (spec §15): the real map with the route trace, stats,
@@ -15,6 +16,7 @@ struct CourseDetailView: View {
 
     @State private var model = CourseDetailModel()
     @State private var showPaywall = false
+    @State private var raceGhost = true
 
     var body: some View {
         ScrollView {
@@ -76,13 +78,28 @@ struct CourseDetailView: View {
                         .soCard(padding: 14)
                     }
 
+                    if let rival = model.rival {
+                        Toggle(isOn: $raceGhost) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Race \(rival.username)'s ghost")
+                                    .font(.system(.subheadline, design: .rounded).weight(.heavy))
+                                    .foregroundStyle(.white)
+                                Text("Their \(rival.score) run, live beside you")
+                                    .font(.caption)
+                                    .foregroundStyle(SOTheme.textSecondary)
+                            }
+                        }
+                        .tint(SOTheme.heatStart)
+                        .soCard(padding: 14)
+                    }
+
                     if environment.canStartRun {
                         NavigationLink {
                             DriveView(
                                 polyline: course.polyline,
                                 gates: course.gates,
                                 benchmarkSeconds: course.benchmarkSeconds ?? 0,
-                                ghost: nil,
+                                ghost: raceGhost ? model.rival?.ghost : nil,
                                 courseId: courseId
                             )
                             .navigationBarBackButtonHidden()
@@ -153,7 +170,10 @@ struct CourseDetailView: View {
         .background(SOTheme.ground)
         .navigationTitle(model.course?.name ?? "")
         .navigationBarTitleDisplayMode(.inline)
-        .task { await model.load(courseId: courseId, preloaded: preloaded, api: environment.api) }
+        .task {
+            await model.load(courseId: courseId, preloaded: preloaded, api: environment.api)
+            await model.loadRival(courseId: courseId, api: environment.api)
+        }
         .sheet(isPresented: $showPaywall) { PaywallView() }
     }
 }
@@ -232,11 +252,20 @@ final class CourseDetailModel {
     }
 
     var state: State = .loading
+    /// The best ghost available to race here, if any.
+    var rival: (ghost: GhostTrajectory, username: String, score: Int)?
 
     /// Convenience for the view's title.
     var course: Course? {
         if case .ready(let course) = state { return course }
         return nil
+    }
+
+    /// Ghosts are a bonus, never a blocker: a failure here leaves the
+    /// course fully driveable.
+    func loadRival(courseId: String, api: SupabaseAPI?) async {
+        guard let api, await api.userId != nil else { return }
+        rival = try? await api.bestGhost(courseId: courseId)
     }
 
     func load(courseId: String, preloaded: Course? = nil, api: SupabaseAPI?) async {

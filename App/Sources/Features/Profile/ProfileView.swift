@@ -9,6 +9,7 @@ struct ProfileView: View {
     @State private var confirmDelete = false
     @State private var deleting = false
     @State private var notice: String?
+    @State private var stats = ProfileStats()
 
     var body: some View {
         NavigationStack {
@@ -17,13 +18,17 @@ struct ProfileView: View {
                     // Rating hero — fills with verified runs.
                     VStack(spacing: 12) {
                         ZStack {
-                            GlowRing(progress: 0, lineWidth: 11)
-                                .frame(width: 168, height: 168)
+                            GlowRing(
+                                progress: Double(stats.rating) / 3_000,
+                                lineWidth: 11
+                            )
+                            .frame(width: 168, height: 168)
                             VStack(spacing: 2) {
-                                Text("—")
+                                Text(stats.rating > 0 ? "\(stats.rating)" : "—")
                                     .font(.system(size: 52, weight: .black, design: .rounded))
+                                    .monospacedDigit()
                                     .foregroundStyle(.white)
-                                Text("UNRANKED")
+                                Text(stats.ratingTier.uppercased())
                                     .font(.caption2.weight(.black))
                                     .tracking(1.6)
                                     .foregroundStyle(SOTheme.textSecondary)
@@ -54,10 +59,35 @@ struct ProfileView: View {
                     }
 
                     HStack(spacing: 10) {
-                        StatTile(label: "Verified runs", value: "0")
-                        StatTile(label: "Wins", value: "0")
-                        StatTile(label: "Top 10", value: "0")
+                        StatTile(label: "Verified runs", value: "\(stats.verifiedRuns)")
+                        StatTile(label: "Wins", value: "\(stats.wins)")
+                        StatTile(label: "Top 10", value: "\(stats.topTen)")
                     }
+
+                    NavigationLink {
+                        HistoryView()
+                    } label: {
+                        HStack(spacing: 14) {
+                            Image(systemName: "clock.arrow.circlepath")
+                                .foregroundStyle(SOTheme.heatStart)
+                                .frame(width: 40, height: 40)
+                                .background(SOTheme.heatStart.opacity(0.12), in: Circle())
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Your runs")
+                                    .font(.headline)
+                                    .foregroundStyle(.white)
+                                Text("Every drive you've recorded.")
+                                    .font(.caption)
+                                    .foregroundStyle(SOTheme.textSecondary)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption.weight(.bold))
+                                .foregroundStyle(SOTheme.textSecondary)
+                        }
+                        .soCard(padding: 14)
+                    }
+                    .buttonStyle(.plain)
 
                     NavigationLink {
                         FriendsView()
@@ -177,6 +207,7 @@ struct ProfileView: View {
             .navigationTitle("Profile")
             .sheet(isPresented: $showPaywall) { PaywallView() }
             .sheet(isPresented: $showSignIn) { SignInView() }
+            .task(id: environment.isSignedIn) { await loadStats() }
             .confirmationDialog(
                 "Delete your account?",
                 isPresented: $confirmDelete,
@@ -198,6 +229,36 @@ struct ProfileView: View {
         }
     }
 
+    /// Real records, or honest zeros — never fabricated.
+    private func loadStats() async {
+        guard let api = environment.api, let id = await api.userId else {
+            stats = ProfileStats()
+            return
+        }
+        struct Profile: Decodable {
+            var rating: Int
+            var rating_tier: String
+        }
+        struct Entry: Decodable { var rank: Int }
+        if let profiles = try? await api.get(
+            "profiles?id=eq.\(id)&select=rating,rating_tier", as: [Profile].self
+        ), let profile = profiles.first {
+            stats.rating = profile.rating
+            stats.ratingTier = profile.rating_tier
+        }
+        if let runs = try? await api.get(
+            "runs?user_id=eq.\(id)&verification=eq.verified&select=id", as: [IdRow].self
+        ) {
+            stats.verifiedRuns = runs.count
+        }
+        if let entries = try? await api.get(
+            "course_leaderboards?user_id=eq.\(id)&select=rank", as: [Entry].self
+        ) {
+            stats.wins = entries.filter { $0.rank == 1 }.count
+            stats.topTen = entries.filter { $0.rank <= 10 }.count
+        }
+    }
+
     private func deleteAccount() async {
         guard let api = environment.api, await api.userId != nil else {
             notice = "You're not signed in on this device."
@@ -214,6 +275,16 @@ struct ProfileView: View {
         }
     }
 }
+
+struct ProfileStats {
+    var rating = 0
+    var ratingTier = "unranked"
+    var verifiedRuns = 0
+    var wins = 0
+    var topTen = 0
+}
+
+struct IdRow: Decodable { var id: String }
 
 struct AccountRow: View {
     let icon: String

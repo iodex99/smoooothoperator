@@ -1,6 +1,7 @@
 import Foundation
 import SOCore
 import SOCourse
+import SOGhost
 import SOModels
 import SOSync
 import SOTelemetry
@@ -188,6 +189,10 @@ actor SupabaseAPI {
         )
     }
 
+    func delete(_ path: String) async throws {
+        _ = try await send(path: "rest/v1/\(path)", method: "DELETE", body: nil)
+    }
+
     func rpc(_ name: String, json: [String: Any]) async throws -> Data {
         try await send(
             path: "rest/v1/rpc/\(name)",
@@ -225,6 +230,26 @@ actor SupabaseAPI {
             )
         }
         return (polyline, gates)
+    }
+
+    /// The best ghost available to race on a course (spec §§32-36).
+    /// RLS decides what "available" means — your own ghosts always, others'
+    /// only when their privacy setting allows it — so this cannot leak a
+    /// ghost the owner hid.
+    func bestGhost(courseId: String) async throws -> (ghost: GhostTrajectory, username: String, score: Int)? {
+        struct Row: Decodable {
+            var trajectory: GhostTrajectory
+            var score: Int
+            var profiles: Profile?
+            struct Profile: Decodable { var username: String }
+        }
+        let rows = try await get(
+            "ghosts?course_id=eq.\(courseId)&select=trajectory,score,profiles(username)"
+                + "&order=score.desc&limit=1",
+            as: [Row].self
+        )
+        guard let row = rows.first, !row.trajectory.points.isEmpty else { return nil }
+        return (row.trajectory, row.profiles?.username ?? "a rival", row.score)
     }
 
     // MARK: - Storage & functions
