@@ -20,6 +20,11 @@ import { trajectoryDuration } from "../_shared/pipeline/types.ts";
 import type { GeoCoordinate } from "../_shared/pipeline/geo.ts";
 import { parseScoringConfig } from "../_shared/pipeline/scoring.ts";
 import { generateGhost } from "../_shared/pipeline/ghost.ts";
+import {
+  FREE_RUNS_PER_DAY,
+  utcDayStart,
+  withinAllowance,
+} from "../_shared/allowance.ts";
 
 export interface ScoreRunOptions {
   /** Authenticated caller. When present the run must belong to them; when
@@ -139,6 +144,35 @@ export async function handleScoreRun(
     // integrity flags in the response body.
     if (options?.callerId !== undefined && run.user_id !== options.callerId) {
       return { status: 404, body: { error: "run not found" } };
+    }
+
+    // Free-tier ceiling, enforced where it cannot be edited away. The client
+    // stops you starting a fourth run; this stops a modified client from
+    // RANKING one. The run itself is kept — the drive happened — it simply
+    // isn't scored until the allowance resets or the user upgrades.
+    const proResponse = await rest(`/rpc/has_active_pro`, {
+      method: "POST",
+      body: JSON.stringify({ p_user: run.user_id }),
+    });
+    const isPro = proResponse.ok ? await proResponse.json() === true : false;
+    if (!isPro) {
+      const todayResponse = await rest(
+        `/runs?user_id=eq.${run.user_id}&status=eq.scored` +
+          `&created_at=gte.${utcDayStart()}&select=id`,
+      );
+      const scoredToday = todayResponse.ok
+        ? ((await todayResponse.json()) as unknown[]).length
+        : 0;
+      if (!withinAllowance(scoredToday, isPro)) {
+        await failJob("daily allowance reached");
+        return {
+          status: 402,
+          body: {
+            error: "daily_allowance_reached",
+            freeRunsPerDay: FREE_RUNS_PER_DAY,
+          },
+        };
+      }
     }
 
     const envelopeResponse = await rest(

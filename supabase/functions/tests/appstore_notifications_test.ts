@@ -72,6 +72,7 @@ Deno.test("refunds and revocations remove entitlement immediately", () => {
     statusFor({
       notificationType: "REFUND",
       originalTransactionId: "1",
+      transactionId: "1",
       productId: "p",
       environment: "Production",
       revoked: true,
@@ -84,6 +85,7 @@ Deno.test("a failed renewal in grace keeps access; billing retry does not", () =
   const base = {
     notificationType: "DID_FAIL_TO_RENEW",
     originalTransactionId: "1",
+      transactionId: "1",
     productId: "p",
     environment: "Production",
     revoked: false,
@@ -98,6 +100,7 @@ Deno.test("cancelling auto-renew keeps access until the paid period ends", () =>
       notificationType: "DID_CHANGE_RENEWAL_STATUS",
       subtype: "AUTO_RENEW_DISABLED",
       originalTransactionId: "1",
+      transactionId: "1",
       productId: "p",
       environment: "Production",
       revoked: false,
@@ -113,6 +116,7 @@ Deno.test("expiry and grace-period expiry both end entitlement", () => {
       statusFor({
         notificationType: type,
         originalTransactionId: "1",
+      transactionId: "1",
         productId: "p",
         environment: "Production",
         revoked: false,
