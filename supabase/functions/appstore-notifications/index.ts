@@ -43,7 +43,7 @@ function base64ToBytes(value: string): Uint8Array {
 }
 
 async function sha256Hex(bytes: Uint8Array): Promise<string> {
-  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  const digest = await crypto.subtle.digest("SHA-256", bytes.buffer as ArrayBuffer);
   return Array.from(new Uint8Array(digest))
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
@@ -71,7 +71,7 @@ async function publicKeyFromCertificate(der: Uint8Array): Promise<CryptoKey> {
   const spki = der.slice(index, index + marker.length + 2 + 66);
   return await crypto.subtle.importKey(
     "spki",
-    spki,
+    spki.buffer.slice(spki.byteOffset, spki.byteOffset + spki.byteLength) as ArrayBuffer,
     { name: "ECDSA", namedCurve: "P-256" },
     false,
     ["verify"],
@@ -102,8 +102,8 @@ export async function verifySignedPayload(
   const verified = await crypto.subtle.verify(
     { name: "ECDSA", hash: "SHA-256" },
     leafKey,
-    base64UrlToBytes(signaturePart),
-    encoder.encode(`${headerPart}.${payloadPart}`),
+    base64UrlToBytes(signaturePart).buffer as ArrayBuffer,
+    encoder.encode(`${headerPart}.${payloadPart}`).buffer as ArrayBuffer,
   );
   if (!verified) throw new Error("signature does not verify");
 
