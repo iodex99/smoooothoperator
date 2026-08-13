@@ -55,12 +55,19 @@ final class AppEnvironment {
     /// provisionally with the same config the server scores with).
     func loadScoringConfig() async {
         guard let api else { return }
+        // Route the server row through ScoringConfig.load, which rejects
+        // structurally invalid configs. Decoding it raw let a malformed row
+        // reach the scoring engine — the audit found that path could crash
+        // every client at the end of every drive.
         struct Row: Decodable { var config: ScoringConfig }
-        if let rows = try? await api.get(
+        guard let rows = try? await api.get(
             "scoring_configs?active=eq.true&select=config&limit=1", as: [Row].self
-        ), let row = rows.first {
-            scoringConfig = row.config
-        }
+        ), let row = rows.first else { return }
+        guard
+            let data = try? JSONEncoder().encode(row.config),
+            let validated = try? ScoringConfig.load(from: data)
+        else { return }
+        scoringConfig = validated
     }
 
     /// Drains the offline queue and refreshes the badge. Safe to call often:

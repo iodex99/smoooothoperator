@@ -65,6 +65,20 @@ public struct TrajectoryProcessor: Sendable {
         var rejectedSinceLastKept = 0
 
         for sample in samples {
+            // Gate 0 — finiteness. NaN passes every comparison below (all NaN
+            // comparisons are false), so an unguarded NaN fix is KEPT and then
+            // poisons the teleport gate for every later sample: a whole valid
+            // drive reports 0 m travelled and 0 gates hit.
+            guard sample.timestamp.isFinite,
+                sample.coordinate.latitude.isFinite,
+                sample.coordinate.longitude.isFinite,
+                sample.horizontalAccuracy.isFinite
+            else {
+                rejectedCount += 1
+                rejectedSinceLastKept += 1
+                continue
+            }
+
             // Gate 1 — accuracy: negative means invalid fix, large means noise.
             guard sample.horizontalAccuracy >= 0,
                 sample.horizontalAccuracy <= config.maxHorizontalAccuracyMeters
