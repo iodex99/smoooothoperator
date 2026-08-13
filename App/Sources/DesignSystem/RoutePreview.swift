@@ -76,12 +76,12 @@ struct RoutePreview: View {
         else { return [] }
         let spanX = max(maxX - minX, 1e-9)
         let spanY = max(maxY - minY, 1e-9)
-        let inset: Double = 10
-        let width = size.width - inset * 2
-        let height = size.height - inset * 2
+        let inset = 10.0
+        let width = Double(size.width) - inset * 2
+        let height = Double(size.height) - inset * 2
         let scale = min(width / spanX, height / spanY)
-        let offsetX = inset + (width - spanX * scale) / 2
-        let offsetY = inset + (height - spanY * scale) / 2
+        let offsetX = inset + (width - spanX * scale) / 2.0
+        let offsetY = inset + (height - spanY * scale) / 2.0
         return zip(xs, ys).map { x, y in
             CGPoint(x: offsetX + (x - minX) * scale, y: offsetY + (maxY - y) * scale)
         }
