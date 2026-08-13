@@ -55,8 +55,9 @@ OpenStreetMap. Course names/descriptions are our own editorial content.
 Broad, revenue-weighted coverage (directive 2026-08-13): the catalog leads
 with the monetization markets (spec §10 — US, UK, DE, CA, AU, NZ, CH,
 Nordics, NL, IE, UAE) while keeping India genuinely deep, and only ships
-courses drivers recognize. Current shape: 250 courses across 30 countries
-(US 53, IN 30, GB 20, AU 17, IT 13, CH/DE/FR 11 each, CA 10, …).
+courses drivers recognize. Current shape: 397 courses across 30 countries
+(US 106, GB 40, AU 33, IN 30, DE 23, CH 22, CA 19, NZ 16, NO 14, IT 13, …)
+— the 2026-08-13 doubling directive applied to every §10 market.
 Growth is a manifest edit — pipeline, validation, and benchmarking are
 automatic; the pgTAP catalog suite enforces size floors, market depth, and
 integrity on every regeneration.
@@ -66,4 +67,6 @@ integrity on every regeneration.
 OSM access/width/toll tagging makes the routing engine refuse these despite
 being legendary drives; revisit with a custom routing profile later:
 Conor Pass (IE, width limits), Kalhatti Ghat (IN, forest checkpoint tags),
-Silvretta Hochalpenstraße (AT, toll/private tagging).
+Silvretta Hochalpenstraße (AT, toll/private tagging), Lions Road (AU),
+Gentle Annie (NZ), San Marcos Pass CA-154 (US), Unaweep Canyon CO-141 (US)
+— persistent wrong-way routings or >80 km after routing.

@@ -1,0 +1,2314 @@
+[
+{
+"slug": "gb-winnats-pass",
+"name": "Winnats Pass",
+"country": "GB",
+"region": "Derbyshire",
+"city": "Castleton",
+"category": "canyon",
+"description": "A limestone cleft at 20% grade.",
+"waypoints": [
+[
+53.341,
+-1.785
+],
+[
+53.34,
+-1.83
+]
+],
+"expectedKm": [
+3,
+10
+],
+"difficultyHint": 5
+},
+{
+"slug": "gb-hartside",
+"name": "Hartside Pass \u2014 A686",
+"country": "GB",
+"region": "Cumbria",
+"city": "Alston",
+"category": "moorland",
+"description": "The North Pennines' famous caf\u00e9 climb.",
+"waypoints": [
+[
+54.81,
+-2.44
+],
+[
+54.73,
+-2.66
+]
+],
+"expectedKm": [
+12,
+25
+],
+"difficultyHint": 4
+},
+{
+"slug": "gb-zig-zag-hill",
+"name": "Zig Zag Hill \u2014 B3081",
+"country": "GB",
+"region": "Dorset",
+"city": "Shaftesbury",
+"category": "forest",
+"description": "England's bendiest road, hairpin on hairpin.",
+"waypoints": [
+[
+51.002,
+-2.175
+],
+[
+50.97,
+-2.12
+]
+],
+"expectedKm": [
+3,
+12
+],
+"difficultyHint": 5
+},
+{
+"slug": "gb-jurassic-b3157",
+"name": "Jurassic Coast Road \u2014 B3157",
+"country": "GB",
+"region": "Dorset",
+"city": "Abbotsbury",
+"category": "coastal",
+"description": "Chesil Beach rollercoaster crests.",
+"waypoints": [
+[
+50.66,
+-2.59
+],
+[
+50.61,
+-2.45
+]
+],
+"expectedKm": [
+10,
+22
+],
+"difficultyHint": 3
+},
+{
+"slug": "gb-elan-valley",
+"name": "Elan Valley Mountain Road",
+"country": "GB",
+"region": "Powys, Wales",
+"city": "Rhayader",
+"category": "moorland",
+"description": "Dam country to the wild Cambrian plateau.",
+"waypoints": [
+[
+52.3,
+-3.51
+],
+[
+52.33,
+-3.74
+]
+],
+"expectedKm": [
+15,
+30
+],
+"difficultyHint": 4
+},
+{
+"slug": "gb-pen-y-gwryd",
+"name": "Pen-y-Gwryd to Beddgelert \u2014 A498",
+"country": "GB",
+"region": "Gwynedd, Wales",
+"city": "Beddgelert",
+"category": "alpine",
+"description": "Snowdon's southern flank into the Glaslyn gorge.",
+"waypoints": [
+[
+53.085,
+-4.0
+],
+[
+53.01,
+-4.1
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 4
+},
+{
+"slug": "gb-bala-b4391",
+"name": "Bala Moorland Road \u2014 B4391",
+"country": "GB",
+"region": "Gwynedd, Wales",
+"city": "Bala",
+"category": "moorland",
+"description": "Empty upland straights and drops to Ffestiniog.",
+"waypoints": [
+[
+52.885,
+-3.63
+],
+[
+52.95,
+-3.9
+]
+],
+"expectedKm": [
+15,
+30
+],
+"difficultyHint": 3
+},
+{
+"slug": "gb-rest-and-be-thankful",
+"name": "Rest and Be Thankful \u2014 A83",
+"country": "GB",
+"region": "Argyll, Scotland",
+"city": "Arrochar",
+"category": "highland",
+"description": "The old military road's storied climb.",
+"waypoints": [
+[
+56.2,
+-4.75
+],
+[
+56.23,
+-4.85
+]
+],
+"expectedKm": [
+6,
+18
+],
+"difficultyHint": 3
+},
+{
+"slug": "gb-glen-shiel",
+"name": "Glen Shiel \u2014 A87 Five Sisters",
+"country": "GB",
+"region": "Highland, Scotland",
+"city": "Shiel Bridge",
+"category": "highland",
+"description": "Munro walls closing in on both sides.",
+"waypoints": [
+[
+57.16,
+-5.3
+],
+[
+57.22,
+-5.42
+]
+],
+"expectedKm": [
+10,
+25
+],
+"difficultyHint": 3
+},
+{
+"slug": "gb-lecht",
+"name": "The Lecht \u2014 A939",
+"country": "GB",
+"region": "Moray, Scotland",
+"city": "Tomintoul",
+"category": "highland",
+"description": "Ski-road rollercoaster over the Ladder Hills.",
+"waypoints": [
+[
+57.255,
+-3.37
+],
+[
+57.19,
+-3.24
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 4
+},
+{
+"slug": "gb-cairn-o-mount",
+"name": "Cairn o' Mount \u2014 B974",
+"country": "GB",
+"region": "Aberdeenshire, Scotland",
+"city": "Fettercairn",
+"category": "highland",
+"description": "A 16% heather climb with half of Angus below.",
+"waypoints": [
+[
+56.85,
+-2.57
+],
+[
+56.95,
+-2.65
+]
+],
+"expectedKm": [
+10,
+22
+],
+"difficultyHint": 4
+},
+{
+"slug": "gb-st-marys-loch",
+"name": "Moffat to St Mary's Loch \u2014 A708",
+"country": "GB",
+"region": "Scottish Borders",
+"city": "Moffat",
+"category": "moorland",
+"description": "Grey Mare's Tail valley sweepers.",
+"waypoints": [
+[
+55.33,
+-3.44
+],
+[
+55.49,
+-3.2
+]
+],
+"expectedKm": [
+18,
+35
+],
+"difficultyHint": 3
+},
+{
+"slug": "gb-quiraing",
+"name": "The Quiraing Road",
+"country": "GB",
+"region": "Isle of Skye, Scotland",
+"city": "Staffin",
+"category": "alpine",
+"description": "Single-track hairpins through landslip pinnacles.",
+"waypoints": [
+[
+57.621,
+-6.26
+],
+[
+57.64,
+-6.32
+]
+],
+"expectedKm": [
+3,
+24
+],
+"difficultyHint": 5
+},
+{
+"slug": "gb-applecross-coastal",
+"name": "Applecross Coast Road",
+"country": "GB",
+"region": "Wester Ross, Scotland",
+"city": "Applecross",
+"category": "coastal",
+"description": "The gentler, endless-view way off the peninsula.",
+"waypoints": [
+[
+57.4326,
+-5.8106
+],
+[
+57.58,
+-5.75
+]
+],
+"expectedKm": [
+20,
+40
+],
+"difficultyHint": 3
+},
+{
+"slug": "gb-swaledale",
+"name": "Swaledale \u2014 B6270",
+"country": "GB",
+"region": "North Yorkshire",
+"city": "Reeth",
+"category": "moorland",
+"description": "Barn-and-wall dales at their finest.",
+"waypoints": [
+[
+54.39,
+-1.95
+],
+[
+54.38,
+-2.16
+]
+],
+"expectedKm": [
+12,
+28
+],
+"difficultyHint": 3
+},
+{
+"slug": "gb-military-road-wight",
+"name": "Military Road \u2014 A3055",
+"country": "GB",
+"region": "Isle of Wight",
+"city": "Freshwater",
+"category": "coastal",
+"description": "Chalk-cliff sweepers the sea keeps stealing.",
+"waypoints": [
+[
+50.67,
+-1.51
+],
+[
+50.61,
+-1.34
+]
+],
+"expectedKm": [
+12,
+25
+],
+"difficultyHint": 2
+},
+{
+"slug": "gb-b3306",
+"name": "St Ives to St Just \u2014 B3306",
+"country": "GB",
+"region": "Cornwall",
+"city": "St Ives",
+"category": "coastal",
+"description": "Hedge-walled moor above the Atlantic tin coast.",
+"waypoints": [
+[
+50.21,
+-5.49
+],
+[
+50.125,
+-5.68
+]
+],
+"expectedKm": [
+15,
+28
+],
+"difficultyHint": 4
+},
+{
+"slug": "gb-torr-head",
+"name": "Torr Head Road",
+"country": "GB",
+"region": "County Antrim, Northern Ireland",
+"city": "Ballycastle",
+"category": "coastal",
+"description": "The Antrim coast's vertiginous single-track high road.",
+"waypoints": [
+[
+55.19,
+-6.19
+],
+[
+55.09,
+-6.07
+]
+],
+"expectedKm": [
+12,
+25
+],
+"difficultyHint": 5
+},
+{
+"slug": "gb-long-mynd",
+"name": "The Burway \u2014 Long Mynd",
+"country": "GB",
+"region": "Shropshire",
+"city": "Church Stretton",
+"category": "moorland",
+"description": "A one-in-four shelf onto the Mynd plateau.",
+"waypoints": [
+[
+52.539,
+-2.81
+],
+[
+52.53,
+-2.87
+]
+],
+"expectedKm": [
+3,
+12
+],
+"difficultyHint": 5
+},
+{
+"slug": "gb-buxton-a53",
+"name": "Axe Edge \u2014 A53",
+"country": "GB",
+"region": "Derbyshire / Staffordshire",
+"city": "Buxton",
+"category": "moorland",
+"description": "Gritstone moor sweepers past the Winking Man.",
+"waypoints": [
+[
+53.24,
+-1.94
+],
+[
+53.13,
+-2.04
+]
+],
+"expectedKm": [
+12,
+25
+],
+"difficultyHint": 3
+},
+{
+"slug": "de-kyffhaeuser",
+"name": "Kyffh\u00e4user Mountain Road",
+"country": "DE",
+"region": "Thuringia",
+"city": "Bad Frankenhausen",
+"category": "forest",
+"description": "36 hairpins \u2014 Germany's pocket Stelvio.",
+"waypoints": [
+[
+51.356,
+11.1
+],
+[
+51.413,
+11.105
+]
+],
+"expectedKm": [
+5,
+15
+],
+"difficultyHint": 5
+},
+{
+"slug": "de-murgtal",
+"name": "Murgtal \u2014 B462",
+"country": "DE",
+"region": "Baden-W\u00fcrttemberg",
+"city": "Forbach",
+"category": "forest",
+"description": "The Black Forest's river-gorge run.",
+"waypoints": [
+[
+48.84,
+8.33
+],
+[
+48.69,
+8.36
+]
+],
+"expectedKm": [
+15,
+30
+],
+"difficultyHint": 3
+},
+{
+"slug": "de-feldberg",
+"name": "Feldberg Pass \u2014 B317",
+"country": "DE",
+"region": "Baden-W\u00fcrttemberg",
+"city": "Todtnau",
+"category": "alpine",
+"description": "To the Black Forest's highest summit village.",
+"waypoints": [
+[
+47.83,
+7.94
+],
+[
+47.87,
+8.03
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 3
+},
+{
+"slug": "de-hunsrueck",
+"name": "Hunsr\u00fcckh\u00f6henstra\u00dfe \u2014 B327",
+"country": "DE",
+"region": "Rhineland-Palatinate",
+"city": "Morbach",
+"category": "forest",
+"description": "Ridge-line flow between Mosel and Nahe.",
+"waypoints": [
+[
+49.81,
+7.13
+],
+[
+49.95,
+7.28
+]
+],
+"expectedKm": [
+15,
+35
+],
+"difficultyHint": 2
+},
+{
+"slug": "de-pfalz-b48",
+"name": "Pf\u00e4lzerwald \u2014 B48 Annweiler",
+"country": "DE",
+"region": "Rhineland-Palatinate",
+"city": "Annweiler",
+"category": "forest",
+"description": "Castle-crag corners under Trifels.",
+"waypoints": [
+[
+49.2,
+7.97
+],
+[
+49.33,
+7.95
+]
+],
+"expectedKm": [
+12,
+28
+],
+"difficultyHint": 3
+},
+{
+"slug": "de-alpenstrasse-east",
+"name": "Deutsche Alpenstra\u00dfe \u2014 Ruhpolding to Reit",
+"country": "DE",
+"region": "Bavaria",
+"city": "Ruhpolding",
+"category": "alpine",
+"description": "The Alpenstra\u00dfe's prettiest lakes-and-passes leg.",
+"waypoints": [
+[
+47.76,
+12.65
+],
+[
+47.676,
+12.47
+]
+],
+"expectedKm": [
+15,
+32
+],
+"difficultyHint": 3
+},
+{
+"slug": "de-wasserkuppe",
+"name": "Wasserkuppe \u2014 Rh\u00f6n High Road",
+"country": "DE",
+"region": "Hesse",
+"city": "Gersfeld",
+"category": "highland",
+"description": "Glider mountain sweepers on Hesse's roof.",
+"waypoints": [
+[
+50.455,
+9.92
+],
+[
+50.498,
+9.942
+]
+],
+"expectedKm": [
+5,
+16
+],
+"difficultyHint": 3
+},
+{
+"slug": "de-fichtelberg",
+"name": "Fichtelberg Road \u2014 B95",
+"country": "DE",
+"region": "Saxony",
+"city": "Oberwiesenthal",
+"category": "forest",
+"description": "Erzgebirge climb to Saxony's highest town.",
+"waypoints": [
+[
+50.49,
+12.9
+],
+[
+50.42,
+12.97
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 3
+},
+{
+"slug": "de-zollernalb",
+"name": "Lochenpass \u2014 Zollernalb",
+"country": "DE",
+"region": "Baden-W\u00fcrttemberg",
+"city": "Balingen",
+"category": "forest",
+"description": "Swabian Alb scarp with Hohenzollern views.",
+"waypoints": [
+[
+48.27,
+8.85
+],
+[
+48.19,
+8.85
+]
+],
+"expectedKm": [
+6,
+18
+],
+"difficultyHint": 4
+},
+{
+"slug": "de-sauerland-hoehen",
+"name": "Sauerland H\u00f6henstra\u00dfe \u2014 Nordhelle",
+"country": "DE",
+"region": "North Rhine-Westphalia",
+"city": "Herscheid",
+"category": "forest",
+"description": "The Ebbegebirge ridge the club racers love.",
+"waypoints": [
+[
+51.24,
+7.74
+],
+[
+51.16,
+7.77
+]
+],
+"expectedKm": [
+6,
+28
+],
+"difficultyHint": 3
+},
+{
+"slug": "de-edersee",
+"name": "Edersee Randstra\u00dfe",
+"country": "DE",
+"region": "Hesse",
+"city": "Waldeck",
+"category": "forest",
+"description": "Dam-wall curves around the drowned valley.",
+"waypoints": [
+[
+51.185,
+9.05
+],
+[
+51.17,
+8.9
+]
+],
+"expectedKm": [
+10,
+25
+],
+"difficultyHint": 2
+},
+{
+"slug": "ch-simplon",
+"name": "Simplon Pass",
+"country": "CH",
+"region": "Valais",
+"city": "Brig",
+"category": "alpine",
+"description": "Napoleon's grand engineering, still magnificent.",
+"waypoints": [
+[
+46.315,
+7.988
+],
+[
+46.25,
+8.03
+],
+[
+46.195,
+8.1
+]
+],
+"expectedKm": [
+18,
+40
+],
+"difficultyHint": 4
+},
+{
+"slug": "ch-grand-st-bernard",
+"name": "Great St Bernard Pass",
+"country": "CH",
+"region": "Valais",
+"city": "Orsi\u00e8res",
+"category": "alpine",
+"description": "The monks' pass, skipped by the tunnel traffic.",
+"waypoints": [
+[
+46.029,
+7.147
+],
+[
+45.969,
+7.171
+]
+],
+"expectedKm": [
+15,
+35
+],
+"difficultyHint": 4
+},
+{
+"slug": "ch-bernina",
+"name": "Bernina Pass",
+"country": "CH",
+"region": "Graub\u00fcnden",
+"city": "Pontresina",
+"category": "alpine",
+"description": "Glacier-lake sweepers beside the red railway.",
+"waypoints": [
+[
+46.49,
+9.9
+],
+[
+46.41,
+10.03
+]
+],
+"expectedKm": [
+12,
+30
+],
+"difficultyHint": 3
+},
+{
+"slug": "ch-maloja",
+"name": "Maloja Pass",
+"country": "CH",
+"region": "Graub\u00fcnden",
+"city": "Maloja",
+"category": "alpine",
+"description": "The famous stacked wall above Val Bregaglia.",
+"waypoints": [
+[
+46.34,
+9.59
+],
+[
+46.401,
+9.695
+]
+],
+"expectedKm": [
+10,
+25
+],
+"difficultyHint": 5
+},
+{
+"slug": "ch-umbrail",
+"name": "Umbrail Pass",
+"country": "CH",
+"region": "Graub\u00fcnden",
+"city": "Santa Maria",
+"category": "alpine",
+"description": "Switzerland's highest pass road, joining the Stelvio.",
+"waypoints": [
+[
+46.601,
+10.422
+],
+[
+46.539,
+10.442
+]
+],
+"expectedKm": [
+10,
+20
+],
+"difficultyHint": 5
+},
+{
+"slug": "ch-lukmanier",
+"name": "Lukmanier Pass",
+"country": "CH",
+"region": "Graub\u00fcnden / Ticino",
+"city": "Disentis",
+"category": "alpine",
+"description": "The gentle giant between Rhine and Ticino.",
+"waypoints": [
+[
+46.7,
+8.85
+],
+[
+46.56,
+8.8
+]
+],
+"expectedKm": [
+18,
+38
+],
+"difficultyHint": 3
+},
+{
+"slug": "ch-gotthard",
+"name": "Gotthard Pass Road",
+"country": "CH",
+"region": "Uri / Ticino",
+"city": "Andermatt",
+"category": "alpine",
+"description": "The paved sibling of the Tremola cobbles.",
+"waypoints": [
+[
+46.635,
+8.594
+],
+[
+46.556,
+8.567
+]
+],
+"expectedKm": [
+10,
+22
+],
+"difficultyHint": 4
+},
+{
+"slug": "ch-jaun",
+"name": "Jaun Pass",
+"country": "CH",
+"region": "Fribourg / Bern",
+"city": "Jaun",
+"category": "alpine",
+"description": "Pre-Alp cheese country switchbacks.",
+"waypoints": [
+[
+46.619,
+7.163
+],
+[
+46.611,
+7.28
+],
+[
+46.628,
+7.39
+]
+],
+"expectedKm": [
+18,
+35
+],
+"difficultyHint": 4
+},
+{
+"slug": "ch-glaubenbielen",
+"name": "Glaubenbielen Panoramastrasse",
+"country": "CH",
+"region": "Obwalden",
+"city": "Giswil",
+"category": "alpine",
+"description": "S\u00f6renberg's quiet balcony road.",
+"waypoints": [
+[
+46.83,
+8.18
+],
+[
+46.82,
+8.05
+]
+],
+"expectedKm": [
+12,
+28
+],
+"difficultyHint": 4
+},
+{
+"slug": "ch-weissenstein",
+"name": "Weissenstein Road",
+"country": "CH",
+"region": "Solothurn",
+"city": "Solothurn",
+"category": "alpine",
+"description": "Jura hairpins to the Mittelland's grandstand.",
+"waypoints": [
+[
+47.22,
+7.53
+],
+[
+47.253,
+7.51
+]
+],
+"expectedKm": [
+5,
+15
+],
+"difficultyHint": 4
+},
+{
+"slug": "ch-chasseral",
+"name": "Chasseral Road",
+"country": "CH",
+"region": "Bern",
+"city": "St-Imier",
+"category": "highland",
+"description": "The western Jura's highest crest drive.",
+"waypoints": [
+[
+47.15,
+7.0
+],
+[
+47.133,
+7.059
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 3
+},
+{
+"slug": "ca-kaslo-new-denver",
+"name": "Kaslo to New Denver \u2014 BC-31A",
+"country": "CA",
+"region": "British Columbia",
+"city": "Kaslo",
+"category": "forest",
+"description": "Kootenay ghost-town twisties between two lakes.",
+"waypoints": [
+[
+49.91,
+-116.91
+],
+[
+49.99,
+-117.37
+]
+],
+"expectedKm": [
+35,
+55
+],
+"difficultyHint": 4
+},
+{
+"slug": "ca-manning",
+"name": "Manning Park \u2014 Crowsnest Hwy 3",
+"country": "CA",
+"region": "British Columbia",
+"city": "Hope",
+"category": "alpine",
+"description": "Allison Pass through cathedral cedars.",
+"waypoints": [
+[
+49.38,
+-121.44
+],
+[
+49.064,
+-120.787
+]
+],
+"expectedKm": [
+45,
+78
+],
+"difficultyHint": 3
+},
+{
+"slug": "ca-bow-valley",
+"name": "Bow Valley Parkway \u2014 1A",
+"country": "CA",
+"region": "Alberta",
+"city": "Banff",
+"category": "forest",
+"description": "The slow, wild way to Lake Louise.",
+"waypoints": [
+[
+51.19,
+-115.55
+],
+[
+51.426,
+-116.181
+]
+],
+"expectedKm": [
+40,
+60
+],
+"difficultyHint": 2
+},
+{
+"slug": "ca-david-thompson",
+"name": "David Thompson Highway \u2014 AB-11",
+"country": "CA",
+"region": "Alberta",
+"city": "Nordegg",
+"category": "alpine",
+"description": "Abraham Lake's windswept blue miles.",
+"waypoints": [
+[
+52.47,
+-116.08
+],
+[
+52.31,
+-116.75
+]
+],
+"expectedKm": [
+45,
+70
+],
+"difficultyHint": 2
+},
+{
+"slug": "ca-algonquin",
+"name": "Algonquin \u2014 Highway 60 Corridor",
+"country": "CA",
+"region": "Ontario",
+"city": "Whitney",
+"category": "forest",
+"description": "Moose-country curves through the park.",
+"waypoints": [
+[
+45.49,
+-78.26
+],
+[
+45.55,
+-78.73
+]
+],
+"expectedKm": [
+35,
+60
+],
+"difficultyHint": 2
+},
+{
+"slug": "ca-hwy-507",
+"name": "Kawartha Highlands \u2014 Highway 507",
+"country": "CA",
+"region": "Ontario",
+"city": "Buckhorn",
+"category": "forest",
+"description": "Ontario's twistiest cottage-country road.",
+"waypoints": [
+[
+44.56,
+-78.34
+],
+[
+44.73,
+-78.52
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 3
+},
+{
+"slug": "ca-forks-credit",
+"name": "Forks of the Credit Road",
+"country": "CA",
+"region": "Ontario",
+"city": "Caledon",
+"category": "forest",
+"description": "The GTA's beloved hairpin ravine.",
+"waypoints": [
+[
+43.82,
+-79.95
+],
+[
+43.81,
+-80.02
+]
+],
+"expectedKm": [
+4,
+14
+],
+"difficultyHint": 4
+},
+{
+"slug": "ca-charlevoix",
+"name": "Charlevoix \u2014 Route 362",
+"country": "CA",
+"region": "Quebec",
+"city": "Baie-Saint-Paul",
+"category": "coastal",
+"description": "Crater-country hills over the St. Lawrence.",
+"waypoints": [
+[
+47.44,
+-70.5
+],
+[
+47.65,
+-70.15
+]
+],
+"expectedKm": [
+35,
+55
+],
+"difficultyHint": 3
+},
+{
+"slug": "ca-fundy-trail",
+"name": "Fundy Trail Parkway",
+"country": "CA",
+"region": "New Brunswick",
+"city": "St. Martins",
+"category": "coastal",
+"description": "Highest tides on earth beneath the cliffs.",
+"waypoints": [
+[
+45.35,
+-65.42
+],
+[
+45.42,
+-65.26
+]
+],
+"expectedKm": [
+15,
+35
+],
+"difficultyHint": 3
+},
+{
+"slug": "au-old-pacific",
+"name": "Old Pacific Highway",
+"country": "AU",
+"region": "New South Wales",
+"city": "Cowan",
+"category": "forest",
+"description": "Sydney's sacred Sunday ribbon along the Hawkesbury.",
+"waypoints": [
+[
+-33.59,
+151.17
+],
+[
+-33.47,
+151.22
+]
+],
+"expectedKm": [
+15,
+30
+],
+"difficultyHint": 4
+},
+{
+"slug": "au-galston-gorge",
+"name": "Galston Gorge",
+"country": "AU",
+"region": "New South Wales",
+"city": "Hornsby",
+"category": "canyon",
+"description": "Hairpin switchbacks hidden in Sydney's north.",
+"waypoints": [
+[
+-33.68,
+151.09
+],
+[
+-33.65,
+151.04
+]
+],
+"expectedKm": [
+4,
+12
+],
+"difficultyHint": 5
+},
+{
+"slug": "au-sea-cliff",
+"name": "Grand Pacific Drive \u2014 Sea Cliff Bridge",
+"country": "AU",
+"region": "New South Wales",
+"city": "Clifton",
+"category": "coastal",
+"description": "The bridge that floats along the escarpment's toe.",
+"waypoints": [
+[
+-34.21,
+150.98
+],
+[
+-34.32,
+150.92
+]
+],
+"expectedKm": [
+12,
+25
+],
+"difficultyHint": 2
+},
+{
+"slug": "au-brown-mountain",
+"name": "Brown Mountain \u2014 Snowy Mountains Hwy",
+"country": "AU",
+"region": "New South Wales",
+"city": "Bemboka",
+"category": "forest",
+"description": "Rainforest hairpins up the Monaro scarp.",
+"waypoints": [
+[
+-36.63,
+149.57
+],
+[
+-36.6,
+149.4
+]
+],
+"expectedKm": [
+12,
+28
+],
+"difficultyHint": 4
+},
+{
+"slug": "au-alpine-way",
+"name": "Alpine Way \u2014 Thredbo",
+"country": "AU",
+"region": "New South Wales",
+"city": "Jindabyne",
+"category": "alpine",
+"description": "Kosciuszko's valley road to the ski gates.",
+"waypoints": [
+[
+-36.42,
+148.62
+],
+[
+-36.5,
+148.3
+]
+],
+"expectedKm": [
+30,
+50
+],
+"difficultyHint": 3
+},
+{
+"slug": "au-dandenong",
+"name": "Mount Dandenong Tourist Road",
+"country": "AU",
+"region": "Victoria",
+"city": "Sassafras",
+"category": "forest",
+"description": "Fern-gully curves in Melbourne's backyard.",
+"waypoints": [
+[
+-37.86,
+145.34
+],
+[
+-37.83,
+145.35
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 3
+},
+{
+"slug": "au-lake-mountain",
+"name": "Lake Mountain Road",
+"country": "AU",
+"region": "Victoria",
+"city": "Marysville",
+"category": "alpine",
+"description": "Snow-gum sweepers to the cross-country slopes.",
+"waypoints": [
+[
+-37.51,
+145.75
+],
+[
+-37.5,
+145.88
+]
+],
+"expectedKm": [
+10,
+22
+],
+"difficultyHint": 4
+},
+{
+"slug": "au-baw-baw",
+"name": "Mount Baw Baw Road",
+"country": "AU",
+"region": "Victoria",
+"city": "Noojee",
+"category": "alpine",
+"description": "Victoria's steepest bitumen \u2014 respect the last 6 km.",
+"waypoints": [
+[
+-37.88,
+146.0
+],
+[
+-37.84,
+146.27
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 5
+},
+{
+"slug": "au-skenes-forrest",
+"name": "Skenes Creek to Forrest",
+"country": "AU",
+"region": "Victoria",
+"city": "Apollo Bay",
+"category": "forest",
+"description": "The Otways' inland secret behind the GOR.",
+"waypoints": [
+[
+-38.72,
+143.71
+],
+[
+-38.52,
+143.71
+]
+],
+"expectedKm": [
+20,
+38
+],
+"difficultyHint": 4
+},
+{
+"slug": "au-tawonga-gap",
+"name": "Tawonga Gap",
+"country": "AU",
+"region": "Victoria",
+"city": "Bright",
+"category": "alpine",
+"description": "The Kiewa valley lookout climb.",
+"waypoints": [
+[
+-36.73,
+146.92
+],
+[
+-36.71,
+147.0
+]
+],
+"expectedKm": [
+8,
+38
+],
+"difficultyHint": 4
+},
+{
+"slug": "au-gillies-range",
+"name": "Gillies Range Road",
+"country": "AU",
+"region": "Queensland",
+"city": "Gordonvale",
+"category": "ghat",
+"description": "263 corners in 19 km up the tableland wall.",
+"waypoints": [
+[
+-17.1,
+145.78
+],
+[
+-17.22,
+145.68
+]
+],
+"expectedKm": [
+15,
+30
+],
+"difficultyHint": 5
+},
+{
+"slug": "au-tamborine",
+"name": "Tamborine Mountain Road",
+"country": "AU",
+"region": "Queensland",
+"city": "Oxenford",
+"category": "forest",
+"description": "Gold Coast hinterland rainforest climb.",
+"waypoints": [
+[
+-27.89,
+153.2
+],
+[
+-27.94,
+153.15
+]
+],
+"expectedKm": [
+8,
+32
+],
+"difficultyHint": 4
+},
+{
+"slug": "au-springbrook",
+"name": "Springbrook Road",
+"country": "AU",
+"region": "Queensland",
+"city": "Mudgeeraba",
+"category": "forest",
+"description": "Waterfall country switchbacks above the Coast.",
+"waypoints": [
+[
+-28.08,
+153.32
+],
+[
+-28.19,
+153.27
+]
+],
+"expectedKm": [
+15,
+30
+],
+"difficultyHint": 4
+},
+{
+"slug": "au-elephant-pass",
+"name": "Elephant Pass \u2014 A4",
+"country": "AU",
+"region": "Tasmania",
+"city": "St Marys",
+"category": "forest",
+"description": "Pancake-barn hairpins off the east coast.",
+"waypoints": [
+[
+-41.58,
+148.19
+],
+[
+-41.63,
+148.28
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 4
+},
+{
+"slug": "au-cethana",
+"name": "Cethana \u2014 C136",
+"country": "AU",
+"region": "Tasmania",
+"city": "Sheffield",
+"category": "canyon",
+"description": "Targa's most feared gorge stage.",
+"waypoints": [
+[
+-41.38,
+146.33
+],
+[
+-41.47,
+146.15
+]
+],
+"expectedKm": [
+18,
+35
+],
+"difficultyHint": 5
+},
+{
+"slug": "au-99-bends",
+"name": "Queenstown 99 Bends \u2014 Lyell Highway",
+"country": "AU",
+"region": "Tasmania",
+"city": "Queenstown",
+"category": "alpine",
+"description": "Moonscape hairpins out of the mining amphitheatre.",
+"waypoints": [
+[
+-42.08,
+145.55
+],
+[
+-42.06,
+145.63
+]
+],
+"expectedKm": [
+5,
+15
+],
+"difficultyHint": 5
+},
+{
+"slug": "nz-haast-pass",
+"name": "Haast Pass \u2014 SH6",
+"country": "NZ",
+"region": "West Coast",
+"city": "Makarora",
+"category": "alpine",
+"description": "Fern-walled gates between the lakes and the wild coast.",
+"waypoints": [
+[
+-44.23,
+169.23
+],
+[
+-44.1,
+169.35
+]
+],
+"expectedKm": [
+20,
+40
+],
+"difficultyHint": 3
+},
+{
+"slug": "nz-port-hills",
+"name": "Summit Road \u2014 Port Hills",
+"country": "NZ",
+"region": "Canterbury",
+"city": "Christchurch",
+"category": "highland",
+"description": "Crater-rim curves between city and harbour.",
+"waypoints": [
+[
+-43.6,
+172.65
+],
+[
+-43.61,
+172.73
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 3
+},
+{
+"slug": "nz-akaroa-summit",
+"name": "Akaroa Summit Road",
+"country": "NZ",
+"region": "Canterbury",
+"city": "Akaroa",
+"category": "highland",
+"description": "Banks Peninsula's volcano-rim balcony.",
+"waypoints": [
+[
+-43.75,
+172.83
+],
+[
+-43.8,
+172.95
+]
+],
+"expectedKm": [
+12,
+28
+],
+"difficultyHint": 4
+},
+{
+"slug": "nz-forgotten-world",
+"name": "Forgotten World Highway \u2014 SH43",
+"country": "NZ",
+"region": "Taranaki",
+"city": "Stratford",
+"category": "highland",
+"description": "Four saddles and a republic on the road time forgot.",
+"waypoints": [
+[
+-39.34,
+174.28
+],
+[
+-39.15,
+174.55
+]
+],
+"expectedKm": [
+35,
+60
+],
+"difficultyHint": 4
+},
+{
+"slug": "nz-thames-coast",
+"name": "Thames Coast Road \u2014 SH25",
+"country": "NZ",
+"region": "Waikato",
+"city": "Thames",
+"category": "coastal",
+"description": "Pohutukawa-shaded shoreline curling up the Coromandel.",
+"waypoints": [
+[
+-37.1,
+175.53
+],
+[
+-36.86,
+175.45
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 3
+},
+{
+"slug": "nz-lindis",
+"name": "Lindis Pass \u2014 SH8",
+"country": "NZ",
+"region": "Otago",
+"city": "Tarras",
+"category": "highland",
+"description": "Tussock gold in every direction.",
+"waypoints": [
+[
+-44.79,
+169.4
+],
+[
+-44.59,
+169.64
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 2
+},
+{
+"slug": "nz-paekakariki",
+"name": "Paekakariki Hill Road",
+"country": "NZ",
+"region": "Wellington",
+"city": "Paekakariki",
+"category": "forest",
+"description": "The old coach road with Kapiti laid out below.",
+"waypoints": [
+[
+-41.03,
+174.97
+],
+[
+-40.98,
+174.98
+]
+],
+"expectedKm": [
+5,
+15
+],
+"difficultyHint": 4
+},
+{
+"slug": "no-valdresflye",
+"name": "Valdresflye \u2014 Fv51",
+"country": "NO",
+"region": "Innlandet",
+"city": "Beitost\u00f8len",
+"category": "highland",
+"description": "Jotunheimen's open-plateau national route.",
+"waypoints": [
+[
+61.25,
+8.91
+],
+[
+61.44,
+8.81
+]
+],
+"expectedKm": [
+20,
+40
+],
+"difficultyHint": 2
+},
+{
+"slug": "no-sognefjell-skjolden",
+"name": "Sognefjellsvegen \u2014 Turtagr\u00f8 to Skjolden",
+"country": "NO",
+"region": "Vestland",
+"city": "Skjolden",
+"category": "alpine",
+"description": "The Hurrungane wall above, fjord below.",
+"waypoints": [
+[
+61.505,
+7.803
+],
+[
+61.48,
+7.6
+]
+],
+"expectedKm": [
+15,
+30
+],
+"difficultyHint": 4
+},
+{
+"slug": "no-ryfylke",
+"name": "Ryfylke \u2014 Rv13 Sand to R\u00f8ldal",
+"country": "NO",
+"region": "Rogaland",
+"city": "Sand",
+"category": "alpine",
+"description": "Fjord, canyon and the Bratlandsdalen gorge.",
+"waypoints": [
+[
+59.48,
+6.25
+],
+[
+59.83,
+6.82
+]
+],
+"expectedKm": [
+55,
+85
+],
+"difficultyHint": 3
+},
+{
+"slug": "no-utne",
+"name": "Hardangerfjord \u2014 Fv550 Utne Road",
+"country": "NO",
+"region": "Vestland",
+"city": "Utne",
+"category": "coastal",
+"description": "Orchard-lined single lane on the fjord's quiet side.",
+"waypoints": [
+[
+60.424,
+6.621
+],
+[
+60.276,
+6.254
+]
+],
+"expectedKm": [
+28,
+55
+],
+"difficultyHint": 3
+},
+{
+"slug": "no-kystriksveien",
+"name": "Kystriksveien \u2014 Fv17 Glomfjord",
+"country": "NO",
+"region": "Nordland",
+"city": "Glomfjord",
+"category": "coastal",
+"description": "The coastal route's glacier-meets-sea stretch.",
+"waypoints": [
+[
+66.82,
+13.95
+],
+[
+66.94,
+13.68
+]
+],
+"expectedKm": [
+20,
+45
+],
+"difficultyHint": 3
+},
+{
+"slug": "no-dalsnibba",
+"name": "Dalsnibba \u2014 Nibbevegen",
+"country": "NO",
+"region": "M\u00f8re og Romsdal",
+"city": "Geiranger",
+"category": "alpine",
+"description": "Five final hairpins to the 1,500-metre skywalk.",
+"waypoints": [
+[
+62.05,
+7.24
+],
+[
+62.027,
+7.268
+]
+],
+"expectedKm": [
+4,
+12
+],
+"difficultyHint": 5
+},
+{
+"slug": "no-senja",
+"name": "Senja \u2014 Fv862 Tungeneset",
+"country": "NO",
+"region": "Troms",
+"city": "Skaland",
+"category": "coastal",
+"description": "Devil's-teeth peaks over Arctic surf.",
+"waypoints": [
+[
+69.44,
+17.2
+],
+[
+69.51,
+17.45
+]
+],
+"expectedKm": [
+18,
+40
+],
+"difficultyHint": 3
+},
+{
+"slug": "se-stekenjokk",
+"name": "Stekenjokk Plateau \u2014 Vildmarksv\u00e4gen",
+"country": "SE",
+"region": "J\u00e4mtland",
+"city": "Klimpfj\u00e4ll",
+"category": "highland",
+"description": "Sweden's highest road, snow walls into July.",
+"waypoints": [
+[
+65.066,
+14.804
+],
+[
+65.105,
+14.43
+]
+],
+"expectedKm": [
+20,
+50
+],
+"difficultyHint": 2
+},
+{
+"slug": "se-hoga-kusten",
+"name": "H\u00f6ga Kusten Old Coast Road",
+"country": "SE",
+"region": "V\u00e4sternorrland",
+"city": "Docksta",
+"category": "coastal",
+"description": "UNESCO uplift coast beneath Skuleberget.",
+"waypoints": [
+[
+62.92,
+18.31
+],
+[
+63.06,
+18.43
+]
+],
+"expectedKm": [
+15,
+35
+],
+"difficultyHint": 2
+},
+{
+"slug": "se-omberg",
+"name": "Omberg Hill Road",
+"country": "SE",
+"region": "\u00d6sterg\u00f6tland",
+"city": "\u00d6desh\u00f6g",
+"category": "forest",
+"description": "Beech ridge over V\u00e4ttern's glass.",
+"waypoints": [
+[
+58.26,
+14.65
+],
+[
+58.33,
+14.62
+]
+],
+"expectedKm": [
+6,
+18
+],
+"difficultyHint": 2
+},
+{
+"slug": "dk-mols-bjerge",
+"name": "Mols Bjerge Loop",
+"country": "DK",
+"region": "Jutland",
+"city": "Femm\u00f8ller",
+"category": "forest",
+"description": "Denmark's hilliest little national park.",
+"waypoints": [
+[
+56.23,
+10.55
+],
+[
+56.18,
+10.6
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 2
+},
+{
+"slug": "dk-mariager",
+"name": "Mariager Fjord Road",
+"country": "DK",
+"region": "Jutland",
+"city": "Mariager",
+"category": "coastal",
+"description": "The fjord of roses, bend by bend.",
+"waypoints": [
+[
+56.65,
+9.98
+],
+[
+56.66,
+10.2
+]
+],
+"expectedKm": [
+12,
+28
+],
+"difficultyHint": 2
+},
+{
+"slug": "nl-afsluitdijk",
+"name": "Afsluitdijk",
+"country": "NL",
+"region": "Friesland",
+"city": "Den Oever",
+"category": "straight",
+"description": "Thirty kilometres dead straight between two seas.",
+"waypoints": [
+[
+52.94,
+5.04
+],
+[
+53.07,
+5.34
+]
+],
+"expectedKm": [
+25,
+40
+],
+"difficultyHint": 1
+},
+{
+"slug": "nl-holterberg",
+"name": "Holterberg \u2014 Sallandse Heuvelrug",
+"country": "NL",
+"region": "Overijssel",
+"city": "Holten",
+"category": "forest",
+"description": "Heathland crests the Dutch call mountains.",
+"waypoints": [
+[
+52.29,
+6.42
+],
+[
+52.35,
+6.45
+]
+],
+"expectedKm": [
+5,
+16
+],
+"difficultyHint": 2
+},
+{
+"slug": "ie-ring-of-beara",
+"name": "Ring of Beara \u2014 Kenmare to Ardgroom",
+"country": "IE",
+"region": "County Kerry / Cork",
+"city": "Kenmare",
+"category": "coastal",
+"description": "The wilder, quieter cousin of the Ring of Kerry.",
+"waypoints": [
+[
+51.88,
+-9.58
+],
+[
+51.73,
+-9.88
+]
+],
+"expectedKm": [
+25,
+50
+],
+"difficultyHint": 3
+},
+{
+"slug": "ie-slea-head",
+"name": "Slea Head Drive",
+"country": "IE",
+"region": "County Kerry",
+"city": "Dingle",
+"category": "coastal",
+"description": "Europe's western edge, beehive huts and Blasket views.",
+"waypoints": [
+[
+52.141,
+-10.268
+],
+[
+52.098,
+-10.46
+]
+],
+"expectedKm": [
+15,
+30
+],
+"difficultyHint": 3
+},
+{
+"slug": "ie-corkscrew-hill",
+"name": "Corkscrew Hill \u2014 N67 Burren",
+"country": "IE",
+"region": "County Clare",
+"city": "Ballyvaughan",
+"category": "canyon",
+"description": "Limestone terraces stacked over Galway Bay.",
+"waypoints": [
+[
+53.115,
+-9.15
+],
+[
+53.07,
+-9.17
+]
+],
+"expectedKm": [
+5,
+15
+],
+"difficultyHint": 4
+},
+{
+"slug": "ie-the-vee",
+"name": "The Vee \u2014 Knockmealdown Gap",
+"country": "IE",
+"region": "County Tipperary",
+"city": "Clogheen",
+"category": "moorland",
+"description": "Rhododendron hairpins over the Golden Vale.",
+"waypoints": [
+[
+52.28,
+-8.0
+],
+[
+52.22,
+-7.96
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 4
+},
+{
+"slug": "ae-khorfakkan",
+"name": "Dibba to Khor Fakkan \u2014 E99 Coastal",
+"country": "AE",
+"region": "Fujairah",
+"city": "Khor Fakkan",
+"category": "coastal",
+"description": "Hajar cliffs meeting the Gulf of Oman.",
+"waypoints": [
+[
+25.59,
+56.26
+],
+[
+25.34,
+56.35
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 3
+},
+{
+"slug": "ae-hatta-dam",
+"name": "Hatta Dam Road",
+"country": "AE",
+"region": "Dubai",
+"city": "Hatta",
+"category": "canyon",
+"description": "Turquoise reservoir twists in the exclave hills.",
+"waypoints": [
+[
+24.8,
+56.12
+],
+[
+24.77,
+56.09
+]
+],
+"expectedKm": [
+4,
+14
+],
+"difficultyHint": 3
+},
+{
+"slug": "ae-mleiha",
+"name": "Mleiha Desert Road",
+"country": "AE",
+"region": "Sharjah",
+"city": "Mleiha",
+"category": "straight",
+"description": "Fossil Rock's dune-flanked runway.",
+"waypoints": [
+[
+25.13,
+55.87
+],
+[
+25.05,
+55.99
+]
+],
+"expectedKm": [
+10,
+25
+],
+"difficultyHint": 1
+},
+{
+"slug": "ae-showka",
+"name": "Showka Loop",
+"country": "AE",
+"region": "Ras Al Khaimah",
+"city": "Showka",
+"category": "canyon",
+"description": "Wadi-country curves the UAE's cyclists adopted first.",
+"waypoints": [
+[
+25.03,
+56.03
+],
+[
+25.08,
+56.08
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 3
+}
+]

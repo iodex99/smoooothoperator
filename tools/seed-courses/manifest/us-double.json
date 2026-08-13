@@ -1,0 +1,1230 @@
+[
+{
+"slug": "us-trail-ridge",
+"name": "Trail Ridge Road",
+"country": "US",
+"region": "Colorado",
+"city": "Estes Park",
+"category": "alpine",
+"description": "America's highest continuous paved road, over Rocky Mountain NP.",
+"waypoints": [
+[
+40.377,
+-105.52
+],
+[
+40.25,
+-105.82
+]
+],
+"expectedKm": [
+50,
+80
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-wolf-creek-pass",
+"name": "Wolf Creek Pass \u2014 US-160",
+"country": "US",
+"region": "Colorado",
+"city": "South Fork",
+"category": "alpine",
+"description": "The Divide crossing of country-song fame.",
+"waypoints": [
+[
+37.67,
+-106.64
+],
+[
+37.48,
+-106.8
+]
+],
+"expectedKm": [
+22,
+42
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-loveland-pass",
+"name": "Loveland Pass \u2014 US-6",
+"country": "US",
+"region": "Colorado",
+"city": "Keystone",
+"category": "alpine",
+"description": "The old hairpin way over, above the Eisenhower Tunnel.",
+"waypoints": [
+[
+39.607,
+-105.944
+],
+[
+39.663,
+-105.879
+]
+],
+"expectedKm": [
+6,
+20
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-guanella-pass",
+"name": "Guanella Pass",
+"country": "US",
+"region": "Colorado",
+"city": "Georgetown",
+"category": "alpine",
+"description": "Bighorn country switchbacks off I-70.",
+"waypoints": [
+[
+39.706,
+-105.697
+],
+[
+39.46,
+-105.66
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-berthoud-pass",
+"name": "Berthoud Pass \u2014 US-40",
+"country": "US",
+"region": "Colorado",
+"city": "Empire",
+"category": "alpine",
+"description": "Stacked switchbacks to Winter Park.",
+"waypoints": [
+[
+39.76,
+-105.68
+],
+[
+39.89,
+-105.76
+]
+],
+"expectedKm": [
+18,
+35
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-grand-mesa",
+"name": "Grand Mesa Scenic Byway \u2014 CO-65",
+"country": "US",
+"region": "Colorado",
+"city": "Cedaredge",
+"category": "highland",
+"description": "Up the world's largest flat-top mountain.",
+"waypoints": [
+[
+38.9,
+-107.93
+],
+[
+39.17,
+-108.13
+]
+],
+"expectedKm": [
+40,
+65
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-black-canyon-rim",
+"name": "CO-92 \u2014 Black Canyon Rim",
+"country": "US",
+"region": "Colorado",
+"city": "Crawford",
+"category": "canyon",
+"description": "Curling along the North Rim's aspen shelf.",
+"waypoints": [
+[
+38.7,
+-107.61
+],
+[
+38.45,
+-107.34
+]
+],
+"expectedKm": [
+38,
+60
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-north-cascades",
+"name": "North Cascades Highway \u2014 SR-20",
+"country": "US",
+"region": "Washington",
+"city": "Newhalem",
+"category": "alpine",
+"description": "Glacier-hung passes on the American Alps loop.",
+"waypoints": [
+[
+48.71,
+-121.14
+],
+[
+48.525,
+-120.655
+]
+],
+"expectedKm": [
+40,
+65
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-chinook-pass",
+"name": "Chinook Pass \u2014 SR-410",
+"country": "US",
+"region": "Washington",
+"city": "Greenwater",
+"category": "alpine",
+"description": "Rainier filling the windshield at Tipsoo Lake.",
+"waypoints": [
+[
+47.15,
+-121.63
+],
+[
+46.87,
+-121.51
+]
+],
+"expectedKm": [
+35,
+60
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-rowena-curves",
+"name": "Rowena Curves \u2014 Historic US-30",
+"country": "US",
+"region": "Oregon",
+"city": "Mosier",
+"category": "canyon",
+"description": "The Gorge's looping postcard switchbacks.",
+"waypoints": [
+[
+45.68,
+-121.4
+],
+[
+45.68,
+-121.3
+]
+],
+"expectedKm": [
+5,
+16
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-lolo-pass",
+"name": "Lolo Pass \u2014 US-12",
+"country": "US",
+"region": "Montana / Idaho",
+"city": "Lolo",
+"category": "forest",
+"description": "Lewis & Clark's river-grade rhythm section.",
+"waypoints": [
+[
+46.76,
+-114.08
+],
+[
+46.51,
+-114.68
+]
+],
+"expectedKm": [
+45,
+75
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-pintler",
+"name": "Pintler Veterans Memorial \u2014 MT-1",
+"country": "US",
+"region": "Montana",
+"city": "Anaconda",
+"category": "alpine",
+"description": "Ghost-town hills and Georgetown Lake.",
+"waypoints": [
+[
+46.13,
+-112.94
+],
+[
+46.18,
+-113.28
+]
+],
+"expectedKm": [
+22,
+40
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-snake-river-canyon",
+"name": "Snake River Canyon \u2014 US-26/89",
+"country": "US",
+"region": "Wyoming",
+"city": "Alpine",
+"category": "canyon",
+"description": "Whitewater sweepers toward Jackson Hole.",
+"waypoints": [
+[
+43.17,
+-111.02
+],
+[
+43.28,
+-110.72
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-medicine-wheel",
+"name": "Medicine Wheel Passage \u2014 US-14A",
+"country": "US",
+"region": "Wyoming",
+"city": "Lovell",
+"category": "alpine",
+"description": "10% grades off the Bighorns' western wall.",
+"waypoints": [
+[
+44.77,
+-107.51
+],
+[
+44.8,
+-108.03
+]
+],
+"expectedKm": [
+30,
+60
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-needles-highway",
+"name": "Needles Highway \u2014 SD-87",
+"country": "US",
+"region": "South Dakota",
+"city": "Custer",
+"category": "forest",
+"description": "Granite-spire tunnels barely a car wide.",
+"waypoints": [
+[
+43.845,
+-103.56
+],
+[
+43.73,
+-103.43
+]
+],
+"expectedKm": [
+12,
+30
+],
+"difficultyHint": 5
+},
+{
+"slug": "us-iron-mountain",
+"name": "Iron Mountain Road \u2014 US-16A",
+"country": "US",
+"region": "South Dakota",
+"city": "Keystone",
+"category": "forest",
+"description": "Pigtail bridges framing Mount Rushmore.",
+"waypoints": [
+[
+43.89,
+-103.42
+],
+[
+43.76,
+-103.35
+]
+],
+"expectedKm": [
+15,
+32
+],
+"difficultyHint": 5
+},
+{
+"slug": "us-mt-nebo-loop",
+"name": "Mount Nebo Scenic Loop",
+"country": "US",
+"region": "Utah",
+"city": "Payson",
+"category": "alpine",
+"description": "Wasatch shoulder curves over Devil's Kitchen.",
+"waypoints": [
+[
+40.03,
+-111.73
+],
+[
+39.71,
+-111.83
+]
+],
+"expectedKm": [
+40,
+70
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-ut-14",
+"name": "Cedar Canyon \u2014 UT-14",
+"country": "US",
+"region": "Utah",
+"city": "Cedar City",
+"category": "canyon",
+"description": "Pink-cliff climb to 10,000 feet.",
+"waypoints": [
+[
+37.67,
+-113.06
+],
+[
+37.52,
+-112.7
+]
+],
+"expectedKm": [
+30,
+55
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-mt-rose",
+"name": "Mount Rose Highway \u2014 NV-431",
+"country": "US",
+"region": "Nevada",
+"city": "Incline Village",
+"category": "alpine",
+"description": "Tahoe's highest pass, casino lights below.",
+"waypoints": [
+[
+39.256,
+-119.944
+],
+[
+39.314,
+-119.898
+],
+[
+39.396,
+-119.741
+]
+],
+"expectedKm": [
+20,
+45
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-monitor-pass",
+"name": "Monitor Pass \u2014 CA-89",
+"country": "US",
+"region": "California",
+"city": "Markleeville",
+"category": "alpine",
+"description": "Aspen bowls and empty tarmac to the 395.",
+"waypoints": [
+[
+38.71,
+-119.76
+],
+[
+38.68,
+-119.54
+]
+],
+"expectedKm": [
+12,
+45
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-feather-river",
+"name": "Feather River Canyon \u2014 CA-70",
+"country": "US",
+"region": "California",
+"city": "Belden",
+"category": "canyon",
+"description": "Rail-and-river canyon threading the Sierra's north.",
+"waypoints": [
+[
+39.72,
+-121.47
+],
+[
+40.0,
+-121.25
+]
+],
+"expectedKm": [
+35,
+60
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-maricopa-33",
+"name": "Maricopa Highway \u2014 CA-33",
+"country": "US",
+"region": "California",
+"city": "Ojai",
+"category": "canyon",
+"description": "Ventura's empty backcountry masterpiece.",
+"waypoints": [
+[
+34.45,
+-119.24
+],
+[
+34.64,
+-119.37
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-ca-155",
+"name": "CA-155 \u2014 Greenhorn Summit",
+"country": "US",
+"region": "California",
+"city": "Wofford Heights",
+"category": "canyon",
+"description": "Kern River valley to sequoia shade.",
+"waypoints": [
+[
+35.71,
+-118.46
+],
+[
+35.73,
+-118.7
+]
+],
+"expectedKm": [
+20,
+40
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-mines-road",
+"name": "Mines Road \u2014 Livermore",
+"country": "US",
+"region": "California",
+"city": "Livermore",
+"category": "canyon",
+"description": "The Bay Area's longest lonely ribbon.",
+"waypoints": [
+[
+37.63,
+-121.72
+],
+[
+37.4,
+-121.53
+]
+],
+"expectedKm": [
+35,
+60
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-skaggs-springs",
+"name": "Skaggs Springs Road",
+"country": "US",
+"region": "California",
+"city": "Lake Sonoma",
+"category": "forest",
+"description": "Fifty kilometres of redwood-country corners to the sea.",
+"waypoints": [
+[
+38.72,
+-123.01
+],
+[
+38.65,
+-123.4
+]
+],
+"expectedKm": [
+40,
+60
+],
+"difficultyHint": 5
+},
+{
+"slug": "us-ca-9",
+"name": "CA-9 \u2014 Saratoga Gap",
+"country": "US",
+"region": "California",
+"city": "Saratoga",
+"category": "forest",
+"description": "Redwood cathedral bends above Silicon Valley.",
+"waypoints": [
+[
+37.26,
+-122.03
+],
+[
+37.16,
+-122.01
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-skyline-35",
+"name": "Skyline Boulevard \u2014 CA-35",
+"country": "US",
+"region": "California",
+"city": "Sky Londa",
+"category": "forest",
+"description": "Ridge cruising between fog banks.",
+"waypoints": [
+[
+37.37,
+-122.26
+],
+[
+37.16,
+-122.01
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-la-honda",
+"name": "La Honda Road \u2014 CA-84",
+"country": "US",
+"region": "California",
+"city": "Woodside",
+"category": "forest",
+"description": "The Peninsula's Sunday-morning descent to the coast.",
+"waypoints": [
+[
+37.43,
+-122.26
+],
+[
+37.33,
+-122.38
+]
+],
+"expectedKm": [
+12,
+28
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-figueroa-mountain",
+"name": "Figueroa Mountain Road",
+"country": "US",
+"region": "California",
+"city": "Los Olivos",
+"category": "canyon",
+"description": "Wildflower single-lane over wine country.",
+"waypoints": [
+[
+34.67,
+-120.11
+],
+[
+34.74,
+-119.99
+]
+],
+"expectedKm": [
+12,
+28
+],
+"difficultyHint": 5
+},
+{
+"slug": "us-idyllwild",
+"name": "Banning\u2013Idyllwild \u2014 CA-243",
+"country": "US",
+"region": "California",
+"city": "Idyllwild",
+"category": "canyon",
+"description": "Desert floor to alpine village on one wall.",
+"waypoints": [
+[
+33.92,
+-116.88
+],
+[
+33.75,
+-116.72
+]
+],
+"expectedKm": [
+30,
+50
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-palms-to-pines",
+"name": "Palms to Pines \u2014 CA-74",
+"country": "US",
+"region": "California",
+"city": "Palm Desert",
+"category": "canyon",
+"description": "Seven climate zones in one climb.",
+"waypoints": [
+[
+33.72,
+-116.4
+],
+[
+33.7,
+-116.72
+]
+],
+"expectedKm": [
+25,
+50
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-palomar-east-grade",
+"name": "Palomar Mountain \u2014 East Grade",
+"country": "US",
+"region": "California",
+"city": "Lake Henshaw",
+"category": "canyon",
+"description": "The flowing way up Palomar.",
+"waypoints": [
+[
+33.23,
+-116.76
+],
+[
+33.32,
+-116.87
+]
+],
+"expectedKm": [
+12,
+28
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-salt-river-canyon",
+"name": "Salt River Canyon \u2014 US-60",
+"country": "US",
+"region": "Arizona",
+"city": "Globe",
+"category": "canyon",
+"description": "Arizona's mini Grand Canyon, rim to rim.",
+"waypoints": [
+[
+33.45,
+-110.78
+],
+[
+33.798,
+-110.497
+]
+],
+"expectedKm": [
+40,
+75
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-high-road-taos",
+"name": "High Road to Taos \u2014 Truchas Segment",
+"country": "US",
+"region": "New Mexico",
+"city": "Truchas",
+"category": "highland",
+"description": "Adobe villages under Truchas Peaks.",
+"waypoints": [
+[
+36.04,
+-105.81
+],
+[
+36.17,
+-105.69
+]
+],
+"expectedKm": [
+15,
+35
+],
+"difficultyHint": 2
+},
+{
+"slug": "us-rm-336",
+"name": "Twisted Sisters \u2014 RM-336",
+"country": "US",
+"region": "Texas",
+"city": "Leakey",
+"category": "canyon",
+"description": "The steepest sister of the Hill Country trio.",
+"waypoints": [
+[
+29.73,
+-99.76
+],
+[
+30.0,
+-99.79
+]
+],
+"expectedKm": [
+28,
+50
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-davis-mountains",
+"name": "Davis Mountains \u2014 TX-118",
+"country": "US",
+"region": "Texas",
+"city": "Fort Davis",
+"category": "highland",
+"description": "Dark-sky curves to McDonald Observatory.",
+"waypoints": [
+[
+30.59,
+-103.89
+],
+[
+30.67,
+-104.02
+]
+],
+"expectedKm": [
+12,
+30
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-talimena",
+"name": "Talimena Scenic Drive",
+"country": "US",
+"region": "Arkansas / Oklahoma",
+"city": "Mena",
+"category": "highland",
+"description": "Ridge-running the Ouachitas border to border.",
+"waypoints": [
+[
+34.58,
+-94.25
+],
+[
+34.68,
+-94.55
+]
+],
+"expectedKm": [
+25,
+50
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-arkansas-7",
+"name": "Scenic 7 Byway \u2014 Jasper Section",
+"country": "US",
+"region": "Arkansas",
+"city": "Jasper",
+"category": "forest",
+"description": "The Ozarks' rollercoaster spine.",
+"waypoints": [
+[
+36.01,
+-93.19
+],
+[
+35.75,
+-93.13
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-brockway-mountain",
+"name": "Brockway Mountain Drive",
+"country": "US",
+"region": "Michigan",
+"city": "Copper Harbor",
+"category": "highland",
+"description": "Lake Superior from the Keweenaw's crown.",
+"waypoints": [
+[
+47.47,
+-87.89
+],
+[
+47.46,
+-88.0
+]
+],
+"expectedKm": [
+6,
+18
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-holy-hill",
+"name": "Holy Hill \u2014 Kettle Moraine Drive",
+"country": "US",
+"region": "Wisconsin",
+"city": "Hartford",
+"category": "forest",
+"description": "Glacial kettles and a basilica on the hill.",
+"waypoints": [
+[
+43.32,
+-88.34
+],
+[
+43.245,
+-88.19
+]
+],
+"expectedKm": [
+10,
+25
+],
+"difficultyHint": 2
+},
+{
+"slug": "us-adirondacks-30",
+"name": "Adirondack Trail \u2014 NY-30",
+"country": "US",
+"region": "New York",
+"city": "Indian Lake",
+"category": "forest",
+"description": "Lake-dotted wilderness two-lane.",
+"waypoints": [
+[
+43.78,
+-74.27
+],
+[
+43.97,
+-74.42
+]
+],
+"expectedKm": [
+18,
+35
+],
+"difficultyHint": 2
+},
+{
+"slug": "us-granville-gulf",
+"name": "VT-100 \u2014 Granville Gulf",
+"country": "US",
+"region": "Vermont",
+"city": "Warren",
+"category": "forest",
+"description": "The classic Green Mountains valley run.",
+"waypoints": [
+[
+44.11,
+-72.85
+],
+[
+43.93,
+-72.84
+]
+],
+"expectedKm": [
+15,
+32
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-bear-notch",
+"name": "Bear Notch Road",
+"country": "US",
+"region": "New Hampshire",
+"city": "Bartlett",
+"category": "forest",
+"description": "The Kanc's quiet shortcut with the better views.",
+"waypoints": [
+[
+44.08,
+-71.28
+],
+[
+44.03,
+-71.28
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-cadillac-summit",
+"name": "Cadillac Summit Road",
+"country": "US",
+"region": "Maine",
+"city": "Bar Harbor",
+"category": "coastal",
+"description": "First sunrise in America, granite switchbacks.",
+"waypoints": [
+[
+44.37,
+-68.22
+],
+[
+44.35,
+-68.225
+]
+],
+"expectedKm": [
+4,
+12
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-pa-grand-canyon",
+"name": "Pine Creek Gorge \u2014 Colton Point",
+"country": "US",
+"region": "Pennsylvania",
+"city": "Wellsboro",
+"category": "forest",
+"description": "PA's Grand Canyon rim woods.",
+"waypoints": [
+[
+41.75,
+-77.3
+],
+[
+41.7,
+-77.47
+]
+],
+"expectedKm": [
+10,
+25
+],
+"difficultyHint": 2
+},
+{
+"slug": "us-highland-scenic",
+"name": "Highland Scenic Highway \u2014 WV-150",
+"country": "US",
+"region": "West Virginia",
+"city": "Marlinton",
+"category": "highland",
+"description": "4,500-foot Allegheny plateau parkway, dead empty.",
+"waypoints": [
+[
+38.23,
+-80.25
+],
+[
+38.4,
+-80.1
+]
+],
+"expectedKm": [
+25,
+50
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-richard-russell",
+"name": "Richard B. Russell Scenic Highway",
+"country": "US",
+"region": "Georgia",
+"city": "Helen",
+"category": "forest",
+"description": "North Georgia's alpine impression.",
+"waypoints": [
+[
+34.7,
+-83.73
+],
+[
+34.85,
+-83.79
+]
+],
+"expectedKm": [
+18,
+35
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-little-river-canyon",
+"name": "Little River Canyon Rim \u2014 AL-176",
+"country": "US",
+"region": "Alabama",
+"city": "Fort Payne",
+"category": "canyon",
+"description": "The South's deepest canyon, rim parkway.",
+"waypoints": [
+[
+34.42,
+-85.63
+],
+[
+34.38,
+-85.55
+]
+],
+"expectedKm": [
+12,
+30
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-brp-mitchell",
+"name": "Blue Ridge Parkway \u2014 Craggy Gardens",
+"country": "US",
+"region": "North Carolina",
+"city": "Asheville",
+"category": "highland",
+"description": "The Parkway's high, rhododendron-lined miles.",
+"waypoints": [
+[
+35.64,
+-82.49
+],
+[
+35.74,
+-82.27
+]
+],
+"expectedKm": [
+20,
+40
+],
+"difficultyHint": 2
+},
+{
+"slug": "us-cherohala-nc",
+"name": "Cherohala Skyway \u2014 NC Side",
+"country": "US",
+"region": "North Carolina",
+"city": "Robbinsville",
+"category": "highland",
+"description": "The Skyway's quieter Carolina descent.",
+"waypoints": [
+[
+35.35,
+-83.87
+],
+[
+35.33,
+-84.03
+]
+],
+"expectedKm": [
+12,
+30
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-ohio-river-52",
+"name": "Ohio River Scenic Byway \u2014 WV-8?",
+"country": "US",
+"region": "Ohio",
+"city": "Marietta",
+"category": "forest",
+"description": "River-bend sweepers on the old 7.",
+"waypoints": [
+[
+39.42,
+-81.45
+],
+[
+39.27,
+-81.56
+]
+],
+"expectedKm": [
+15,
+35
+],
+"difficultyHint": 2
+}
+]

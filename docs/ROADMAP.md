@@ -29,6 +29,15 @@ syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
 
+### 2026-08-13 — Catalog doubled for revenue markets: 397 courses / 30 countries
+- Doubling directive applied: US 53→106, GB 20→40, AU 17→33, DE 11→23,
+  CH 11→22, CA 10→19, NZ 8→16, NO 7→14, AE/IE/SE/NL/DK all doubled.
+  India intact at 30 (~8%% of catalog). ~13,000 km of validated road.
+- Two triage rounds: 386/401 → fixes → 397/401; 4 persistent wrong-way/
+  over-cap roads dropped and documented. pgTAP floors raised (total ≥360,
+  US ≥80, GB ≥30); 141 db tests green. Seed: 2.5 MB.
+
+
 ### 2026-08-13 — Platform catalog expanded to 250 courses / 30 countries
 - Revenue-market weighting per directive: US 53, GB 20, AU 17, IT 13,
   CH/DE/FR 11, CA 10, NZ 8 + 11 new countries (PT, BE, FI, SE, IS, ZA, HK,
