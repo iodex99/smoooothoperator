@@ -37,6 +37,7 @@ struct SmoooothOperatorApp: App {
                 // StoreKit must be observed for the app's whole lifetime, or
                 // renewals, refunds and Ask-to-Buy approvals are never seen.
                 environment.startTransactionObserver()
+                await environment.refreshSignInState()
                 await environment.refreshEntitlement()
                 await environment.loadScoringConfig()
                 // Anything a previous session couldn't deliver goes now.

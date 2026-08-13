@@ -64,11 +64,79 @@ actor SupabaseAPI {
     private let configuration: Configuration
     private(set) var session: Session?
 
+    private static let sessionKey = "supabase.session"
+
     init(configuration: Configuration) {
         self.configuration = configuration
+        // A signed-in user stays signed in across launches.
+        if let data = KeychainStore.load(key: Self.sessionKey),
+           let stored = try? JSONDecoder().decode(StoredSession.self, from: data) {
+            session = Session(
+                accessToken: stored.accessToken,
+                refreshToken: stored.refreshToken,
+                userId: stored.userId
+            )
+        }
+    }
+
+    /// What we keep on the device. Access tokens are short-lived; the
+    /// refresh token is the durable credential.
+    private struct StoredSession: Codable {
+        var accessToken: String
+        var refreshToken: String
+        var userId: String
     }
 
     var userId: String? { session?.userId }
+    var isSignedIn: Bool { session != nil }
+
+    private func persistSession() {
+        guard let session else {
+            KeychainStore.delete(key: Self.sessionKey)
+            return
+        }
+        let stored = StoredSession(
+            accessToken: session.accessToken,
+            refreshToken: session.refreshToken,
+            userId: session.userId
+        )
+        if let data = try? JSONEncoder().encode(stored) {
+            KeychainStore.save(data, key: Self.sessionKey)
+        }
+    }
+
+    /// Exchanges the refresh token for a fresh access token. Supabase access
+    /// tokens expire in an hour, so without this every session dies mid-use.
+    private func refreshSession() async -> Bool {
+        guard let refreshToken = session?.refreshToken else { return false }
+        var components = URLComponents(
+            url: configuration.baseURL.appendingPathComponent("auth/v1/token"),
+            resolvingAgainstBaseURL: false
+        )!
+        components.queryItems = [URLQueryItem(name: "grant_type", value: "refresh_token")]
+        var request = URLRequest(url: components.url!)
+        request.httpMethod = "POST"
+        request.setValue(configuration.anonKey, forHTTPHeaderField: "apikey")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONSerialization.data(
+            withJSONObject: ["refresh_token": refreshToken]
+        )
+        guard
+            let (data, response) = try? await URLSession.shared.data(for: request),
+            let http = response as? HTTPURLResponse,
+            (200..<300).contains(http.statusCode),
+            let refreshed = try? JSONDecoder().decode(Session.self, from: data)
+        else {
+            // The refresh token itself is dead (revoked, or the user deleted
+            // the account elsewhere): sign out rather than loop.
+            session = nil
+            persistSession()
+            return false
+        }
+        session = refreshed
+        persistSession()
+        return true
+    }
 
     // MARK: - Auth (Sign in with Apple → GoTrue id_token grant)
 
@@ -88,10 +156,12 @@ actor SupabaseAPI {
         let (data, response) = try await URLSession.shared.data(for: request)
         try Self.ensureOK(response, data)
         session = try JSONDecoder().decode(Session.self, from: data)
+        persistSession()
     }
 
     func signOut() {
         session = nil
+        persistSession()
     }
 
     // MARK: - REST
@@ -198,6 +268,22 @@ actor SupabaseAPI {
     // MARK: - Core request
 
     private func send(
+        path: String,
+        method: String,
+        body: Data?,
+        headers: [String: String] = [:]
+    ) async throws -> Data {
+        do {
+            return try await perform(path: path, method: method, body: body, headers: headers)
+        } catch APIError.http(401, _) {
+            // Expired access token: refresh once, then retry. Anything else
+            // propagates — we never loop on auth failures.
+            guard await refreshSession() else { throw APIError.notAuthenticated }
+            return try await perform(path: path, method: method, body: body, headers: headers)
+        }
+    }
+
+    private func perform(
         path: String,
         method: String,
         body: Data?,

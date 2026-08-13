@@ -1,0 +1,6 @@
+// Copy to Supabase.xcconfig (gitignored) and fill in from your Supabase
+// project: Settings → API. The anon key is a PUBLIC key — it identifies the
+// project and is safe to ship in a binary; row-level security is what
+// protects data. The SERVICE ROLE key must NEVER appear here.
+SUPABASE_URL = https:/$()/your-project-ref.supabase.co
+SUPABASE_ANON_KEY = your-anon-key

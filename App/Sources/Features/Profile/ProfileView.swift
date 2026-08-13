@@ -5,6 +5,7 @@ import SwiftUI
 struct ProfileView: View {
     @Environment(AppEnvironment.self) private var environment
     @State private var showPaywall = false
+    @State private var showSignIn = false
     @State private var confirmDelete = false
     @State private var deleting = false
     @State private var notice: String?
@@ -37,6 +38,20 @@ struct ProfileView: View {
                             .foregroundStyle(SOTheme.textSecondary)
                     }
                     .padding(.top, 10)
+
+                    if environment.pendingRunCount > 0 {
+                        HStack(spacing: 10) {
+                            Image(systemName: "arrow.up.circle")
+                                .foregroundStyle(SOTheme.caution)
+                            Text(environment.pendingRunCount == 1
+                                ? "1 run saved on this phone, waiting to upload"
+                                : "\(environment.pendingRunCount) runs saved on this phone, waiting to upload")
+                                .font(.footnote)
+                                .foregroundStyle(SOTheme.textSecondary)
+                            Spacer()
+                        }
+                        .soCard(padding: 12)
+                    }
 
                     HStack(spacing: 10) {
                         StatTile(label: "Verified runs", value: "0")
@@ -96,6 +111,30 @@ struct ProfileView: View {
 
                     // Account section (App Store-required controls).
                     VStack(spacing: 0) {
+                        if environment.isSignedIn {
+                            Button {
+                                Task { await environment.signOut() }
+                            } label: {
+                                AccountRow(
+                                    icon: "rectangle.portrait.and.arrow.right",
+                                    title: "Sign out",
+                                    showsChevron: false
+                                )
+                            }
+                            .buttonStyle(.plain)
+                        } else {
+                            Button {
+                                showSignIn = true
+                            } label: {
+                                AccountRow(
+                                    icon: "person.badge.shield.checkmark",
+                                    title: "Sign in to compete",
+                                    showsChevron: true
+                                )
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        Divider().overlay(SOTheme.hairline)
                         NavigationLink {
                             PrivacySettingsView()
                         } label: {
@@ -137,6 +176,7 @@ struct ProfileView: View {
             .background(SOTheme.ground)
             .navigationTitle("Profile")
             .sheet(isPresented: $showPaywall) { PaywallView() }
+            .sheet(isPresented: $showSignIn) { SignInView() }
             .confirmationDialog(
                 "Delete your account?",
                 isPresented: $confirmDelete,

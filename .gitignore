@@ -24,3 +24,4 @@ supabase/.branches/
 # Logs & scratch
 *.log
 .scratch/
+App/Configs/Supabase.xcconfig

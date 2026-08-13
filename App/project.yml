@@ -34,6 +34,9 @@ targets:
         product: SmoooothKit
     entitlements:
       path: Configs/SmoooothOperator.entitlements
+    configFiles:
+      Debug: Configs/Supabase.xcconfig
+      Release: Configs/Supabase.xcconfig
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.smooooth.operator
@@ -49,6 +52,10 @@ targets:
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         ITSAppUsesNonExemptEncryption: false
+        # Injected from Configs/Supabase.xcconfig (gitignored). Absent in a
+        # dev build → the app runs fully offline instead of crashing.
+        SUPABASE_URL: $(SUPABASE_URL)
+        SUPABASE_ANON_KEY: $(SUPABASE_ANON_KEY)
         # Background location is used ONLY during an active challenge run.
         UIBackgroundModes:
           - location

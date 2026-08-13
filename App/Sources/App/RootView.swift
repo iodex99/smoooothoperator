@@ -19,6 +19,19 @@ struct RootView: View {
             SafetyAcknowledgementView()
                 .interactiveDismissDisabled()
         }
+        // Offered once, after the safety gate, and skippable — the app is
+        // fully usable signed out; an account is what makes runs count.
+        .sheet(isPresented: Binding(
+            get: {
+                environment.hasAcknowledgedSafety
+                    && !environment.hasSeenSignIn
+                    && !environment.isSignedIn
+                    && environment.api != nil
+            },
+            set: { if !$0 { environment.hasSeenSignIn = true } }
+        )) {
+            SignInView(isOnboardingStep: true)
+        }
     }
 }
 

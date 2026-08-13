@@ -19,6 +19,12 @@ final class AppEnvironment {
     var pendingRunCount = 0
     /// Live Pro entitlement, refreshed at launch and on every transaction.
     var isPro = false
+    /// Whether a session exists. Drives the "sign in to compete" affordances.
+    var isSignedIn = false
+    /// Shown once after onboarding; never nags again.
+    var hasSeenSignIn: Bool {
+        didSet { UserDefaults.standard.set(hasSeenSignIn, forKey: "hasSeenSignIn") }
+    }
     /// Scored runs started today (local date), for the free-tier limit.
     private(set) var runsToday = 0
     var hasAcknowledgedSafety: Bool {
@@ -45,6 +51,7 @@ final class AppEnvironment {
 
         hasAcknowledgedSafety = UserDefaults.standard.bool(forKey: "safetyAcknowledged")
         hasOnboarded = UserDefaults.standard.bool(forKey: "hasOnboarded")
+        hasSeenSignIn = UserDefaults.standard.bool(forKey: "hasSeenSignIn")
         runsToday = Self.storedRunsToday()
     }
 
@@ -114,6 +121,26 @@ final class AppEnvironment {
 
     func refreshPendingCount() async {
         pendingRunCount = (try? await uploadQueue.pendingCount()) ?? 0
+    }
+
+    // MARK: - Account
+
+    func signIn(identityToken: String, nonce: String) async throws {
+        guard let api else { throw SupabaseAPI.APIError.notConfigured }
+        try await api.signInWithApple(identityToken: identityToken, nonce: nonce)
+        isSignedIn = await api.isSignedIn
+        hasSeenSignIn = true
+        // Anything recorded while signed out goes up now.
+        await flushPendingRuns()
+    }
+
+    func signOut() async {
+        await api?.signOut()
+        isSignedIn = false
+    }
+
+    func refreshSignInState() async {
+        isSignedIn = await api?.isSignedIn ?? false
     }
 
     /// Entitlement refresh (launch, foreground, and after any transaction).

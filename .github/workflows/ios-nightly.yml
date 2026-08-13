@@ -24,7 +24,11 @@ jobs:
         run: brew install xcodegen
 
       - name: Generate project
-        run: cd App && xcodegen generate
+        run: |
+          # No secrets in CI: an empty config means the app builds and runs
+          # fully offline, which is exactly what the screenshot tour needs.
+          cp App/Configs/Supabase.example.xcconfig App/Configs/Supabase.xcconfig
+          cd App && xcodegen generate
 
       - name: Pick a simulator
         id: sim
