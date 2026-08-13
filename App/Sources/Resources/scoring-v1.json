@@ -1,0 +1,92 @@
+{
+  "version": "1.0.0",
+  "weights": {
+    "paceBps": 3500,
+    "smoothnessBps": 3500,
+    "controlBps": 2000,
+    "complianceBps": 1000
+  },
+  "pace": {
+    "benchmarkRatioCurve": {
+      "breakpoints": [
+        { "x": 0.85, "y": 10000 },
+        { "x": 1.0, "y": 9000 },
+        { "x": 1.2, "y": 6500 },
+        { "x": 1.5, "y": 3500 },
+        { "x": 2.5, "y": 500 }
+      ]
+    }
+  },
+  "smoothness": {
+    "eventWeights": {
+      "acceleration": 0.7,
+      "braking": 1.0,
+      "hardBraking": 4.0,
+      "cornering": 0.8,
+      "hardCornering": 3.0
+    },
+    "weightedEventsPerKmCurve": {
+      "breakpoints": [
+        { "x": 0.0, "y": 10000 },
+        { "x": 1.0, "y": 9200 },
+        { "x": 3.0, "y": 7500 },
+        { "x": 6.0, "y": 5000 },
+        { "x": 12.0, "y": 1500 }
+      ]
+    },
+    "jerkRMSCurve": {
+      "breakpoints": [
+        { "x": 0.05, "y": 10000 },
+        { "x": 0.15, "y": 9000 },
+        { "x": 0.4, "y": 6500 },
+        { "x": 1.0, "y": 3000 },
+        { "x": 2.0, "y": 1000 }
+      ]
+    },
+    "eventComponentBps": 6000,
+    "jerkComponentBps": 4000
+  },
+  "control": {
+    "brakingConsistencyCurve": {
+      "breakpoints": [
+        { "x": 0.02, "y": 10000 },
+        { "x": 0.06, "y": 8800 },
+        { "x": 0.12, "y": 7000 },
+        { "x": 0.25, "y": 4000 }
+      ]
+    },
+    "corneringConsistencyCurve": {
+      "breakpoints": [
+        { "x": 0.02, "y": 10000 },
+        { "x": 0.06, "y": 8800 },
+        { "x": 0.12, "y": 7000 },
+        { "x": 0.25, "y": 4000 }
+      ]
+    },
+    "oscillationRateCurve": {
+      "breakpoints": [
+        { "x": 2.0, "y": 10000 },
+        { "x": 6.0, "y": 8500 },
+        { "x": 12.0, "y": 6000 },
+        { "x": 30.0, "y": 2000 }
+      ]
+    },
+    "oscillationDeadbandG": 0.05,
+    "brakingComponentBps": 3500,
+    "corneringComponentBps": 3500,
+    "oscillationComponentBps": 3000
+  },
+  "compliance": {
+    "graceMps": 1.0,
+    "exceedanceCurve": {
+      "breakpoints": [
+        { "x": 0.0, "y": 10000 },
+        { "x": 0.01, "y": 9000 },
+        { "x": 0.05, "y": 6000 },
+        { "x": 0.15, "y": 2000 },
+        { "x": 0.3, "y": 0 }
+      ]
+    },
+    "noDataBps": 10000
+  }
+}
