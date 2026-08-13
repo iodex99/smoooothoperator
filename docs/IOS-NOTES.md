@@ -42,6 +42,9 @@ layer and **never move logic out of the Kit to work around an error**.
 | StoreKitSubscriptionService | sandbox purchase/restore untested | compiles on CI |
 | SwiftUI views (all screens, heat design system) | layout verified via CI simulator screenshots; server feeds for Home/Explore/Friends are placeholders wired to real endpoints later | ✅ renders on CI simulator |
 | CourseMapView (MapKit) | tiles need network; polyline/annotation rendering verified via CI screenshots | authored 2026-08-13 |
+| DriveMapView (follow-cam) | camera glide + puck tracking need a real-drive sanity check; CI verifies rendering at 30× | authored 2026-08-13 |
+| OnboardingView | page flow CI-captured; permission-priming copy final-checked at device stage | authored 2026-08-13 |
+| AppIcon / LaunchBackground assets | asset catalog compiles on CI; icon renders on the simulator home screen | authored 2026-08-13 |
 | RunShareCard (ImageRenderer @3×) | render output needs one visual check on device/simulator share sheet | authored 2026-08-13 |
 | MockSensorFeed (DEBUG) | drives the full DriveSession loop in the simulator without a car — use it on day 1 | ✅ proven in CI demo tour |
 | Products.storekit | product ids must match App Store Connect | authored L0 |

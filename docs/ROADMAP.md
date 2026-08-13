@@ -29,6 +29,21 @@ syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
 
+### 2026-08-13 — Full product pass: drive map, onboarding, app icon
+- **Drive map** (user directive: "the driver would need to have a look at
+  the map for the next turns"): heading-aligned follow-cam under the
+  active-drive overlay — route ahead in white, covered course in heat,
+  driver puck, camera re-aims every ~2% of course. Never interactive.
+  Whole-course frame during calibration/ready. Also adds the previously
+  missing **end-run escape hatch** (small, confirmed, "never submitted").
+- **Onboarding** (spec §§76-77): five driver-paced pages — brand, the
+  game, the 35/35/20/10 scoring split, verification + privacy promise,
+  safety gate. Persists with the safety acknowledgement;
+  SMOOOOTH_DEMO_ONBOARDING=1 auto-walks it for CI capture.
+- **Install polish**: generated heat-route app icon (1024 single-size),
+  launch-screen ground color (no white flash), home-screen name
+  "Smooooth", score-reveal success haptic, Friends themed.
+
 ### 2026-08-13 — Heat design system: premium UI, map view, share card
 - Full visual identity in `App/Sources/DesignSystem/` (user directive: the
   UI "shall look premium, rich, aesthetic"): near-black ground, blaze→amber
