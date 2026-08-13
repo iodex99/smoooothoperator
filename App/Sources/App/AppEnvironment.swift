@@ -16,10 +16,20 @@ final class AppEnvironment {
     var hasAcknowledgedSafety: Bool {
         didSet { UserDefaults.standard.set(hasAcknowledgedSafety, forKey: "safetyAcknowledged") }
     }
+    var hasOnboarded: Bool {
+        didSet { UserDefaults.standard.set(hasOnboarded, forKey: "hasOnboarded") }
+    }
 
     init() {
         api = SupabaseAPI.Configuration.fromBundle().map { SupabaseAPI(configuration: $0) }
         hasAcknowledgedSafety = UserDefaults.standard.bool(forKey: "safetyAcknowledged")
+        hasOnboarded = UserDefaults.standard.bool(forKey: "hasOnboarded")
+    }
+
+    /// Onboarding ends with the safety gate — both stick together.
+    func completeOnboarding() {
+        hasAcknowledgedSafety = true
+        hasOnboarded = true
     }
 
     /// Loads the active scoring config from the server (clients score

@@ -13,12 +13,20 @@ struct SmoooothOperatorApp: App {
                 #if DEBUG
                 if DemoTourView.isRequested {
                     DemoTourView()
-                        .onAppear { environment.hasAcknowledgedSafety = true }
+                        .onAppear { environment.completeOnboarding() }
+                } else if OnboardingDemo.isRequested {
+                    OnboardingView(demoAutoAdvance: true)
+                } else if !environment.hasOnboarded {
+                    OnboardingView()
                 } else {
                     RootView()
                 }
                 #else
-                RootView()
+                if !environment.hasOnboarded {
+                    OnboardingView()
+                } else {
+                    RootView()
+                }
                 #endif
             }
             .environment(environment)
