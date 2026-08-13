@@ -389,8 +389,11 @@ private struct ShareStat: View {
             Text("\(bps / 100)")
                 .font(.system(size: 13, weight: .heavy, design: .rounded))
                 .monospacedDigit()
-                .foregroundStyle(.white)
-                .frame(width: 26, alignment: .trailing)
+                // 26pt was too narrow for "100" and wrapped it to "10 / 0"
+                // on the rendered card — caught in the CI screenshots.
+                .lineLimit(1)
+                .fixedSize()
+                .frame(width: 34, alignment: .trailing)
         }
     }
 }
