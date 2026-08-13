@@ -22,13 +22,16 @@ public protocol RunStore: Sendable {
 public struct FileRunStore: RunStore {
     private let directory: URL
     private let quarantine: URL
-    private let fileManager: FileManager
 
-    public init(directory: URL, fileManager: FileManager = .default) throws {
+    /// `FileManager.default` is used directly rather than stored: it is not
+    /// Sendable on Apple platforms, and this store must cross actor
+    /// boundaries. Its file operations are documented thread-safe.
+    private var fileManager: FileManager { .default }
+
+    public init(directory: URL) throws {
         self.directory = directory
         self.quarantine = directory.appendingPathComponent("quarantine", isDirectory: true)
-        self.fileManager = fileManager
-        try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
     }
 
     public func save(_ run: PendingRun) throws {
