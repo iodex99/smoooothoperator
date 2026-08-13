@@ -98,6 +98,9 @@ Deno.test({
         headers: { Prefer: "return=representation" },
         body: JSON.stringify({
           name: "E2E Golden Course",
+          // Always a CUSTOM course: creator-less rows are platform catalog
+          // and audited by the catalog-integrity pgTAP suite.
+          creator_id: userId,
           country: "US",
           distance_meters: 1500,
           difficulty: 3,

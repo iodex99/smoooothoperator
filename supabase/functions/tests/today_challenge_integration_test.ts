@@ -63,11 +63,14 @@ async function createUser(label: string): Promise<string> {
   return (await response.json()).id as string;
 }
 
-/** Inserts a minimal valid public course near (lat, lon); returns its id. */
+/** Inserts a minimal valid PUBLIC CUSTOM course near (lat, lon) — always
+ * with a creator, so fixtures never masquerade as platform-catalog rows
+ * (the catalog integrity pgTAP suite audits creator-less courses). */
 async function createCourse(
   name: string,
   lat: number,
   lon: number,
+  creatorId: string,
   extras: Record<string, unknown> = {},
 ): Promise<string> {
   const finishLat = lat + 0.02;
@@ -77,6 +80,7 @@ async function createCourse(
       headers: { Prefer: "return=representation" },
       body: JSON.stringify({
         name,
+        creator_id: creatorId,
         distance_meters: 6000,
         difficulty: 3,
         turn_count: 10,
@@ -146,13 +150,15 @@ Deno.test({
 
     const tag = crypto.randomUUID().slice(0, 8);
     const clusterCourses = [
-      await createCourse(`TCI ${tag} A`, CLUSTER.lat + 0.010, CLUSTER.lon),
-      await createCourse(`TCI ${tag} B`, CLUSTER.lat + 0.030, CLUSTER.lon),
-      await createCourse(`TCI ${tag} C`, CLUSTER.lat - 0.030, CLUSTER.lon),
-      await createCourse(`TCI ${tag} D`, CLUSTER.lat, CLUSTER.lon + 0.050),
+      await createCourse(`TCI ${tag} A`, CLUSTER.lat + 0.010, CLUSTER.lon, bravo),
+      await createCourse(`TCI ${tag} B`, CLUSTER.lat + 0.030, CLUSTER.lon, bravo),
+      await createCourse(`TCI ${tag} C`, CLUSTER.lat - 0.030, CLUSTER.lon, bravo),
+      await createCourse(`TCI ${tag} D`, CLUSTER.lat, CLUSTER.lon + 0.050, bravo),
     ];
-    const singleCourse = await createCourse(`TCI ${tag} Solo`, SINGLE.lat + 0.035, SINGLE.lon);
-    await createCourse(`TCI ${tag} Sparse`, SPARSE.lat + 0.36, SPARSE.lon); // ~40 km
+    const singleCourse = await createCourse(
+      `TCI ${tag} Solo`, SINGLE.lat + 0.035, SINGLE.lon, bravo,
+    );
+    await createCourse(`TCI ${tag} Sparse`, SPARSE.lat + 0.36, SPARSE.lon, bravo); // ~40 km
 
     const base = {
       latitude: CLUSTER.lat,

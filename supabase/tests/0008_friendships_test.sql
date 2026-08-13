@@ -22,8 +22,11 @@ set local role authenticated;
 insert into public.friendships (requester_id, addressee_id)
 values ('11111111-1111-1111-1111-111111111111', '22222222-2222-2222-2222-222222222222');
 
+-- Scoped to the fixture pair: e2e suites leave persistent friendship rows.
 select is(
-    (select status from public.friendships limit 1),
+    (select status from public.friendships
+      where requester_id = '11111111-1111-1111-1111-111111111111'
+        and addressee_id = '22222222-2222-2222-2222-222222222222'),
     'pending',
     'alice sent bob a request'
 );
@@ -41,8 +44,11 @@ update public.friendships set status = 'accepted';
 
 reset role;
 
+-- Scoped to the fixture pair: e2e suites leave persistent friendship rows.
 select is(
-    (select status from public.friendships limit 1),
+    (select status from public.friendships
+      where requester_id = '11111111-1111-1111-1111-111111111111'
+        and addressee_id = '22222222-2222-2222-2222-222222222222'),
     'pending',
     'the REQUESTER cannot accept their own request'
 );
