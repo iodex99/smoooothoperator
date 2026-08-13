@@ -57,6 +57,8 @@ struct FriendsView: View {
             }
         }
         .navigationTitle("Friends")
+        .scrollContentBackground(.hidden)
+        .background(SOTheme.ground)
         .task { await load() }
     }
 

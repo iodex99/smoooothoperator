@@ -48,13 +48,15 @@ jobs:
           APP=$(find App/build/Build/Products -name "*.app" -maxdepth 2 | head -1)
           xcrun simctl install "${{ steps.sim.outputs.udid }}" "$APP"
           mkdir -p shots
-          # First launch without the tour: the spec §77 safety gate.
-          xcrun simctl launch "${{ steps.sim.outputs.udid }}" app.smooooth.operator
-          sleep 8
-          xcrun simctl io "${{ steps.sim.outputs.udid }}" screenshot shots/00-safety-gate.png
+          # Onboarding walk (auto-advances every 4s, ends on the safety gate).
+          SIMCTL_CHILD_SMOOOOTH_DEMO_ONBOARDING=1 xcrun simctl launch "${{ steps.sim.outputs.udid }}" app.smooooth.operator
+          for i in $(seq -w 1 11); do
+            sleep 2
+            xcrun simctl io "${{ steps.sim.outputs.udid }}" screenshot "shots/onboard-$i.png" || true
+          done
           xcrun simctl terminate "${{ steps.sim.outputs.udid }}" app.smooooth.operator || true
-          # Scripted tour: tabs, course map, then a full mock drive to the
-          # result screen (tour v2 adds a 10s map stop before the drive).
+          # Scripted tour: tabs, course map, then a full mock drive (with the
+          # drive follow-cam map) to the result screen.
           SIMCTL_CHILD_SMOOOOTH_DEMO_TOUR=1 xcrun simctl launch "${{ steps.sim.outputs.udid }}" app.smooooth.operator
           for i in $(seq -w 1 48); do
             sleep 2

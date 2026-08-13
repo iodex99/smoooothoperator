@@ -98,6 +98,8 @@ struct RunResultView: View {
             .padding(24)
         }
         .background(SOTheme.ground)
+        // The score-reveal thump (and again if the server verdict lands).
+        .sensoryFeedback(.success, trigger: score)
         .task {
             renderShareCard()
             await upload()
