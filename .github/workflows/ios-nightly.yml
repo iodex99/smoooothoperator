@@ -1,28 +1,61 @@
-# macOS build of the blind-authored iOS layer. Manual or nightly only —
-# macOS runners bill at 10× Linux minutes. Red here is a "fix queue for the
-# next Mac session" (tracked in docs/IOS-NOTES.md), never a merge blocker.
+# macOS build of the blind-authored iOS layer + simulator boot smoke test.
+# Runs nightly, on manual dispatch, and on pushes to the 'ios-build' branch
+# (push `main:ios-build` to request a cycle — workflow_dispatch is not
+# available to Codespace tokens). macOS minutes bill at 10× on private
+# repos: batch fixes, don't spam pushes.
 name: iOS nightly build
 
 on:
   workflow_dispatch:
   schedule:
     - cron: "17 3 * * *"
+  push:
+    branches: [ios-build]
 
 jobs:
   ios-build:
-    name: xcodegen + xcodebuild
+    name: xcodegen + xcodebuild + simulator smoke
     runs-on: macos-15
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+
       - name: Install XcodeGen
         run: brew install xcodegen
+
       - name: Generate project
         run: cd App && xcodegen generate
+
+      - name: Pick a simulator
+        id: sim
+        run: |
+          UDID=$(xcrun simctl list devices available -j \
+            | python3 -c "import json,sys; d=json.load(sys.stdin)['devices']; print(next(dev['udid'] for devs in d.values() for dev in devs if dev['name'].startswith('iPhone')))")
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+          xcrun simctl boot "$UDID" || true
+
       - name: Build for iOS Simulator
         run: |
           cd App && xcodebuild build \
             -project SmoooothOperator.xcodeproj \
             -scheme SmoooothOperator \
-            -destination 'generic/platform=iOS Simulator' \
+            -destination "id=${{ steps.sim.outputs.udid }}" \
+            -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO
+
+      - name: Launch app in simulator and screenshot
+        run: |
+          APP=$(find App/build/Build/Products -name "*.app" -maxdepth 2 | head -1)
+          xcrun simctl install "${{ steps.sim.outputs.udid }}" "$APP"
+          xcrun simctl launch "${{ steps.sim.outputs.udid }}" app.smooooth.operator
+          sleep 10
+          xcrun simctl io "${{ steps.sim.outputs.udid }}" screenshot launch-screen.png
+          xcrun simctl launch "${{ steps.sim.outputs.udid }}" app.smooooth.operator || true
+
+      - name: Upload screenshot artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulator-screenshots
+          path: launch-screen.png
+          if-no-files-found: ignore

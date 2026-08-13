@@ -7,7 +7,11 @@ import SOTelemetry
 /// ordered `SensorEvent` stream (ADR-0001: adapters carry no logic).
 /// Location updates continue in background during an active challenge only
 /// (spec §72); rates per spec §18 targets.
-final class SensorFeed: NSObject, CLLocationManagerDelegate {
+///
+/// @unchecked Sendable: the managers are configured/torn down only through
+/// this feed's start/stop lifecycle; CoreLocation delivers on the main
+/// thread and CoreMotion on its own serial queue — no shared mutation.
+final class SensorFeed: NSObject, CLLocationManagerDelegate, @unchecked Sendable {
     private let locationManager = CLLocationManager()
     private let motionManager = CMMotionManager()
     private var continuation: AsyncStream<SensorEvent>.Continuation?
