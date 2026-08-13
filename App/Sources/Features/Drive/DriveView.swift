@@ -4,6 +4,9 @@ import SOGhost
 import SOSync
 import SOTelemetry
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// Pre-flight checks then the driving screen (spec §§16-17): the glanceable
 /// map with the next turns (user directive 2026-08-13), progress, optional
@@ -25,6 +28,7 @@ struct DriveView: View {
     @State private var session: DriveSession?
     @State private var state: DriveSessionState = .idle
     @State private var confirmEnd = false
+    @State private var hasFirstFix = false
 
     var body: some View {
         ZStack {
@@ -72,20 +76,27 @@ struct DriveView: View {
         switch state {
         case .idle, .calibrating:
             stateOverlay {
-                ChecklistView(step: state)
+                VStack(spacing: 14) {
+                    ChecklistView(step: state, hasFix: hasFirstFix)
+                    cancelButton
+                }
+                .padding(24)
             }
         case .ready:
             stateOverlay {
-                VStack(spacing: 8) {
-                    Text("READY")
-                        .font(.system(size: 44, weight: .black, design: .rounded))
-                        .foregroundStyle(SOTheme.heat)
-                    Text("Cross the start line to begin.")
-                        .font(.subheadline.weight(.medium))
-                        .foregroundStyle(.white)
+                VStack(spacing: 14) {
+                    VStack(spacing: 8) {
+                        Text("READY")
+                            .font(.system(size: 44, weight: .black, design: .rounded))
+                            .foregroundStyle(SOTheme.heat)
+                        Text("Cross the start line to begin.")
+                            .font(.subheadline.weight(.medium))
+                            .foregroundStyle(.white)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .soCard(padding: 22)
+                    cancelButton
                 }
-                .frame(maxWidth: .infinity)
-                .soCard(padding: 22)
                 .padding(24)
             }
         case .active(let progress, let elapsed, let gap):
@@ -105,19 +116,42 @@ struct DriveView: View {
             RunResultView(
                 outcome: outcome,
                 courseId: courseId,
-                route: polyline
+                route: polyline,
+                // Mock streams are single-use, so retry is real-sensors only.
+                onRetry: debugEvents == nil ? { Task { await restart() } } : nil
             ) { dismiss() }
         case .failed(let reason):
             VStack(spacing: 16) {
                 Image(systemName: "exclamationmark.triangle")
                     .font(.largeTitle)
                     .foregroundStyle(SOTheme.caution)
-                Text(failureMessage(reason)).multilineTextAlignment(.center)
+                Text(failureMessage(reason))
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                if reason == "location-denied" {
+                    Button("Open Settings") {
+                        #if canImport(UIKit)
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                        #endif
+                    }
+                    .buttonStyle(HeatButtonStyle())
+                }
                 Button("Back") { dismiss() }
                     .buttonStyle(GhostButtonStyle())
             }
             .padding(24)
         }
+    }
+
+    /// Always available before a run starts. Without this the pre-drive
+    /// states have NO control at all: a driver who denied location, parked
+    /// in a garage, or simply changed their mind can only force-quit.
+    private var cancelButton: some View {
+        Button("Cancel") { dismiss() }
+            .buttonStyle(GhostButtonStyle())
+            .accessibilityHint("Leaves the challenge without recording a run")
     }
 
     /// Pre-drive overlays sit at the bottom over a dimmed course map.
@@ -138,6 +172,19 @@ struct DriveView: View {
     }
 
     private func run() async {
+        // Location denied/restricted can never produce a run. Say so
+        // immediately instead of leaving the driver on a calibration screen
+        // that will never advance.
+        if debugEvents == nil {
+            environment.sensors.requestPermissions()
+            switch environment.sensors.authorizationStatus {
+            case .denied, .restricted:
+                state = .failed(reason: "location-denied")
+                return
+            default:
+                break
+            }
+        }
         guard let scoringConfig = environment.scoringConfig ?? loadBundledConfig() else {
             state = .failed(reason: "scoring configuration unavailable")
             return
@@ -153,14 +200,40 @@ struct DriveView: View {
             return
         }
         self.session = session
-        if debugEvents == nil {
-            environment.sensors.requestPermissions()
-        }
         let states = await session.states()
         await session.start(events: debugEvents ?? environment.sensors.start())
+        // A first GPS fix is what turns "waiting" into "calibrating" on the
+        // checklist — track it so the pre-flight status is real, not decor.
+        if debugEvents == nil {
+            startFixWatchdog()
+        }
         for await newState in states {
             state = newState
+            if case .active = newState { hasFirstFix = true }
+            if case .calibrating = newState { hasFirstFix = true }
         }
+    }
+
+    /// If no fix arrives in 45 seconds the session cannot start. Tell the
+    /// driver instead of spinning forever (indoor parking, denied-then-
+    /// changed permissions, hardware trouble).
+    private func startFixWatchdog() {
+        Task {
+            try? await Task.sleep(for: .seconds(45))
+            if !hasFirstFix, case .idle = state {
+                state = .failed(reason: "no-gps")
+            }
+        }
+    }
+
+    /// "TRY AGAIN" drives the same course again rather than dumping the user
+    /// back on the course screen to hunt for START.
+    private func restart() async {
+        await session?.abort()
+        session = nil
+        environment.sensors.stop()
+        state = .idle
+        await run()
     }
 
     /// Never silently lose an error (spec §78) — honest, human copy.
@@ -186,9 +259,16 @@ struct DriveView: View {
 
 import SOScoring
 
-/// Spec §16 checklist while calibrating.
+/// Spec §16 checklist. Reflects the ACTUAL session state — a status display
+/// that never changes is worse than none, because it hides a stuck run.
 struct ChecklistView: View {
     let step: DriveSessionState
+    var hasFix: Bool
+
+    private var calibrating: Bool {
+        if case .calibrating = step { return true }
+        return false
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -197,14 +277,18 @@ struct ChecklistView: View {
                 .tracking(1.8)
                 .foregroundStyle(SOTheme.heatStart)
             ChecklistRow(done: true, text: "Mount your phone securely")
+            ChecklistRow(done: hasFix, text: hasFix
+                ? "GPS locked"
+                : "Waiting for GPS lock…")
             ChecklistRow(
-                done: false,
-                text: "Calibrating — drive straight for a few seconds when safe"
+                done: calibrating,
+                text: calibrating
+                    ? "Calibrating — drive straight for a few seconds when safe"
+                    : "Calibration starts once you're moving"
             )
-            ChecklistRow(done: false, text: "Waiting for GPS lock")
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .soCard(padding: 24)
-        .padding(24)
     }
 }
 

@@ -7,6 +7,7 @@ import SwiftUI
 /// benchmark, START. The map is view-only — course geometry is cached,
 /// no per-open routing calls (spec §90).
 struct CourseDetailView: View {
+    @Environment(AppEnvironment.self) private var environment
     let courseId: String
     /// Server-fetched course handed over by the caller (Today's Challenge
     /// arrives fully drive-ready) — skips a second fetch.
@@ -17,7 +18,8 @@ struct CourseDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                if let course = model.course {
+                switch model.state {
+                case .ready(let course):
                     CourseMapView(course: course)
                         .frame(height: 300)
                         .clipShape(RoundedRectangle(cornerRadius: 24))
@@ -87,8 +89,33 @@ struct CourseDetailView: View {
                     }
                     .buttonStyle(HeatButtonStyle())
                     .padding(.top, 6)
-                } else {
-                    ProgressView().frame(maxWidth: .infinity, minHeight: 300)
+                case .loading:
+                    ProgressView()
+                        .tint(SOTheme.heatStart)
+                        .frame(maxWidth: .infinity, minHeight: 300)
+                case .failed(let message):
+                    VStack(spacing: 14) {
+                        Image(systemName: "exclamationmark.triangle")
+                            .font(.largeTitle)
+                            .foregroundStyle(SOTheme.caution)
+                        Text(message)
+                            .font(.subheadline)
+                            .foregroundStyle(SOTheme.textSecondary)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Button("Try again") {
+                            Task {
+                                model.state = .loading
+                                await model.load(
+                                    courseId: courseId,
+                                    preloaded: preloaded,
+                                    api: environment.api
+                                )
+                            }
+                        }
+                        .buttonStyle(GhostButtonStyle())
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 300)
                 }
             }
             .padding(18)
@@ -96,7 +123,7 @@ struct CourseDetailView: View {
         .background(SOTheme.ground)
         .navigationTitle(model.course?.name ?? "")
         .navigationBarTitleDisplayMode(.inline)
-        .task { await model.load(courseId: courseId, preloaded: preloaded) }
+        .task { await model.load(courseId: courseId, preloaded: preloaded, api: environment.api) }
     }
 }
 
@@ -167,19 +194,29 @@ final class CourseDetailModel {
         }
     }
 
-    var course: Course?
+    enum State {
+        case loading
+        case ready(Course)
+        case failed(String)
+    }
 
-    func load(courseId: String, preloaded: Course? = nil) async {
+    var state: State = .loading
+
+    /// Convenience for the view's title.
+    var course: Course? {
+        if case .ready(let course) = state { return course }
+        return nil
+    }
+
+    func load(courseId: String, preloaded: Course? = nil, api: SupabaseAPI?) async {
         if let preloaded {
-            course = preloaded
+            state = .ready(preloaded)
             return
         }
-        // Standalone server fetch lands with device wiring; the demo course
-        // keeps the full drive loop usable in mock mode today.
         #if DEBUG
         if courseId == "demo" {
             let route = DemoCourse.route
-            course = Course(
+            state = .ready(Course(
                 name: "Malibu #042",
                 polyline: route,
                 gates: DemoCourse.gates,
@@ -189,10 +226,47 @@ final class CourseDetailModel {
                 turnCount: 23,
                 drivers: 0,
                 benchmarkSeconds: 300
-            )
+            ))
             return
         }
         #endif
+        guard let api, await api.userId != nil else {
+            // Never spin forever: say what is wrong and offer a way out.
+            state = .failed("Sign in to load this course.")
+            return
+        }
+        do {
+            struct Row: Decodable {
+                var name: String
+                var distance_meters: Double
+                var difficulty: Int
+                var turn_count: Int
+                var benchmark_seconds: Int?
+            }
+            let rows = try await api.get(
+                "courses?id=eq.\(courseId)&select=name,distance_meters,difficulty,turn_count,benchmark_seconds",
+                as: [Row].self
+            )
+            guard let row = rows.first else {
+                state = .failed("This course is no longer available.")
+                return
+            }
+            let route = try await api.courseRoute(courseId: courseId)
+            state = .ready(Course(
+                name: row.name,
+                polyline: route.polyline,
+                gates: route.gates,
+                distanceText: Measurement(value: row.distance_meters, unit: UnitLength.meters)
+                    .converted(to: .kilometers)
+                    .formatted(.measurement(width: .abbreviated)),
+                difficulty: row.difficulty,
+                turnCount: row.turn_count,
+                drivers: 0,
+                benchmarkSeconds: row.benchmark_seconds.map(Double.init)
+            ))
+        } catch {
+            state = .failed("Couldn't load this course. Check your connection and try again.")
+        }
     }
 }
 

@@ -12,11 +12,15 @@ struct RunResultView: View {
     let outcome: DriveRunOutcome
     let courseId: String
     let route: [GeoCoordinate]
+    /// Drives the same course again without leaving the screen; nil in mock
+    /// mode, where the synthetic stream is single-use.
+    var onRetry: (() -> Void)? = nil
     let onDismiss: () -> Void
 
     @State private var authoritative: RunUploader.AuthoritativeResult?
     @State private var uploadError: String?
     @State private var shareImage: Image?
+    @State private var savedLocally = false
 
     var body: some View {
         ScrollView {
@@ -74,8 +78,10 @@ struct RunResultView: View {
                 }
 
                 VStack(spacing: 12) {
-                    Button("TRY AGAIN") { onDismiss() }
-                        .buttonStyle(HeatButtonStyle())
+                    Button(onRetry == nil ? "DONE" : "TRY AGAIN") {
+                        if let onRetry { onRetry() } else { onDismiss() }
+                    }
+                    .buttonStyle(HeatButtonStyle())
 
                     if let shareImage {
                         ShareLink(
@@ -160,16 +166,35 @@ struct RunResultView: View {
         }
     }
 
+    /// Durability first (spec §60): the drive is written to disk BEFORE any
+    /// network call, so a crash, a force-quit or a dead battery during upload
+    /// cannot destroy it. Only a server acknowledgement removes it.
     private func upload() async {
-        guard let api = environment.api else {
-            uploadError = "Run stored on this phone — connect an account to compete."
+        let pending = try? await environment.uploadQueue.enqueue(
+            courseId: courseId,
+            outcome: outcome
+        )
+        savedLocally = pending != nil
+        await environment.refreshPendingCount()
+
+        guard let api = environment.api, await api.userId != nil else {
+            uploadError = savedLocally
+                ? "Saved on this phone. Sign in and it uploads automatically."
+                // Honest about the one case where we could NOT save it.
+                : "This phone couldn't save the run — check your storage."
             return
         }
         do {
             authoritative = try await RunUploader(api: api)
                 .upload(outcome: outcome, courseId: courseId)
+            if let pending {
+                await environment.uploadQueue.acknowledge(id: pending.id)
+                await environment.refreshPendingCount()
+            }
         } catch {
-            uploadError = "Your run is safely stored and will upload when you're connected."
+            uploadError = savedLocally
+                ? "Saved on this phone — it uploads automatically when you're back online."
+                : "This run couldn't be saved or uploaded."
         }
     }
 }

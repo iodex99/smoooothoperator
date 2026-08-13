@@ -44,6 +44,13 @@ public actor UploadQueue {
         try store.loadAll().count
     }
 
+    /// Drops a run the caller uploaded directly (the finish-screen fast path
+    /// still wants the server's authoritative score immediately). Only ever
+    /// called after the server acknowledged the run.
+    public func acknowledge(id: UUID) {
+        try? store.delete(id: id)
+    }
+
     public func pending() throws -> [PendingRun] {
         try store.loadAll()
     }

@@ -1,4 +1,6 @@
 import Foundation
+import SOCore
+import SOCourse
 import SOModels
 import SOSync
 import SOTelemetry
@@ -114,6 +116,37 @@ actor SupabaseAPI {
             method: "POST",
             body: try JSONSerialization.data(withJSONObject: json)
         )
+    }
+
+    /// Drive-ready geometry for one course (migration 0013 `course_route`):
+    /// GeoJSON polyline + ordered gates, with the server enforcing the same
+    /// visibility rules as RLS. Clients never parse WKB.
+    func courseRoute(courseId: String) async throws -> (polyline: [GeoCoordinate], gates: [Checkpoint]) {
+        struct Payload: Decodable {
+            var polyline: [[Double]]
+            var gates: [Gate]
+            struct Gate: Decodable {
+                var sequence: Int
+                var latitude: Double
+                var longitude: Double
+                var radiusMeters: Double
+            }
+        }
+        let data = try await rpc("course_route", json: ["uid": userId ?? "", "cid": courseId])
+        let payload = try JSONDecoder().decode(Payload.self, from: data)
+        // GeoJSON is [lon, lat].
+        let polyline = payload.polyline.compactMap { pair -> GeoCoordinate? in
+            guard pair.count >= 2 else { return nil }
+            return GeoCoordinate(latitude: pair[1], longitude: pair[0])
+        }
+        let gates = payload.gates.map {
+            Checkpoint(
+                sequence: $0.sequence,
+                center: GeoCoordinate(latitude: $0.latitude, longitude: $0.longitude),
+                radiusMeters: $0.radiusMeters
+            )
+        }
+        return (polyline, gates)
     }
 
     // MARK: - Storage & functions
