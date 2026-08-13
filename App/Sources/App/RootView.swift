@@ -22,37 +22,64 @@ struct RootView: View {
     }
 }
 
-/// First-use safety gate (spec §77) — required acknowledgement.
+/// First-use safety gate (spec §77) — required acknowledgement. The first
+/// screen anyone sees: it has to feel like the brand AND mean it.
 struct SafetyAcknowledgementView: View {
     @Environment(AppEnvironment.self) private var environment
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            Text("DRIVE SAFE")
-                .font(.system(.largeTitle, design: .rounded).weight(.heavy))
-                .tracking(1.5)
+        ZStack {
+            SOTheme.ground.ignoresSafeArea()
+            RadialGradient(
+                colors: [SOTheme.heatStart.opacity(0.13), .clear],
+                center: .top,
+                startRadius: 0,
+                endRadius: 420
+            )
+            .ignoresSafeArea()
 
-            VStack(alignment: .leading, spacing: 12) {
-                SafetyRule(text: "Never interact with Smooooth Operator while driving.")
-                SafetyRule(text: "Mount your phone before starting.")
-                SafetyRule(text: "Follow all traffic laws.")
-                SafetyRule(text: "Do not speed or drive aggressively to improve your score.")
-                SafetyRule(text: "The goal is smooth, controlled driving.")
+            VStack(alignment: .leading, spacing: 24) {
+                HStack {
+                    Spacer()
+                    ZStack {
+                        GlowRing(progress: 1, lineWidth: 5)
+                            .frame(width: 84, height: 84)
+                        Image(systemName: "shield.fill")
+                            .font(.system(size: 32))
+                            .foregroundStyle(SOTheme.heat)
+                    }
+                    Spacer()
+                }
+                .padding(.top, 30)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("DRIVE SAFE")
+                        .font(.system(size: 40, weight: .black, design: .rounded))
+                        .tracking(1)
+                        .foregroundStyle(.white)
+                    Text("Smooth wins. Reckless never does.")
+                        .font(.subheadline)
+                        .foregroundStyle(SOTheme.textSecondary)
+                }
+
+                VStack(alignment: .leading, spacing: 14) {
+                    SafetyRule(text: "Never interact with Smooooth Operator while driving.")
+                    SafetyRule(text: "Mount your phone before starting.")
+                    SafetyRule(text: "Follow all traffic laws.")
+                    SafetyRule(text: "Do not speed or drive aggressively to improve your score.")
+                    SafetyRule(text: "The goal is smooth, controlled driving.")
+                }
+                .soCard(padding: 18)
+
+                Spacer()
+
+                Button("I UNDERSTAND") {
+                    environment.hasAcknowledgedSafety = true
+                }
+                .buttonStyle(HeatButtonStyle())
             }
-
-            Spacer()
-
-            Button {
-                environment.hasAcknowledgedSafety = true
-            } label: {
-                Text("I understand")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
-            }
-            .buttonStyle(.borderedProminent)
+            .padding(24)
         }
-        .padding(24)
         .presentationDetents([.large])
     }
 }
@@ -61,11 +88,12 @@ private struct SafetyRule: View {
     let text: String
 
     var body: some View {
-        HStack(alignment: .top, spacing: 10) {
+        HStack(alignment: .top, spacing: 12) {
             Image(systemName: "checkmark.shield.fill")
-                .foregroundStyle(.green)
+                .foregroundStyle(SOTheme.verified)
             Text(text)
-                .font(.body)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.white)
         }
     }
 }

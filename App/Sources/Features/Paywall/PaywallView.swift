@@ -10,55 +10,87 @@ struct PaywallView: View {
     @State private var purchasing = false
 
     var body: some View {
-        VStack(spacing: 20) {
-            Text("SMOOOOTH PRO")
-                .font(.system(.title, design: .rounded).weight(.heavy))
-                .tracking(1.5)
-
-            VStack(alignment: .leading, spacing: 10) {
-                Benefit(text: "Unlimited challenges & ghost racing")
-                Benefit(text: "Create custom courses and challenge friends")
-                Benefit(text: "Advanced driving analytics")
-            }
-
-            if products.isEmpty {
-                ProgressView()
-            } else {
-                ForEach(products, id: \.id) { product in
-                    Button {
-                        purchase(product)
-                    } label: {
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(product.displayName).font(.headline)
-                                if let period = product.subscription?.subscriptionPeriod {
-                                    Text(periodLabel(period))
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                            Spacer()
-                            Text(product.displayPrice).font(.headline)
-                        }
-                        .padding(14)
-                        .background(.quinary, in: RoundedRectangle(cornerRadius: 14))
-                    }
-                    .buttonStyle(.plain)
-                    .disabled(purchasing)
+        ScrollView {
+            VStack(spacing: 22) {
+                ZStack {
+                    GlowRing(progress: 1, lineWidth: 6)
+                        .frame(width: 96, height: 96)
+                    Image(systemName: "bolt.fill")
+                        .font(.system(size: 38))
+                        .foregroundStyle(SOTheme.heat)
                 }
-            }
+                .padding(.top, 18)
 
-            Button("Restore purchases") {
-                Task { try? await environment.subscriptions.restore() }
-            }
-            .font(.footnote)
+                VStack(spacing: 4) {
+                    Text("SMOOOOTH PRO")
+                        .font(.system(size: 30, weight: .black, design: .rounded))
+                        .tracking(1.5)
+                        .foregroundStyle(.white)
+                    Text("Drive the whole game.")
+                        .font(.subheadline)
+                        .foregroundStyle(SOTheme.textSecondary)
+                }
 
-            Text("Subscriptions renew automatically until cancelled in your App Store settings.")
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
-                .multilineTextAlignment(.center)
+                VStack(alignment: .leading, spacing: 14) {
+                    Benefit(icon: "flag.checkered.2.crossed", text: "Unlimited challenges & ghost racing")
+                    Benefit(icon: "point.topleft.down.curvedto.point.bottomright.up", text: "Create custom courses and challenge friends")
+                    Benefit(icon: "chart.xyaxis.line", text: "Advanced driving analytics")
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .soCard(padding: 18)
+
+                if products.isEmpty {
+                    ProgressView()
+                        .tint(SOTheme.heatStart)
+                        .padding(.vertical, 20)
+                } else {
+                    ForEach(products, id: \.id) { product in
+                        Button {
+                            purchase(product)
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(product.displayName)
+                                        .font(.system(.headline, design: .rounded).weight(.heavy))
+                                        .foregroundStyle(.white)
+                                    if let period = product.subscription?.subscriptionPeriod {
+                                        Text(periodLabel(period))
+                                            .font(.caption)
+                                            .foregroundStyle(SOTheme.textSecondary)
+                                    }
+                                }
+                                Spacer()
+                                Text(product.displayPrice)
+                                    .font(.system(.headline, design: .rounded).weight(.heavy))
+                                    .monospacedDigit()
+                                    .foregroundStyle(SOTheme.heatEnd)
+                            }
+                            .padding(16)
+                            .background(SOTheme.surface, in: RoundedRectangle(cornerRadius: 18))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 18)
+                                    .strokeBorder(SOTheme.heatStart.opacity(0.55), lineWidth: 1.5)
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(purchasing)
+                    }
+                }
+
+                Button("Restore purchases") {
+                    Task { try? await environment.subscriptions.restore() }
+                }
+                .font(.footnote.weight(.semibold))
+                .tint(SOTheme.heatStart)
+
+                Text("Subscriptions renew automatically until cancelled in your App Store settings.")
+                    .font(.caption2)
+                    .foregroundStyle(SOTheme.textSecondary.opacity(0.7))
+                    .multilineTextAlignment(.center)
+            }
+            .padding(24)
         }
-        .padding(24)
+        .background(SOTheme.ground)
         .task {
             products = (try? await environment.subscriptions.products()) ?? []
         }
@@ -86,10 +118,19 @@ struct PaywallView: View {
 }
 
 private struct Benefit: View {
+    let icon: String
     let text: String
 
     var body: some View {
-        Label(text, systemImage: "checkmark.circle.fill")
-            .foregroundStyle(.primary)
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(SOTheme.heatStart)
+                .frame(width: 30, height: 30)
+                .background(SOTheme.heatStart.opacity(0.12), in: Circle())
+            Text(text)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.white)
+        }
     }
 }

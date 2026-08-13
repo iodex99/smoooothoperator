@@ -23,6 +23,7 @@ struct SmoooothOperatorApp: App {
             }
             .environment(environment)
             .preferredColorScheme(.dark)
+            .tint(SOTheme.heatStart)
             .task { await environment.loadScoringConfig() }
         }
     }
