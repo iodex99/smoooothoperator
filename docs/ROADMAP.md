@@ -29,6 +29,22 @@ syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
 
+### 2026-08-13 — Today's Challenge: dynamic location-based assignment
+- No more hand-authored daily challenges: `today-challenge` edge fn finds
+  eligible courses near the user (radius ladder 10/25/50/100 km), ranks
+  them deterministically (proximity/quality/freshness/friend activity/
+  participation/format fit — env-configurable weights), assigns per the
+  user's LOCAL date, and returns a drive-ready payload. See
+  docs/CHALLENGES.md.
+- New: migration 0013 (`challenge_assignments` + `challenge_candidates()`
+  + `course_route()`), `_shared/challenge/` module, Home card states
+  (format + tagline, real participants, your/friend best, first-record,
+  coming-soon/unavailable). Formats are a registry — SMOOTH_SPRINT ships,
+  others are an entry away. Existing scoring untouched.
+- Tests: +16 pgTAP, +16 Deno unit, +1 nine-scenario stack integration
+  (per-run isolated geography). Sequencing all suites surfaced two latent
+  residue bugs (unscoped 0008 asserts, creator-less e2e courses) — fixed.
+
 ### 2026-08-13 — Full product pass: drive map, onboarding, app icon
 - **Drive map** (user directive: "the driver would need to have a look at
   the map for the next turns"): heading-aligned follow-cam under the
