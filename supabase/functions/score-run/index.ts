@@ -21,6 +21,13 @@ import type { GeoCoordinate } from "../_shared/pipeline/geo.ts";
 import { parseScoringConfig } from "../_shared/pipeline/scoring.ts";
 import { generateGhost } from "../_shared/pipeline/ghost.ts";
 
+export interface ScoreRunOptions {
+  /** Authenticated caller. When present the run must belong to them; when
+   * absent the caller is trusted internal machinery (the stale-job sweeper).
+   * Never derive this from the request body. */
+  callerId?: string;
+}
+
 export interface ScoreRunDeps {
   /** PostgREST base URL, e.g. http://127.0.0.1:54321/rest/v1 */
   restUrl: string;
@@ -76,6 +83,7 @@ async function sha256Hex(bytes: Uint8Array): Promise<string> {
 export async function handleScoreRun(
   runId: string,
   deps: ScoreRunDeps,
+  options?: ScoreRunOptions,
 ): Promise<{ status: number; body: Record<string, unknown> }> {
   const headers = {
     apikey: deps.serviceKey,
@@ -126,6 +134,13 @@ export async function handleScoreRun(
     }
     const run = runs[0];
 
+    // Ownership. Without this any authenticated user could submit someone
+    // else's runId and receive their score, confidence and anti-cheat
+    // integrity flags in the response body.
+    if (options?.callerId !== undefined && run.user_id !== options.callerId) {
+      return { status: 404, body: { error: "run not found" } };
+    }
+
     const envelopeResponse = await rest(
       `/telemetry?run_id=eq.${runId}&select=storage_path,sha256`,
     );
@@ -135,6 +150,22 @@ export async function handleScoreRun(
       return { status: 422, body: { error: "telemetry envelope missing" } };
     }
     const envelope = envelopes[0];
+
+    // The storage path is client-supplied. It is interpolated into a
+    // service-role storage URL below, so a traversal payload would read
+    // arbitrary objects with RLS bypassed. Uploads are confined to
+    // `<user-uuid>/...` by storage policy; require the stored path to match
+    // the run's owner and contain no traversal segments.
+    const expectedPrefix = `${run.user_id}/`;
+    if (
+      typeof envelope.storage_path !== "string" ||
+      !envelope.storage_path.startsWith(expectedPrefix) ||
+      envelope.storage_path.includes("..") ||
+      envelope.storage_path.includes("//")
+    ) {
+      await failJob("telemetry path rejected");
+      return { status: 422, body: { error: "telemetry envelope invalid" } };
+    }
 
     const geometryResponse = await rest(`/rpc/course_pipeline_geometry`, {
       method: "POST",
@@ -278,11 +309,46 @@ if (import.meta.main) {
       });
     }
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+    const authorization = req.headers.get("Authorization");
+    if (authorization === null) {
+      return new Response(JSON.stringify({ error: "authentication required" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    // Service-role callers are internal machinery (the stale-job sweeper) and
+    // score on anyone's behalf. Everyone else is resolved from their JWT by
+    // the auth server — never from the request body.
+    let callerId: string | undefined;
+    if (authorization !== `Bearer ${serviceKey}`) {
+      const userResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
+        headers: {
+          apikey: Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+          Authorization: authorization,
+        },
+      });
+      if (!userResponse.ok) {
+        await userResponse.body?.cancel();
+        return new Response(JSON.stringify({ error: "authentication required" }), {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      const id = (await userResponse.json()).id;
+      if (typeof id !== "string") {
+        return new Response(JSON.stringify({ error: "authentication required" }), {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      callerId = id;
+    }
     const result = await handleScoreRun(runId, {
       restUrl: `${supabaseUrl}/rest/v1`,
       storageUrl: `${supabaseUrl}/storage/v1`,
-      serviceKey: Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-    });
+      serviceKey,
+    }, { callerId });
     return new Response(JSON.stringify(result.body), {
       status: result.status,
       headers: { "Content-Type": "application/json" },

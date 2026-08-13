@@ -82,7 +82,7 @@ select is(
 
 -- Telemetry envelope
 insert into public.telemetry (run_id, storage_path, gps_count, imu_count, byte_size, sha256)
-values ('bbbbbbbb-0000-0000-0000-000000000001', 'telemetry/user1/run1.ndjson.gz',
+values ('bbbbbbbb-0000-0000-0000-000000000001', '11111111-1111-1111-1111-111111111111/run1.ndjson.gz',
         519, 2595, 262144, repeat('ab', 32));
 
 select is(
