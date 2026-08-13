@@ -68,6 +68,19 @@ Once enrolled, in the Apple Developer portal:
 
 **Free tier limits:** 500 MB database, 1 GB storage, 50k monthly actives — genuinely enough for launch and early beta. Pro ($25/mo) raises that to 8 GB database and 100 GB storage.
 
+### 2b. Enable the sign-in providers — **10 minutes in the Supabase dashboard**
+The app offers **Apple** and **Google**. Both are configured server-side; no
+provider SDK ships in the binary.
+
+- **Apple**: Authentication → Providers → Apple. Needs your Services ID, Team
+  ID, Key ID and the `.p8` key from the Apple Developer portal.
+- **Google**: Authentication → Providers → Google. Create an OAuth client in
+  the Google Cloud console (type: Web application) and paste the client id
+  and secret. Google is free.
+- **Redirect allow-list** (both): Authentication → URL Configuration → add
+  `smooothoperator://auth-callback`. Google sign-in silently fails without
+  this — the callback is how the app receives the session.
+
 ### 3. A domain — **~$15/year**
 `smooooth.app` (or whatever you choose) needs to serve four things, all of
 which are App Store requirements or already referenced by the app:
