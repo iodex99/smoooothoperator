@@ -29,6 +29,14 @@ syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
 
+### 2026-08-13 — Platform catalog expanded to 250 courses / 30 countries
+- Revenue-market weighting per directive: US 53, GB 20, AU 17, IT 13,
+  CH/DE/FR 11, CA 10, NZ 8 + 11 new countries (PT, BE, FI, SE, IS, ZA, HK,
+  TW, KR, HR, CL). India holds 30. ~6,900 km of validated road.
+- Final generation pass: 250/250 accepted, 0 rejects; pgTAP catalog floor
+  raised to 220 with market-depth + 25-country assertions (141 db tests).
+
+
 ### 2026-08-12 — Phase 1 engine + backend COMPLETE; iOS layer authored (225 Kit tests, 132 pgTAP, 29 Deno, e2e green)
 - **DriveSession (SOSync)**: the app's core loop as a Linux-tested actor —
   idle→calibrating→ready→active(live ghost gap)→processing→finished.
