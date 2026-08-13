@@ -41,7 +41,7 @@ public enum DriveSessionState: Sendable, Equatable {
 
 /// The provisional client-side result plus everything the upload needs.
 /// The server recomputes all of it authoritatively (spec §46).
-public struct DriveRunOutcome: Sendable, Equatable {
+public struct DriveRunOutcome: Codable, Sendable, Equatable {
     public var provisionalScore: Int
     public var provisionalVerdict: RunVerificationStatus
     public var breakdown: ScoreBreakdown
