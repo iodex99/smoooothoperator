@@ -108,6 +108,9 @@ struct DriveMapView: View {
             }
         }
         .mapStyle(.standard(pointsOfInterest: .excludingAll))
+        // No controls: the heading-rotated follow-cam would otherwise show
+        // a compass over the drive overlay.
+        .mapControls {}
         .allowsHitTesting(false)
         .onAppear { updateCamera(force: true) }
         .onChange(of: progress) { updateCamera(force: false) }
