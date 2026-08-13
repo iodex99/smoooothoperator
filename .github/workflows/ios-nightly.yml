@@ -53,9 +53,10 @@ jobs:
           sleep 8
           xcrun simctl io "${{ steps.sim.outputs.udid }}" screenshot shots/00-safety-gate.png
           xcrun simctl terminate "${{ steps.sim.outputs.udid }}" app.smooooth.operator || true
-          # Scripted tour: tabs, then a full mock drive to the result screen.
+          # Scripted tour: tabs, course map, then a full mock drive to the
+          # result screen (tour v2 adds a 10s map stop before the drive).
           SIMCTL_CHILD_SMOOOOTH_DEMO_TOUR=1 xcrun simctl launch "${{ steps.sim.outputs.udid }}" app.smooooth.operator
-          for i in $(seq -w 1 40); do
+          for i in $(seq -w 1 48); do
             sleep 2
             xcrun simctl io "${{ steps.sim.outputs.udid }}" screenshot "shots/tour-$i.png" || true
           done
