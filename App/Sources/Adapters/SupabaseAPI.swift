@@ -41,6 +41,14 @@ actor SupabaseAPI {
             case id
         }
 
+        /// A custom `init(from:)` suppresses the memberwise initializer, and
+        /// restoring a stored session needs one.
+        init(accessToken: String, refreshToken: String, userId: String) {
+            self.accessToken = accessToken
+            self.refreshToken = refreshToken
+            self.userId = userId
+        }
+
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             accessToken = try container.decode(String.self, forKey: .accessToken)
