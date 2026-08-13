@@ -1,0 +1,994 @@
+[
+{
+"slug": "us-tail-of-the-dragon",
+"name": "Tail of the Dragon \u2014 Deals Gap to Chilhowee",
+"country": "US",
+"region": "Tennessee / North Carolina",
+"city": "Deals Gap",
+"category": "canyon",
+"description": "318 curves in 11 miles, then lakeside sweepers \u2014 America's pilgrimage road, end to end.",
+"waypoints": [
+[
+35.4659,
+-83.9186
+],
+[
+35.55744,
+-84.00942
+]
+],
+"expectedKm": [
+15,
+35
+],
+"difficultyHint": 5
+},
+{
+"slug": "us-cherohala-skyway",
+"name": "Cherohala Skyway \u2014 Tellico Ramp",
+"country": "US",
+"region": "Tennessee",
+"city": "Tellico Plains",
+"category": "highland",
+"description": "The Dragon's grown-up sibling: fast, high, and empty.",
+"waypoints": [
+[
+35.368,
+-84.293
+],
+[
+35.34,
+-84.03
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-angeles-crest",
+"name": "Angeles Crest Highway \u2014 CA-2",
+"country": "US",
+"region": "California",
+"city": "La Ca\u00f1ada Flintridge",
+"category": "canyon",
+"description": "LA's canyon-run cathedral, from the city to the pines.",
+"waypoints": [
+[
+34.207,
+-118.201
+],
+[
+34.253,
+-118.136
+],
+[
+34.305,
+-117.99
+]
+],
+"expectedKm": [
+30,
+50
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-malibu-canyon",
+"name": "Malibu Canyon \u2014 Las Virgenes Road",
+"country": "US",
+"region": "California",
+"city": "Malibu",
+"category": "canyon",
+"description": "The Malibu classic \u2014 ocean to valley through a rock gorge.",
+"waypoints": [
+[
+34.037,
+-118.705
+],
+[
+34.12,
+-118.702
+]
+],
+"expectedKm": [
+8,
+16
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-latigo-canyon",
+"name": "Latigo Canyon Road",
+"country": "US",
+"region": "California",
+"city": "Malibu",
+"category": "canyon",
+"description": "Malibu's twistiest ribbon \u2014 nothing but corners for nine miles.",
+"waypoints": [
+[
+34.0345,
+-118.736
+],
+[
+34.089,
+-118.755
+]
+],
+"expectedKm": [
+9,
+18
+],
+"difficultyHint": 5
+},
+{
+"slug": "us-the-snake",
+"name": "Mulholland Highway East \u2014 The Snake",
+"country": "US",
+"region": "California",
+"city": "Cornell",
+"category": "canyon",
+"description": "From the Rock Store up The Snake and along the Santa Monica ridge \u2014 car culture's most-filmed corners.",
+"waypoints": [
+[
+34.0995,
+-118.7965
+],
+[
+34.09838,
+-118.6733
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 5
+},
+{
+"slug": "us-stunt-road",
+"name": "Stunt Road",
+"country": "US",
+"region": "California",
+"city": "Calabasas",
+"category": "canyon",
+"description": "Short, cambered, and dead quiet \u2014 a Malibu connoisseur's pick.",
+"waypoints": [
+[
+34.089,
+-118.652
+],
+[
+34.0616,
+-118.6467
+]
+],
+"expectedKm": [
+4,
+10
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-decker-canyon",
+"name": "Decker Canyon Road \u2014 CA-23",
+"country": "US",
+"region": "California",
+"city": "Malibu",
+"category": "canyon",
+"description": "The narrow, technical way out of Malibu \u2014 respect it.",
+"waypoints": [
+[
+34.036,
+-118.885
+],
+[
+34.105,
+-118.821
+]
+],
+"expectedKm": [
+8,
+18
+],
+"difficultyHint": 5
+},
+{
+"slug": "us-big-sur",
+"name": "Pacific Coast Highway \u2014 Big Sur",
+"country": "US",
+"region": "California",
+"city": "Big Sur",
+"category": "coastal",
+"description": "Bixby Bridge and a hundred cliff-edge sweepers over the Pacific.",
+"waypoints": [
+[
+36.49,
+-121.94
+],
+[
+36.371,
+-121.902
+],
+[
+36.27,
+-121.808
+]
+],
+"expectedKm": [
+30,
+50
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-tioga-pass",
+"name": "Tioga Pass \u2014 CA-120 East Ramp",
+"country": "US",
+"region": "California",
+"city": "Lee Vining",
+"category": "alpine",
+"description": "Yosemite's back door, climbing 3,000 feet off the Mono basin.",
+"waypoints": [
+[
+37.955,
+-119.12
+],
+[
+37.911,
+-119.257
+]
+],
+"expectedKm": [
+12,
+25
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-palomar-south-grade",
+"name": "Palomar Mountain \u2014 South Grade",
+"country": "US",
+"region": "California",
+"city": "Palomar Mountain",
+"category": "canyon",
+"description": "San Diego's hairpin ladder to the observatory.",
+"waypoints": [
+[
+33.29348,
+-116.89025
+],
+[
+33.31436,
+-116.87045
+]
+],
+"expectedKm": [
+6,
+16
+],
+"difficultyHint": 5
+},
+{
+"slug": "us-ortega-highway",
+"name": "Ortega Highway \u2014 CA-74",
+"country": "US",
+"region": "California",
+"city": "San Juan Capistrano",
+"category": "canyon",
+"description": "Orange County's canyon commute turned weekend playground.",
+"waypoints": [
+[
+33.51,
+-117.63
+],
+[
+33.65,
+-117.37
+]
+],
+"expectedKm": [
+25,
+42
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-beartooth",
+"name": "Beartooth Highway \u2014 Red Lodge Ramp",
+"country": "US",
+"region": "Montana / Wyoming",
+"city": "Red Lodge",
+"category": "alpine",
+"description": "Switchbacks to an 11,000-foot tundra plateau.",
+"waypoints": [
+[
+45.185,
+-109.247
+],
+[
+45.013,
+-109.423
+]
+],
+"expectedKm": [
+30,
+50
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-going-to-the-sun",
+"name": "Going-to-the-Sun Road \u2014 West Ramp",
+"country": "US",
+"region": "Montana",
+"city": "West Glacier",
+"category": "alpine",
+"description": "A ledge carved across Glacier's garden wall.",
+"waypoints": [
+[
+48.68,
+-113.819
+],
+[
+48.6967,
+-113.718
+]
+],
+"expectedKm": [
+12,
+30
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-million-dollar",
+"name": "Million Dollar Highway \u2014 Ouray to Silverton",
+"country": "US",
+"region": "Colorado",
+"city": "Ouray",
+"category": "alpine",
+"description": "Guardrail-free ledges over the Uncompahgre gorge.",
+"waypoints": [
+[
+38.023,
+-107.672
+],
+[
+37.812,
+-107.664
+]
+],
+"expectedKm": [
+30,
+42
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-pikes-peak",
+"name": "Pikes Peak Highway",
+"country": "US",
+"region": "Colorado",
+"city": "Cascade",
+"category": "alpine",
+"description": "The race-to-the-clouds course, open to anyone with the toll.",
+"waypoints": [
+[
+38.905,
+-105.005
+],
+[
+38.8405,
+-105.0442
+]
+],
+"expectedKm": [
+22,
+35
+],
+"difficultyHint": 5
+},
+{
+"slug": "us-skyline-drive",
+"name": "Skyline Drive \u2014 Front Royal Section",
+"country": "US",
+"region": "Virginia",
+"city": "Front Royal",
+"category": "forest",
+"description": "Shenandoah ridge cruising at a federally-mandated flow.",
+"waypoints": [
+[
+38.904,
+-78.199
+],
+[
+38.662,
+-78.321
+]
+],
+"expectedKm": [
+35,
+55
+],
+"difficultyHint": 2
+},
+{
+"slug": "us-blue-ridge-linn-cove",
+"name": "Blue Ridge Parkway \u2014 Grandfather Mountain",
+"country": "US",
+"region": "North Carolina",
+"city": "Blowing Rock",
+"category": "forest",
+"description": "The Linn Cove Viaduct and America's favourite parkway miles.",
+"waypoints": [
+[
+36.135,
+-81.68
+],
+[
+36.089,
+-81.81
+]
+],
+"expectedKm": [
+18,
+38
+],
+"difficultyHint": 2
+},
+{
+"slug": "us-twisted-sisters",
+"name": "Twisted Sisters \u2014 RM-337",
+"country": "US",
+"region": "Texas",
+"city": "Leakey",
+"category": "canyon",
+"description": "Hill Country's roller-coaster, the best of the three sisters.",
+"waypoints": [
+[
+29.729,
+-99.761
+],
+[
+29.747,
+-99.55
+]
+],
+"expectedKm": [
+18,
+32
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-pig-trail",
+"name": "Pig Trail Scenic Byway \u2014 AR-23",
+"country": "US",
+"region": "Arkansas",
+"city": "Ozark",
+"category": "forest",
+"description": "The Ozarks' tunnel of green, beloved by riders.",
+"waypoints": [
+[
+35.49,
+-93.83
+],
+[
+35.73,
+-93.81
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-chuckanut",
+"name": "Chuckanut Drive \u2014 WA-11",
+"country": "US",
+"region": "Washington",
+"city": "Bow",
+"category": "coastal",
+"description": "Cliff-side curves over Samish Bay oyster beds.",
+"waypoints": [
+[
+48.557,
+-122.43
+],
+[
+48.705,
+-122.49
+]
+],
+"expectedKm": [
+12,
+25
+],
+"difficultyHint": 2
+},
+{
+"slug": "us-columbia-gorge",
+"name": "Historic Columbia River Highway",
+"country": "US",
+"region": "Oregon",
+"city": "Corbett",
+"category": "forest",
+"description": "1915 parkway engineering past a parade of waterfalls.",
+"waypoints": [
+[
+45.51,
+-122.28
+],
+[
+45.576,
+-122.115
+]
+],
+"expectedKm": [
+12,
+25
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-tunnel-of-trees",
+"name": "Tunnel of Trees \u2014 M-119",
+"country": "US",
+"region": "Michigan",
+"city": "Harbor Springs",
+"category": "forest",
+"description": "A narrow centerline-free ribbon above Lake Michigan.",
+"waypoints": [
+[
+45.443,
+-84.97
+],
+[
+45.644,
+-85.033
+]
+],
+"expectedKm": [
+20,
+35
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-death-valley-straight",
+"name": "Death Valley \u2014 CA-190 Desert Straight",
+"country": "US",
+"region": "California",
+"city": "Furnace Creek",
+"category": "straight",
+"description": "Heat-shimmer straights below sea level.",
+"waypoints": [
+[
+36.607,
+-117.145
+],
+[
+36.461,
+-116.867
+]
+],
+"expectedKm": [
+28,
+45
+],
+"difficultyHint": 1
+},
+{
+"slug": "ca-sea-to-sky",
+"name": "Sea-to-Sky Highway \u2014 Horseshoe Bay to Squamish",
+"country": "CA",
+"region": "British Columbia",
+"city": "Vancouver",
+"category": "coastal",
+"description": "Fjord-side sweepers rebuilt for the Olympics.",
+"waypoints": [
+[
+49.373,
+-123.271
+],
+[
+49.7,
+-123.155
+]
+],
+"expectedKm": [
+35,
+55
+],
+"difficultyHint": 3
+},
+{
+"slug": "ca-duffey-lake",
+"name": "Duffey Lake Road \u2014 Pemberton Ramp",
+"country": "CA",
+"region": "British Columbia",
+"city": "Pemberton",
+"category": "alpine",
+"description": "BC's wild backroad over Cayoosh Pass.",
+"waypoints": [
+[
+50.32,
+-122.8
+],
+[
+50.369,
+-122.5
+]
+],
+"expectedKm": [
+20,
+40
+],
+"difficultyHint": 4
+},
+{
+"slug": "ca-cabot-trail",
+"name": "Cabot Trail \u2014 Ch\u00e9ticamp to Pleasant Bay",
+"country": "CA",
+"region": "Nova Scotia",
+"city": "Ch\u00e9ticamp",
+"category": "coastal",
+"description": "French Mountain switchbacks over the gulf.",
+"waypoints": [
+[
+46.628,
+-61.013
+],
+[
+46.833,
+-60.802
+]
+],
+"expectedKm": [
+30,
+45
+],
+"difficultyHint": 4
+},
+{
+"slug": "ca-icefields",
+"name": "Icefields Parkway \u2014 Lake Louise to Bow Summit",
+"country": "CA",
+"region": "Alberta",
+"city": "Lake Louise",
+"category": "alpine",
+"description": "Glacier-lined cruising on the world's prettiest highway.",
+"waypoints": [
+[
+51.426,
+-116.181
+],
+[
+51.713,
+-116.496
+]
+],
+"expectedKm": [
+35,
+50
+],
+"difficultyHint": 2
+},
+{
+"slug": "au-gor-lorne",
+"name": "Great Ocean Road \u2014 Torquay to Lorne",
+"country": "AU",
+"region": "Victoria",
+"city": "Torquay",
+"category": "coastal",
+"description": "The memorial road's opening act along Bass Strait surf.",
+"waypoints": [
+[
+-38.33,
+144.323
+],
+[
+-38.54,
+143.975
+]
+],
+"expectedKm": [
+38,
+55
+],
+"difficultyHint": 3
+},
+{
+"slug": "au-gor-apollo",
+"name": "Great Ocean Road \u2014 Lorne to Apollo Bay",
+"country": "AU",
+"region": "Victoria",
+"city": "Lorne",
+"category": "coastal",
+"description": "The tighter, wilder half pinched between cliff and sea.",
+"waypoints": [
+[
+-38.54,
+143.975
+],
+[
+-38.755,
+143.672
+]
+],
+"expectedKm": [
+38,
+55
+],
+"difficultyHint": 4
+},
+{
+"slug": "au-black-spur",
+"name": "Black Spur Drive",
+"country": "AU",
+"region": "Victoria",
+"city": "Healesville",
+"category": "forest",
+"description": "Cathedral mountain-ash corners minutes from Melbourne.",
+"waypoints": [
+[
+-37.653,
+145.52
+],
+[
+-37.535,
+145.65
+]
+],
+"expectedKm": [
+12,
+25
+],
+"difficultyHint": 4
+},
+{
+"slug": "au-reefton-spur",
+"name": "Reefton Spur",
+"country": "AU",
+"region": "Victoria",
+"city": "Warburton",
+"category": "forest",
+"description": "The Black Spur's harder sibling \u2014 20km of relentless second-gear forest.",
+"waypoints": [
+[
+-37.755,
+145.75
+],
+[
+-37.66,
+145.88
+]
+],
+"expectedKm": [
+15,
+30
+],
+"difficultyHint": 5
+},
+{
+"slug": "au-macquarie-pass",
+"name": "Macquarie Pass",
+"country": "AU",
+"region": "New South Wales",
+"city": "Albion Park",
+"category": "ghat",
+"description": "Rainforest hairpins up the Illawarra escarpment.",
+"waypoints": [
+[
+-34.57,
+150.77
+],
+[
+-34.588,
+150.6
+]
+],
+"expectedKm": [
+10,
+20
+],
+"difficultyHint": 5
+},
+{
+"slug": "au-jamberoo-mountain",
+"name": "Jamberoo Mountain Road",
+"country": "AU",
+"region": "New South Wales",
+"city": "Jamberoo",
+"category": "ghat",
+"description": "Green wall switchbacks from dairy country to the highlands.",
+"waypoints": [
+[
+-34.64,
+150.77
+],
+[
+-34.596,
+150.636
+]
+],
+"expectedKm": [
+10,
+22
+],
+"difficultyHint": 4
+},
+{
+"slug": "au-oxley-highway",
+"name": "Oxley Highway \u2014 Long Flat to Gingers Creek",
+"country": "AU",
+"region": "New South Wales",
+"city": "Wauchope",
+"category": "forest",
+"description": "Australia's best motorcycling road: 100km of mountain rhythm.",
+"waypoints": [
+[
+-31.478,
+152.55
+],
+[
+-31.28,
+152.28
+]
+],
+"expectedKm": [
+35,
+60
+],
+"difficultyHint": 4
+},
+{
+"slug": "au-mount-glorious",
+"name": "Mount Glorious Road",
+"country": "AU",
+"region": "Queensland",
+"city": "Samford",
+"category": "forest",
+"description": "Brisbane's rainforest playground over the D'Aguilar Range.",
+"waypoints": [
+[
+-27.44,
+152.94
+],
+[
+-27.335,
+152.766
+]
+],
+"expectedKm": [
+18,
+32
+],
+"difficultyHint": 4
+},
+{
+"slug": "au-sideling",
+"name": "The Sideling \u2014 Tasman Highway",
+"country": "AU",
+"region": "Tasmania",
+"city": "Scottsdale",
+"category": "forest",
+"description": "Targa Tasmania's signature public stage.",
+"waypoints": [
+[
+-41.16,
+147.52
+],
+[
+-41.275,
+147.34
+]
+],
+"expectedKm": [
+18,
+35
+],
+"difficultyHint": 4
+},
+{
+"slug": "nz-crown-range",
+"name": "Crown Range Road",
+"country": "NZ",
+"region": "Otago",
+"city": "Queenstown",
+"category": "alpine",
+"description": "NZ's highest sealed pass \u2014 the Zigzag over to Wanaka.",
+"waypoints": [
+[
+-44.94,
+168.84
+],
+[
+-44.87,
+169.05
+]
+],
+"expectedKm": [
+18,
+32
+],
+"difficultyHint": 4
+},
+{
+"slug": "nz-milford-road",
+"name": "Milford Road \u2014 Te Anau Downs to The Divide",
+"country": "NZ",
+"region": "Southland",
+"city": "Te Anau",
+"category": "alpine",
+"description": "Beech forest and glacier valleys on the road to the Sound.",
+"waypoints": [
+[
+-45.2,
+167.78
+],
+[
+-44.87,
+168.09
+]
+],
+"expectedKm": [
+35,
+60
+],
+"difficultyHint": 3
+},
+{
+"slug": "nz-remutaka",
+"name": "Remutaka Hill Road",
+"country": "NZ",
+"region": "Wellington",
+"city": "Upper Hutt",
+"category": "ghat",
+"description": "Wellington's twisting gateway to the Wairarapa.",
+"waypoints": [
+[
+-41.11,
+175.1
+],
+[
+-41.115,
+175.33
+]
+],
+"expectedKm": [
+12,
+25
+],
+"difficultyHint": 4
+},
+{
+"slug": "nz-takaka-hill",
+"name": "Takaka Hill Road",
+"country": "NZ",
+"region": "Tasman",
+"city": "Motueka",
+"category": "alpine",
+"description": "The marble mountain's 365 corners to Golden Bay.",
+"waypoints": [
+[
+-41.11,
+172.96
+],
+[
+-40.85,
+172.8
+]
+],
+"expectedKm": [
+45,
+65
+],
+"difficultyHint": 4
+}
+]

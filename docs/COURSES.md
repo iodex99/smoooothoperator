@@ -56,3 +56,10 @@ Quality and leaderboard density over blanket coverage: a few hundred
 courses drivers recognize and rave about beat thousands of dead ones.
 Scaling to more regions is a manifest edit — the pipeline, validation,
 and benchmarking are already automatic.
+
+## Known-unroutable famous roads (drop list)
+
+OSM access/width/toll tagging makes the routing engine refuse these despite
+being legendary drives; revisit with a custom routing profile later:
+Conor Pass (IE, width limits), Kalhatti Ghat (IN, forest checkpoint tags),
+Silvretta Hochalpenstraße (AT, toll/private tagging).

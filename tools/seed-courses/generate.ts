@@ -101,30 +101,30 @@ function simplify(points: GeoCoordinate[], epsilonMeters: number): GeoCoordinate
     }
   }
 
-  // Enforce max spacing: re-add originals where simplification opened gaps.
-  const result: number[] = [];
-  let previous = 0;
-  result.push(0);
+  const kept = points.filter((_, i) => keep[i]);
+  return enforceSpacing(kept, 350);
+}
+
+/** Interpolate extra vertices so no pair sits further apart than maxMeters —
+ * OSRM emits kilometer-long segments on straights, and the validator (and
+ * course corridor logic) needs dense-enough geometry everywhere. */
+function enforceSpacing(points: GeoCoordinate[], maxMeters: number): GeoCoordinate[] {
+  const out: GeoCoordinate[] = [points[0]];
   for (let i = 1; i < points.length; i++) {
-    if (!keep[i] && i !== points.length - 1) continue;
-    // walk back and insert originals if the kept pair is too far apart
-    let anchor = previous;
-    for (let j = anchor + 1; j <= i; j++) {
-      if (
-        j === i ||
-        distanceMeters(points[anchor], points[j]) > 380
-      ) {
-        if (j !== i && distanceMeters(points[anchor], points[j]) > 380) {
-          result.push(j);
-          anchor = j;
-        }
+    const prev = out[out.length - 1];
+    const gap = distanceMeters(prev, points[i]);
+    if (gap > maxMeters) {
+      const steps = Math.ceil(gap / maxMeters);
+      for (let k = 1; k < steps; k++) {
+        out.push({
+          latitude: prev.latitude + (points[i].latitude - prev.latitude) * (k / steps),
+          longitude: prev.longitude + (points[i].longitude - prev.longitude) * (k / steps),
+        });
       }
     }
-    result.push(i);
-    previous = i;
+    out.push(points[i]);
   }
-  const unique = [...new Set(result)].sort((a, b) => a - b);
-  return unique.map((i) => points[i]);
+  return out;
 }
 
 function totalDistance(points: GeoCoordinate[]): number {
@@ -136,6 +136,7 @@ function totalDistance(points: GeoCoordinate[]): number {
 }
 
 function pointAtFraction(points: GeoCoordinate[], fraction: number): GeoCoordinate {
+  if (fraction <= 0) return points[0];
   const target = totalDistance(points) * fraction;
   let walked = 0;
   for (let i = 1; i < points.length; i++) {

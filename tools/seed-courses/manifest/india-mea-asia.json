@@ -1,0 +1,874 @@
+[
+{
+"slug": "in-khandala-ghat",
+"name": "Khandala Ghat \u2014 Old Mumbai-Pune Highway",
+"country": "IN",
+"region": "Maharashtra",
+"city": "Lonavala",
+"category": "ghat",
+"description": "The classic weekend ghat run out of Mumbai \u2014 sweeping climbs above Khopoli.",
+"waypoints": [
+[
+18.7861,
+73.3468
+],
+[
+18.7539,
+73.4006
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 4
+},
+{
+"slug": "in-tamhini-ghat",
+"name": "Tamhini Ghat",
+"country": "IN",
+"region": "Maharashtra",
+"city": "Mulshi",
+"category": "ghat",
+"description": "Monsoon-green ridges and waterfalls between Mulshi and the Konkan.",
+"waypoints": [
+[
+18.5087,
+73.512
+],
+[
+18.447,
+73.421
+]
+],
+"expectedKm": [
+12,
+30
+],
+"difficultyHint": 4
+},
+{
+"slug": "in-malshej-ghat",
+"name": "Malshej Ghat",
+"country": "IN",
+"region": "Maharashtra",
+"city": "Murbad",
+"category": "ghat",
+"description": "Cliff-hugging climb through the Western Ghats on the Kalyan-Ahmednagar road.",
+"waypoints": [
+[
+19.2828,
+73.6099
+],
+[
+19.3396,
+73.7736
+]
+],
+"expectedKm": [
+18,
+35
+],
+"difficultyHint": 4
+},
+{
+"slug": "in-ambenali-ghat",
+"name": "Ambenali Ghat to Mahabaleshwar",
+"country": "IN",
+"region": "Maharashtra",
+"city": "Poladpur",
+"category": "ghat",
+"description": "Forty kilometres of forested hairpins from the Konkan floor to the plateau.",
+"waypoints": [
+[
+17.988,
+73.468
+],
+[
+17.925,
+73.658
+]
+],
+"expectedKm": [
+28,
+45
+],
+"difficultyHint": 4
+},
+{
+"slug": "in-matheran-approach",
+"name": "Matheran Hill Road",
+"country": "IN",
+"region": "Maharashtra",
+"city": "Neral",
+"category": "ghat",
+"description": "Short, sharp hairpin climb to the car-free hill station's Dasturi gate.",
+"waypoints": [
+[
+19.0243,
+73.316
+],
+[
+18.993,
+73.282
+]
+],
+"expectedKm": [
+5,
+12
+],
+"difficultyHint": 4
+},
+{
+"slug": "in-kolli-hills",
+"name": "Kolli Hills 70 Hairpins",
+"country": "IN",
+"region": "Tamil Nadu",
+"city": "Namakkal",
+"category": "ghat",
+"description": "Seventy numbered hairpins in one relentless climb \u2014 India's most famous switchback wall.",
+"waypoints": [
+[
+11.348,
+78.315
+],
+[
+11.2489,
+78.3399
+]
+],
+"expectedKm": [
+15,
+35
+],
+"difficultyHint": 5
+},
+{
+"slug": "in-valparai-climb",
+"name": "Valparai 40 Hairpins",
+"country": "IN",
+"region": "Tamil Nadu",
+"city": "Pollachi",
+"category": "ghat",
+"description": "Forty hairpins from Azhiyar dam through tea country to Valparai.",
+"waypoints": [
+[
+10.478,
+76.97
+],
+[
+10.327,
+76.951
+]
+],
+"expectedKm": [
+25,
+50
+],
+"difficultyHint": 5
+},
+{
+"slug": "in-coonoor-ghat",
+"name": "Mettupalayam\u2013Coonoor Ghat",
+"country": "IN",
+"region": "Tamil Nadu",
+"city": "Coonoor",
+"category": "ghat",
+"description": "The Nilgiri ghat road climbing alongside the mountain railway.",
+"waypoints": [
+[
+11.3,
+76.94
+],
+[
+11.353,
+76.795
+]
+],
+"expectedKm": [
+20,
+40
+],
+"difficultyHint": 4
+},
+{
+"slug": "in-kodaikanal-ghat",
+"name": "Kodaikanal Ghat Road",
+"country": "IN",
+"region": "Tamil Nadu",
+"city": "Kodaikanal",
+"category": "ghat",
+"description": "Long flowing climb through the Palani hills to the princess of hill stations.",
+"waypoints": [
+[
+10.245,
+77.652
+],
+[
+10.2381,
+77.4892
+]
+],
+"expectedKm": [
+30,
+55
+],
+"difficultyHint": 4
+},
+{
+"slug": "in-yercaud-loop",
+"name": "Yercaud 20 Hairpins",
+"country": "IN",
+"region": "Tamil Nadu",
+"city": "Salem",
+"category": "ghat",
+"description": "Twenty quick hairpins with Salem's lights spread below.",
+"waypoints": [
+[
+11.699,
+78.177
+],
+[
+11.7748,
+78.209
+]
+],
+"expectedKm": [
+15,
+30
+],
+"difficultyHint": 5
+},
+{
+"slug": "in-nandi-hills",
+"name": "Nandi Hills Climb",
+"country": "IN",
+"region": "Karnataka",
+"city": "Chikkaballapur",
+"category": "ghat",
+"description": "Bengaluru's sunrise pilgrimage \u2014 a compact, cambered hairpin sprint.",
+"waypoints": [
+[
+13.352,
+77.678
+],
+[
+13.3702,
+77.6835
+]
+],
+"expectedKm": [
+4,
+12
+],
+"difficultyHint": 4
+},
+{
+"slug": "in-agumbe-ghat",
+"name": "Agumbe Ghat",
+"country": "IN",
+"region": "Karnataka",
+"city": "Agumbe",
+"category": "ghat",
+"description": "Rainforest hairpins in the cherrapunji of the south.",
+"waypoints": [
+[
+13.47,
+74.99
+],
+[
+13.502,
+75.09
+]
+],
+"expectedKm": [
+8,
+25
+],
+"difficultyHint": 5
+},
+{
+"slug": "in-charmadi-ghat",
+"name": "Charmadi Ghat",
+"country": "IN",
+"region": "Karnataka",
+"city": "Mudigere",
+"category": "ghat",
+"description": "Twelve kilometres of jungle switchbacks between Dakshina Kannada and Chikkamagaluru.",
+"waypoints": [
+[
+13.048,
+75.394
+],
+[
+13.116,
+75.52
+]
+],
+"expectedKm": [
+12,
+28
+],
+"difficultyHint": 4
+},
+{
+"slug": "in-mullayanagiri",
+"name": "Mullayanagiri Road",
+"country": "IN",
+"region": "Karnataka",
+"city": "Chikkamagaluru",
+"category": "ghat",
+"description": "Ridge-top single-lane climb to Karnataka's highest peak.",
+"waypoints": [
+[
+13.32,
+75.77
+],
+[
+13.39,
+75.721
+]
+],
+"expectedKm": [
+12,
+28
+],
+"difficultyHint": 5
+},
+{
+"slug": "in-madikeri-talakaveri",
+"name": "Madikeri\u2013Talakaveri Road",
+"country": "IN",
+"region": "Karnataka",
+"city": "Madikeri",
+"category": "forest",
+"description": "Coffee-estate curves to the source of the Kaveri.",
+"waypoints": [
+[
+12.421,
+75.74
+],
+[
+12.383,
+75.491
+]
+],
+"expectedKm": [
+30,
+50
+],
+"difficultyHint": 3
+},
+{
+"slug": "in-munnar-gap-road",
+"name": "Munnar Gap Road",
+"country": "IN",
+"region": "Kerala",
+"city": "Munnar",
+"category": "ghat",
+"description": "Tea-garden sweepers to the misty Lockhart Gap viewpoint.",
+"waypoints": [
+[
+10.089,
+77.06
+],
+[
+10.021,
+77.129
+]
+],
+"expectedKm": [
+8,
+25
+],
+"difficultyHint": 3
+},
+{
+"slug": "in-ponmudi-climb",
+"name": "Ponmudi 22 Hairpins",
+"country": "IN",
+"region": "Kerala",
+"city": "Vithura",
+"category": "ghat",
+"description": "Twenty-two numbered bends rising out of Thiruvananthapuram's backyard.",
+"waypoints": [
+[
+8.673,
+77.076
+],
+[
+8.7613,
+77.1158
+]
+],
+"expectedKm": [
+10,
+25
+],
+"difficultyHint": 5
+},
+{
+"slug": "in-wayanad-churam",
+"name": "Thamarassery Churam",
+"country": "IN",
+"region": "Kerala",
+"city": "Lakkidi",
+"category": "ghat",
+"description": "Nine broad hairpins stacking up the Wayanad escarpment.",
+"waypoints": [
+[
+11.4415,
+75.9877
+],
+[
+11.508,
+76.026
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 5
+},
+{
+"slug": "in-athirappilly",
+"name": "Chalakudy\u2013Athirappilly Road",
+"country": "IN",
+"region": "Kerala",
+"city": "Chalakudy",
+"category": "forest",
+"description": "Smooth river-valley run to Kerala's biggest waterfall.",
+"waypoints": [
+[
+10.3,
+76.33
+],
+[
+10.292,
+76.439
+],
+[
+10.285,
+76.57
+]
+],
+"expectedKm": [
+18,
+40
+],
+"difficultyHint": 2
+},
+{
+"slug": "in-mount-abu",
+"name": "Mount Abu Climb",
+"country": "IN",
+"region": "Rajasthan",
+"city": "Abu Road",
+"category": "ghat",
+"description": "Rajasthan's only hill climb \u2014 granite curves above the desert plain.",
+"waypoints": [
+[
+24.48,
+72.781
+],
+[
+24.593,
+72.717
+]
+],
+"expectedKm": [
+18,
+32
+],
+"difficultyHint": 4
+},
+{
+"slug": "in-saputara-ghat",
+"name": "Waghai\u2013Saputara Ghat",
+"country": "IN",
+"region": "Gujarat",
+"city": "Saputara",
+"category": "ghat",
+"description": "Gujarat's lone hill station approach through the Dang forests.",
+"waypoints": [
+[
+20.767,
+73.487
+],
+[
+20.5744,
+73.7473
+]
+],
+"expectedKm": [
+35,
+60
+],
+"difficultyHint": 3
+},
+{
+"slug": "in-road-to-heaven",
+"name": "Road to Heaven \u2014 Khavda to Dholavira",
+"country": "IN",
+"region": "Gujarat",
+"city": "Khavda",
+"category": "straight",
+"description": "A dead-straight causeway floating across the White Rann.",
+"waypoints": [
+[
+23.848,
+69.723
+],
+[
+23.888,
+70.213
+]
+],
+"expectedKm": [
+25,
+60
+],
+"difficultyHint": 1
+},
+{
+"slug": "in-mussoorie-climb",
+"name": "Dehradun\u2013Mussoorie Road",
+"country": "IN",
+"region": "Uttarakhand",
+"city": "Mussoorie",
+"category": "ghat",
+"description": "The queen of hills climb, curling above the Doon valley.",
+"waypoints": [
+[
+30.36,
+78.07
+],
+[
+30.457,
+78.065
+]
+],
+"expectedKm": [
+20,
+38
+],
+"difficultyHint": 3
+},
+{
+"slug": "in-nainital-climb",
+"name": "Kathgodam\u2013Nainital Climb",
+"country": "IN",
+"region": "Uttarakhand",
+"city": "Nainital",
+"category": "ghat",
+"description": "Kumaon lake-country climb out of the terai.",
+"waypoints": [
+[
+29.265,
+79.545
+],
+[
+29.391,
+79.454
+]
+],
+"expectedKm": [
+25,
+42
+],
+"difficultyHint": 3
+},
+{
+"slug": "in-lansdowne",
+"name": "Kotdwar\u2013Lansdowne Road",
+"country": "IN",
+"region": "Uttarakhand",
+"city": "Lansdowne",
+"category": "forest",
+"description": "Quiet pine-forest bends to a cantonment frozen in time.",
+"waypoints": [
+[
+29.746,
+78.522
+],
+[
+29.837,
+78.68
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 4
+},
+{
+"slug": "in-solang-run",
+"name": "Manali\u2013Solang Valley Road",
+"country": "IN",
+"region": "Himachal Pradesh",
+"city": "Manali",
+"category": "alpine",
+"description": "Short Himalayan valley dash under Friendship Peak.",
+"waypoints": [
+[
+32.243,
+77.189
+],
+[
+32.316,
+77.157
+]
+],
+"expectedKm": [
+8,
+18
+],
+"difficultyHint": 3
+},
+{
+"slug": "in-shillong-cherrapunji",
+"name": "Shillong\u2013Cherrapunji Road",
+"country": "IN",
+"region": "Meghalaya",
+"city": "Shillong",
+"category": "highland",
+"description": "Rolling grassland sweepers into the wettest place on earth.",
+"waypoints": [
+[
+25.569,
+91.883
+],
+[
+25.284,
+91.721
+]
+],
+"expectedKm": [
+40,
+60
+],
+"difficultyHint": 2
+},
+{
+"slug": "in-ecr-mahabalipuram",
+"name": "East Coast Road \u2014 Chennai to Mahabalipuram",
+"country": "IN",
+"region": "Tamil Nadu",
+"city": "Chennai",
+"category": "coastal",
+"description": "The ECR: India's favourite seaside cruise.",
+"waypoints": [
+[
+12.833,
+80.241
+],
+[
+12.621,
+80.193
+]
+],
+"expectedKm": [
+28,
+45
+],
+"difficultyHint": 2
+},
+{
+"slug": "in-karwar-coastal",
+"name": "NH-66 Ankola\u2013Karwar Coastal Run",
+"country": "IN",
+"region": "Karnataka",
+"city": "Karwar",
+"category": "coastal",
+"description": "Palm-fringed Konkan coast sweepers past hidden beaches.",
+"waypoints": [
+[
+14.66,
+74.305
+],
+[
+14.813,
+74.129
+]
+],
+"expectedKm": [
+18,
+35
+],
+"difficultyHint": 2
+},
+{
+"slug": "in-horsley-hills",
+"name": "Horsley Hills Climb",
+"country": "IN",
+"region": "Andhra Pradesh",
+"city": "Madanapalle",
+"category": "ghat",
+"description": "Eucalyptus-lined hairpins to Andhra's little hill station.",
+"waypoints": [
+[
+13.632,
+78.373
+],
+[
+13.6598,
+78.399
+]
+],
+"expectedKm": [
+5,
+15
+],
+"difficultyHint": 4
+},
+{
+"slug": "ae-jebel-jais",
+"name": "Jebel Jais Mountain Road",
+"country": "AE",
+"region": "Ras Al Khaimah",
+"city": "Ras Al Khaimah",
+"category": "alpine",
+"description": "The UAE's alpine fantasy \u2014 wide, freshly-paved hairpins to the country's highest point.",
+"waypoints": [
+[
+25.7726,
+56.1273
+],
+[
+25.933,
+56.1516
+]
+],
+"expectedKm": [
+20,
+40
+],
+"difficultyHint": 5
+},
+{
+"slug": "ae-jebel-hafeet",
+"name": "Jebel Hafeet Mountain Road",
+"country": "AE",
+"region": "Abu Dhabi",
+"city": "Al Ain",
+"category": "alpine",
+"description": "Sixty perfect corners rated among the world's great driving roads.",
+"waypoints": [
+[
+24.117,
+55.752
+],
+[
+24.0587,
+55.737
+]
+],
+"expectedKm": [
+8,
+18
+],
+"difficultyHint": 5
+},
+{
+"slug": "jp-hakone-turnpike",
+"name": "Hakone Turnpike",
+"country": "JP",
+"region": "Kanagawa",
+"city": "Odawara",
+"category": "alpine",
+"description": "Japan's most filmed toll road \u2014 wide, fast, and pointed at Fuji.",
+"waypoints": [
+[
+35.2438,
+139.113
+],
+[
+35.204,
+139.0338
+]
+],
+"expectedKm": [
+10,
+20
+],
+"difficultyHint": 4
+},
+{
+"slug": "jp-irohazaka",
+"name": "Irohazaka Winding Road (Uphill)",
+"country": "JP",
+"region": "Tochigi",
+"city": "Nikko",
+"category": "ghat",
+"description": "The one-way uphill of 48 lettered hairpins made famous by touge culture.",
+"waypoints": [
+[
+36.738,
+139.544
+],
+[
+36.731,
+139.49
+],
+[
+36.7297,
+139.4728
+]
+],
+"expectedKm": [
+4,
+16
+],
+"difficultyHint": 5
+},
+{
+"slug": "jp-haruna-akina",
+"name": "Mount Haruna Climb (Akina)",
+"country": "JP",
+"region": "Gunma",
+"city": "Ikaho",
+"category": "ghat",
+"description": "The real Mount Akina \u2014 Initial D's hairpin staircase to the lake.",
+"waypoints": [
+[
+36.489,
+138.923
+],
+[
+36.47,
+138.88
+]
+],
+"expectedKm": [
+4,
+14
+],
+"difficultyHint": 5
+},
+{
+"slug": "jp-venus-line",
+"name": "Venus Line \u2014 Kirigamine Section",
+"country": "JP",
+"region": "Nagano",
+"city": "Chino",
+"category": "highland",
+"description": "Open highland sweepers floating over alpine meadows.",
+"waypoints": [
+[
+36.053,
+138.15
+],
+[
+36.103,
+138.196
+]
+],
+"expectedKm": [
+10,
+30
+],
+"difficultyHint": 3
+}
+]

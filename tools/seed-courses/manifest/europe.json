@@ -1,0 +1,966 @@
+[
+{
+"slug": "it-stelvio-east",
+"name": "Stelvio Pass \u2014 Prato Ramp",
+"country": "IT",
+"region": "South Tyrol",
+"city": "Prato allo Stelvio",
+"category": "alpine",
+"description": "The 48 numbered hairpins of the most photographed climb in the Alps.",
+"waypoints": [
+[
+46.617,
+10.59
+],
+[
+46.5285,
+10.4543
+]
+],
+"expectedKm": [
+18,
+30
+],
+"difficultyHint": 5
+},
+{
+"slug": "it-stelvio-west",
+"name": "Stelvio Pass \u2014 Bormio Ramp",
+"country": "IT",
+"region": "Lombardy",
+"city": "Bormio",
+"category": "alpine",
+"description": "The quieter, faster western ascent through rock galleries.",
+"waypoints": [
+[
+46.468,
+10.37
+],
+[
+46.5285,
+10.4543
+]
+],
+"expectedKm": [
+15,
+28
+],
+"difficultyHint": 5
+},
+{
+"slug": "it-passo-giau",
+"name": "Passo Giau",
+"country": "IT",
+"region": "Veneto",
+"city": "Cortina d'Ampezzo",
+"category": "alpine",
+"description": "The Dolomites' steepest beauty \u2014 29 hairpins under Ra Gusela's wall.",
+"waypoints": [
+[
+46.538,
+12.135
+],
+[
+46.483,
+12.055
+],
+[
+46.45,
+12.03
+]
+],
+"expectedKm": [
+15,
+30
+],
+"difficultyHint": 5
+},
+{
+"slug": "it-passo-sella",
+"name": "Sella Ronda \u2014 Passo Sella",
+"country": "IT",
+"region": "Trentino",
+"city": "Canazei",
+"category": "alpine",
+"description": "The signature leg of the Sella Ronda circuit beneath sheer towers.",
+"waypoints": [
+[
+46.477,
+11.771
+],
+[
+46.508,
+11.757
+],
+[
+46.555,
+11.76
+]
+],
+"expectedKm": [
+15,
+30
+],
+"difficultyHint": 4
+},
+{
+"slug": "it-passo-pordoi",
+"name": "Passo Pordoi",
+"country": "IT",
+"region": "Trentino",
+"city": "Arabba",
+"category": "alpine",
+"description": "33 metronomic hairpins \u2014 the Dolomites' most rhythmic climb.",
+"waypoints": [
+[
+46.498,
+11.874
+],
+[
+46.488,
+11.812
+],
+[
+46.477,
+11.771
+]
+],
+"expectedKm": [
+10,
+25
+],
+"difficultyHint": 4
+},
+{
+"slug": "it-amalfi-positano",
+"name": "Amalfi Coast \u2014 Positano to Amalfi",
+"country": "IT",
+"region": "Campania",
+"city": "Positano",
+"category": "coastal",
+"description": "The world's most cinematic coastal ledge, best driven at dawn.",
+"waypoints": [
+[
+40.628,
+14.485
+],
+[
+40.634,
+14.603
+]
+],
+"expectedKm": [
+12,
+22
+],
+"difficultyHint": 4
+},
+{
+"slug": "it-spluga-italian",
+"name": "Passo dello Spluga \u2014 Chiavenna Ramp",
+"country": "IT",
+"region": "Lombardy",
+"city": "Chiavenna",
+"category": "alpine",
+"description": "Brutal stacked switchbacks in the Cardinello gorge.",
+"waypoints": [
+[
+46.32,
+9.4
+],
+[
+46.505,
+9.33
+]
+],
+"expectedKm": [
+25,
+42
+],
+"difficultyHint": 5
+},
+{
+"slug": "ch-furka-pass",
+"name": "Furka Pass",
+"country": "CH",
+"region": "Uri / Valais",
+"city": "Realp",
+"category": "alpine",
+"description": "Goldfinger's pass \u2014 glacier views and granite hairpins.",
+"waypoints": [
+[
+46.5983,
+8.5029
+],
+[
+46.576,
+8.415
+],
+[
+46.559,
+8.363
+]
+],
+"expectedKm": [
+12,
+26
+],
+"difficultyHint": 5
+},
+{
+"slug": "ch-grimsel-pass",
+"name": "Grimsel Pass",
+"country": "CH",
+"region": "Bern",
+"city": "Innertkirchen",
+"category": "alpine",
+"description": "Dam-country sweepers over polished granite.",
+"waypoints": [
+[
+46.705,
+8.23
+],
+[
+46.562,
+8.338
+]
+],
+"expectedKm": [
+20,
+38
+],
+"difficultyHint": 4
+},
+{
+"slug": "ch-susten-pass",
+"name": "Susten Pass",
+"country": "CH",
+"region": "Bern / Uri",
+"city": "Innertkirchen",
+"category": "alpine",
+"description": "Purpose-built for driving pleasure \u2014 constant-radius perfection.",
+"waypoints": [
+[
+46.705,
+8.24
+],
+[
+46.729,
+8.446
+],
+[
+46.717,
+8.596
+]
+],
+"expectedKm": [
+30,
+50
+],
+"difficultyHint": 4
+},
+{
+"slug": "ch-klausen-pass",
+"name": "Klausen Pass",
+"country": "CH",
+"region": "Uri / Glarus",
+"city": "Altdorf",
+"category": "alpine",
+"description": "The old hillclimb-race pass, long and gloriously varied.",
+"waypoints": [
+[
+46.88,
+8.644
+],
+[
+46.868,
+8.855
+],
+[
+46.918,
+9.0
+]
+],
+"expectedKm": [
+35,
+50
+],
+"difficultyHint": 4
+},
+{
+"slug": "ch-tremola",
+"name": "Tremola \u2014 Old Gotthard Road",
+"country": "CH",
+"region": "Ticino",
+"city": "Airolo",
+"category": "alpine",
+"description": "Cobbled 1830s switchbacks \u2014 driving's most atmospheric museum piece.",
+"waypoints": [
+[
+46.528,
+8.607
+],
+[
+46.556,
+8.567
+]
+],
+"expectedKm": [
+8,
+16
+],
+"difficultyHint": 5
+},
+{
+"slug": "ch-san-bernardino",
+"name": "San Bernardino Pass (Old Road)",
+"country": "CH",
+"region": "Graub\u00fcnden",
+"city": "Mesocco",
+"category": "alpine",
+"description": "The A13's forgotten twin \u2014 empty hairpins above the Moesa.",
+"waypoints": [
+[
+46.394,
+9.23
+],
+[
+46.4635,
+9.17
+]
+],
+"expectedKm": [
+12,
+28
+],
+"difficultyHint": 4
+},
+{
+"slug": "at-grossglockner",
+"name": "Grossglockner High Alpine Road",
+"country": "AT",
+"region": "Salzburg / Carinthia",
+"city": "Fusch",
+"category": "alpine",
+"description": "Austria's crown jewel \u2014 36 hairpins past 3,000-metre giants.",
+"waypoints": [
+[
+47.226,
+12.826
+],
+[
+47.0745,
+12.842
+],
+[
+47.039,
+12.843
+]
+],
+"expectedKm": [
+35,
+55
+],
+"difficultyHint": 5
+},
+{
+"slug": "ro-transfagarasan",
+"name": "Transf\u0103g\u0103r\u0103\u0219an \u2014 North Ramp",
+"country": "RO",
+"region": "Sibiu",
+"city": "C\u00e2r\u021bi\u0219oara",
+"category": "alpine",
+"description": "Top Gear's 'best road in the world' \u2014 concrete ribbons to B\u00e2lea Lake.",
+"waypoints": [
+[
+45.712,
+24.571
+],
+[
+45.6039,
+24.617
+]
+],
+"expectedKm": [
+18,
+35
+],
+"difficultyHint": 5
+},
+{
+"slug": "ro-transalpina",
+"name": "Transalpina \u2014 Novaci Ramp",
+"country": "RO",
+"region": "Gorj",
+"city": "Novaci",
+"category": "alpine",
+"description": "Romania's highest road, wilder and emptier than its famous sibling.",
+"waypoints": [
+[
+45.162,
+23.669
+],
+[
+45.29,
+23.68
+]
+],
+"expectedKm": [
+15,
+35
+],
+"difficultyHint": 4
+},
+{
+"slug": "fr-col-de-turini-sospel",
+"name": "Col de Turini \u2014 Sospel Ramp",
+"country": "FR",
+"region": "Alpes-Maritimes",
+"city": "Sospel",
+"category": "alpine",
+"description": "The Monte Carlo Rally's night stage, corner for corner.",
+"waypoints": [
+[
+43.878,
+7.448
+],
+[
+43.979,
+7.392
+]
+],
+"expectedKm": [
+18,
+32
+],
+"difficultyHint": 5
+},
+{
+"slug": "fr-col-de-la-bonette",
+"name": "Col de la Bonette",
+"country": "FR",
+"region": "Alpes-de-Haute-Provence",
+"city": "Jausiers",
+"category": "alpine",
+"description": "Europe's highest paved loop, scraping 2,800 metres.",
+"waypoints": [
+[
+44.419,
+6.73
+],
+[
+44.321,
+6.807
+]
+],
+"expectedKm": [
+18,
+32
+],
+"difficultyHint": 4
+},
+{
+"slug": "fr-col-iseran",
+"name": "Col de l'Iseran \u2014 Bonneval Ramp",
+"country": "FR",
+"region": "Savoie",
+"city": "Bonneval-sur-Arc",
+"category": "alpine",
+"description": "The Tour de France's rooftop, gloriously bleak.",
+"waypoints": [
+[
+45.372,
+7.046
+],
+[
+45.417,
+7.031
+]
+],
+"expectedKm": [
+10,
+20
+],
+"difficultyHint": 4
+},
+{
+"slug": "fr-col-galibier",
+"name": "Col du Galibier \u2014 Valloire Ramp",
+"country": "FR",
+"region": "Savoie",
+"city": "Valloire",
+"category": "alpine",
+"description": "High-mountain theatre above the Maurienne.",
+"waypoints": [
+[
+45.165,
+6.43
+],
+[
+45.064,
+6.408
+]
+],
+"expectedKm": [
+12,
+25
+],
+"difficultyHint": 4
+},
+{
+"slug": "fr-route-napoleon",
+"name": "Route Napol\u00e9on \u2014 Grasse to Castellane",
+"country": "FR",
+"region": "Provence",
+"city": "Grasse",
+"category": "canyon",
+"description": "The emperor's road: fast, flowing, and scented with lavender.",
+"waypoints": [
+[
+43.66,
+6.92
+],
+[
+43.847,
+6.513
+]
+],
+"expectedKm": [
+35,
+60
+],
+"difficultyHint": 3
+},
+{
+"slug": "de-b500-schwarzwald",
+"name": "Schwarzwaldhochstra\u00dfe B500",
+"country": "DE",
+"region": "Baden-W\u00fcrttemberg",
+"city": "Baden-Baden",
+"category": "forest",
+"description": "Germany's Black Forest high road \u2014 wide, smooth, and pine-dark.",
+"waypoints": [
+[
+48.758,
+8.241
+],
+[
+48.597,
+8.201
+]
+],
+"expectedKm": [
+22,
+40
+],
+"difficultyHint": 3
+},
+{
+"slug": "de-eifel-b258",
+"name": "Eifel B258 \u2014 Adenau Run",
+"country": "DE",
+"region": "Rhineland-Palatinate",
+"city": "Adenau",
+"category": "forest",
+"description": "The public roads that raised the N\u00fcrburgring's neighbours.",
+"waypoints": [
+[
+50.38,
+6.933
+],
+[
+50.29,
+6.92
+]
+],
+"expectedKm": [
+10,
+25
+],
+"difficultyHint": 3
+},
+{
+"slug": "de-alpenstrasse-walchensee",
+"name": "Deutsche Alpenstra\u00dfe \u2014 Walchensee Section",
+"country": "DE",
+"region": "Bavaria",
+"city": "Kochel am See",
+"category": "alpine",
+"description": "Kesselberg bends and a fjord-blue alpine lake.",
+"waypoints": [
+[
+47.658,
+11.366
+],
+[
+47.591,
+11.308
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 4
+},
+{
+"slug": "gb-snake-pass",
+"name": "Snake Pass A57",
+"country": "GB",
+"region": "Derbyshire",
+"city": "Glossop",
+"category": "moorland",
+"description": "The Peak District's serpent \u2014 moorland crests and blind dips.",
+"waypoints": [
+[
+53.443,
+-1.949
+],
+[
+53.388,
+-1.72
+]
+],
+"expectedKm": [
+15,
+28
+],
+"difficultyHint": 4
+},
+{
+"slug": "gb-cat-and-fiddle",
+"name": "Cat and Fiddle A537",
+"country": "GB",
+"region": "Cheshire",
+"city": "Macclesfield",
+"category": "moorland",
+"description": "Britain's most notorious bikers' road, tamed by average-speed cameras but still glorious.",
+"waypoints": [
+[
+53.26,
+-2.121
+],
+[
+53.259,
+-1.911
+]
+],
+"expectedKm": [
+10,
+22
+],
+"difficultyHint": 4
+},
+{
+"slug": "gb-evo-triangle",
+"name": "Evo Triangle \u2014 A543 Denbigh Moors",
+"country": "GB",
+"region": "Conwy, Wales",
+"city": "Pentrefoelas",
+"category": "moorland",
+"description": "The magazine test route across empty Welsh moor.",
+"waypoints": [
+[
+53.045,
+-3.68
+],
+[
+53.13,
+-3.5
+]
+],
+"expectedKm": [
+12,
+30
+],
+"difficultyHint": 3
+},
+{
+"slug": "gb-buttertubs",
+"name": "Buttertubs Pass",
+"country": "GB",
+"region": "North Yorkshire",
+"city": "Hawes",
+"category": "moorland",
+"description": "Jeremy Clarkson's favourite lane over the Dales.",
+"waypoints": [
+[
+54.304,
+-2.198
+],
+[
+54.362,
+-2.203
+]
+],
+"expectedKm": [
+5,
+14
+],
+"difficultyHint": 4
+},
+{
+"slug": "gb-hardknott",
+"name": "Hardknott & Wrynose Passes",
+"country": "GB",
+"region": "Cumbria",
+"city": "Eskdale",
+"category": "alpine",
+"description": "Britain's steepest tarmac \u2014 33% Roman-road madness.",
+"waypoints": [
+[
+54.419,
+-3.055
+],
+[
+54.403,
+-3.205
+]
+],
+"expectedKm": [
+10,
+20
+],
+"difficultyHint": 5
+},
+{
+"slug": "gb-bealach-na-ba",
+"name": "Bealach na B\u00e0 \u2014 Applecross Pass",
+"country": "GB",
+"region": "Wester Ross, Scotland",
+"city": "Applecross",
+"category": "alpine",
+"description": "Scotland's alpine impostor \u2014 a single-track wall of stacked switchbacks.",
+"waypoints": [
+[
+57.4197,
+-5.6543
+],
+[
+57.4326,
+-5.8106
+]
+],
+"expectedKm": [
+15,
+28
+],
+"difficultyHint": 5
+},
+{
+"slug": "gb-nc500-durness",
+"name": "North Coast 500 \u2014 Durness to Tongue",
+"country": "GB",
+"region": "Sutherland, Scotland",
+"city": "Durness",
+"category": "highland",
+"description": "Empty single-track sweepers along the roof of Britain.",
+"waypoints": [
+[
+58.568,
+-4.745
+],
+[
+58.473,
+-4.42
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 2
+},
+{
+"slug": "ie-sally-gap",
+"name": "Military Road \u2014 Sally Gap to Glendalough",
+"country": "IE",
+"region": "County Wicklow",
+"city": "Roundwood",
+"category": "moorland",
+"description": "Braveheart bog country on Dublin's doorstep.",
+"waypoints": [
+[
+53.1377,
+-6.3115
+],
+[
+53.01,
+-6.327
+]
+],
+"expectedKm": [
+15,
+35
+],
+"difficultyHint": 3
+},
+{
+"slug": "no-trollstigen",
+"name": "Trollstigen",
+"country": "NO",
+"region": "M\u00f8re og Romsdal",
+"city": "\u00c5ndalsnes",
+"category": "alpine",
+"description": "The Troll's Ladder \u2014 eleven hairpins up a waterfall wall.",
+"waypoints": [
+[
+62.567,
+7.687
+],
+[
+62.4566,
+7.6664
+]
+],
+"expectedKm": [
+12,
+25
+],
+"difficultyHint": 5
+},
+{
+"slug": "no-atlantic-road",
+"name": "Atlanterhavsveien \u2014 Atlantic Ocean Road",
+"country": "NO",
+"region": "M\u00f8re og Romsdal",
+"city": "K\u00e5rv\u00e5g",
+"category": "coastal",
+"description": "Bridges that leap between islands straight into the sea spray.",
+"waypoints": [
+[
+63.056,
+7.263
+],
+[
+63.043,
+7.398
+]
+],
+"expectedKm": [
+5,
+25
+],
+"difficultyHint": 2
+},
+{
+"slug": "no-lysevegen",
+"name": "Lysevegen \u2014 Lysebotn Road",
+"country": "NO",
+"region": "Rogaland",
+"city": "Lysebotn",
+"category": "alpine",
+"description": "27 hairpins climbing a kilometre out of the fjord's dead end.",
+"waypoints": [
+[
+59.053,
+6.648
+],
+[
+59.023,
+6.59
+]
+],
+"expectedKm": [
+6,
+18
+],
+"difficultyHint": 5
+},
+{
+"slug": "no-sognefjellet",
+"name": "Sognefjellet \u2014 Krossbu to Turtagr\u00f8",
+"country": "NO",
+"region": "Innlandet / Vestland",
+"city": "Lom",
+"category": "highland",
+"description": "Northern Europe's highest pass, threading glacier country.",
+"waypoints": [
+[
+61.55,
+8.06
+],
+[
+61.505,
+7.803
+]
+],
+"expectedKm": [
+12,
+30
+],
+"difficultyHint": 3
+},
+{
+"slug": "dk-mons-klint",
+"name": "M\u00f8ns Klint Approach",
+"country": "DK",
+"region": "Zealand",
+"city": "Borre",
+"category": "forest",
+"description": "Denmark's prettiest final miles \u2014 beech forest to white chalk cliffs.",
+"waypoints": [
+[
+54.97,
+12.42
+],
+[
+54.966,
+12.546
+]
+],
+"expectedKm": [
+5,
+15
+],
+"difficultyHint": 2
+},
+{
+"slug": "nl-posbank",
+"name": "Posbank Loop \u2014 Veluwezoom",
+"country": "NL",
+"region": "Gelderland",
+"city": "Rheden",
+"category": "forest",
+"description": "The Netherlands' only hills, and every Dutch petrolhead's Sunday ritual.",
+"waypoints": [
+[
+52.01,
+6.03
+],
+[
+52.033,
+6.011
+]
+],
+"expectedKm": [
+3,
+12
+],
+"difficultyHint": 2
+},
+{
+"slug": "es-sa-calobra",
+"name": "Sa Calobra \u2014 Coll dels Reis",
+"country": "ES",
+"region": "Mallorca",
+"city": "Escorca",
+"category": "alpine",
+"description": "The 'knotted tie' \u2014 26 hairpins purpose-built to fall into the sea.",
+"waypoints": [
+[
+39.797,
+2.804
+],
+[
+39.852,
+2.7975
+]
+],
+"expectedKm": [
+8,
+15
+],
+"difficultyHint": 5
+}
+]

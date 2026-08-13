@@ -1,0 +1,818 @@
+{
+  "generatedAt": "see git history",
+  "accepted": [
+    {
+      "slug": "ae-jebel-hafeet",
+      "km": 13.4,
+      "turns": 26,
+      "difficulty": 4,
+      "benchmarkSeconds": 592
+    },
+    {
+      "slug": "ae-jebel-jais",
+      "km": 44.3,
+      "turns": 145,
+      "difficulty": 5,
+      "benchmarkSeconds": 1978
+    },
+    {
+      "slug": "at-grossglockner",
+      "km": 41.3,
+      "turns": 249,
+      "difficulty": 5,
+      "benchmarkSeconds": 2108
+    },
+    {
+      "slug": "au-black-spur",
+      "km": 28,
+      "turns": 86,
+      "difficulty": 5,
+      "benchmarkSeconds": 1251
+    },
+    {
+      "slug": "au-gor-apollo",
+      "km": 44.5,
+      "turns": 152,
+      "difficulty": 5,
+      "benchmarkSeconds": 1963
+    },
+    {
+      "slug": "au-gor-lorne",
+      "km": 46.8,
+      "turns": 74,
+      "difficulty": 3,
+      "benchmarkSeconds": 1988
+    },
+    {
+      "slug": "au-jamberoo-mountain",
+      "km": 21.5,
+      "turns": 46,
+      "difficulty": 4,
+      "benchmarkSeconds": 952
+    },
+    {
+      "slug": "au-macquarie-pass",
+      "km": 24.6,
+      "turns": 89,
+      "difficulty": 5,
+      "benchmarkSeconds": 1144
+    },
+    {
+      "slug": "au-mount-glorious",
+      "km": 31.3,
+      "turns": 81,
+      "difficulty": 4,
+      "benchmarkSeconds": 1380
+    },
+    {
+      "slug": "au-oxley-highway",
+      "km": 46.8,
+      "turns": 92,
+      "difficulty": 4,
+      "benchmarkSeconds": 2004
+    },
+    {
+      "slug": "au-reefton-spur",
+      "km": 24.1,
+      "turns": 84,
+      "difficulty": 5,
+      "benchmarkSeconds": 1072
+    },
+    {
+      "slug": "au-sideling",
+      "km": 35.8,
+      "turns": 149,
+      "difficulty": 5,
+      "benchmarkSeconds": 1672
+    },
+    {
+      "slug": "ca-cabot-trail",
+      "km": 43.5,
+      "turns": 56,
+      "difficulty": 4,
+      "benchmarkSeconds": 1853
+    },
+    {
+      "slug": "ca-duffey-lake",
+      "km": 30.3,
+      "turns": 61,
+      "difficulty": 4,
+      "benchmarkSeconds": 1304
+    },
+    {
+      "slug": "ca-icefields",
+      "km": 44.5,
+      "turns": 7,
+      "difficulty": 2,
+      "benchmarkSeconds": 1831
+    },
+    {
+      "slug": "ca-sea-to-sky",
+      "km": 45.5,
+      "turns": 25,
+      "difficulty": 3,
+      "benchmarkSeconds": 1894
+    },
+    {
+      "slug": "ch-furka-pass",
+      "km": 21.8,
+      "turns": 104,
+      "difficulty": 5,
+      "benchmarkSeconds": 1107
+    },
+    {
+      "slug": "ch-grimsel-pass",
+      "km": 26.1,
+      "turns": 117,
+      "difficulty": 5,
+      "benchmarkSeconds": 1249
+    },
+    {
+      "slug": "ch-klausen-pass",
+      "km": 47.3,
+      "turns": 242,
+      "difficulty": 5,
+      "benchmarkSeconds": 2346
+    },
+    {
+      "slug": "ch-san-bernardino",
+      "km": 15.9,
+      "turns": 63,
+      "difficulty": 5,
+      "benchmarkSeconds": 750
+    },
+    {
+      "slug": "ch-susten-pass",
+      "km": 42.6,
+      "turns": 172,
+      "difficulty": 5,
+      "benchmarkSeconds": 1959
+    },
+    {
+      "slug": "ch-tremola",
+      "km": 13.1,
+      "turns": 129,
+      "difficulty": 5,
+      "benchmarkSeconds": 827
+    },
+    {
+      "slug": "de-alpenstrasse-walchensee",
+      "km": 14.2,
+      "turns": 99,
+      "difficulty": 5,
+      "benchmarkSeconds": 731
+    },
+    {
+      "slug": "de-b500-schwarzwald",
+      "km": 26.9,
+      "turns": 75,
+      "difficulty": 4,
+      "benchmarkSeconds": 1185
+    },
+    {
+      "slug": "de-eifel-b258",
+      "km": 15.3,
+      "turns": 56,
+      "difficulty": 4,
+      "benchmarkSeconds": 700
+    },
+    {
+      "slug": "dk-mons-klint",
+      "km": 10.4,
+      "turns": 20,
+      "difficulty": 3,
+      "benchmarkSeconds": 457
+    },
+    {
+      "slug": "es-sa-calobra",
+      "km": 15.9,
+      "turns": 135,
+      "difficulty": 5,
+      "benchmarkSeconds": 904
+    },
+    {
+      "slug": "fr-col-de-la-bonette",
+      "km": 23.5,
+      "turns": 202,
+      "difficulty": 5,
+      "benchmarkSeconds": 1313
+    },
+    {
+      "slug": "fr-col-de-turini-sospel",
+      "km": 24.5,
+      "turns": 229,
+      "difficulty": 5,
+      "benchmarkSeconds": 1426
+    },
+    {
+      "slug": "fr-col-galibier",
+      "km": 18,
+      "turns": 113,
+      "difficulty": 5,
+      "benchmarkSeconds": 918
+    },
+    {
+      "slug": "fr-col-iseran",
+      "km": 13.6,
+      "turns": 62,
+      "difficulty": 5,
+      "benchmarkSeconds": 655
+    },
+    {
+      "slug": "fr-route-napoleon",
+      "km": 60.6,
+      "turns": 194,
+      "difficulty": 4,
+      "benchmarkSeconds": 2700
+    },
+    {
+      "slug": "gb-bealach-na-ba",
+      "km": 14.7,
+      "turns": 55,
+      "difficulty": 5,
+      "benchmarkSeconds": 701
+    },
+    {
+      "slug": "gb-buttertubs",
+      "km": 7.4,
+      "turns": 21,
+      "difficulty": 4,
+      "benchmarkSeconds": 334
+    },
+    {
+      "slug": "gb-cat-and-fiddle",
+      "km": 19.4,
+      "turns": 57,
+      "difficulty": 5,
+      "benchmarkSeconds": 868
+    },
+    {
+      "slug": "gb-evo-triangle",
+      "km": 23.7,
+      "turns": 31,
+      "difficulty": 3,
+      "benchmarkSeconds": 995
+    },
+    {
+      "slug": "gb-hardknott",
+      "km": 11.2,
+      "turns": 57,
+      "difficulty": 5,
+      "benchmarkSeconds": 562
+    },
+    {
+      "slug": "gb-nc500-durness",
+      "km": 48,
+      "turns": 95,
+      "difficulty": 3,
+      "benchmarkSeconds": 2048
+    },
+    {
+      "slug": "gb-snake-pass",
+      "km": 22.4,
+      "turns": 26,
+      "difficulty": 3,
+      "benchmarkSeconds": 944
+    },
+    {
+      "slug": "ie-sally-gap",
+      "km": 22.3,
+      "turns": 55,
+      "difficulty": 4,
+      "benchmarkSeconds": 982
+    },
+    {
+      "slug": "in-agumbe-ghat",
+      "km": 20.5,
+      "turns": 95,
+      "difficulty": 5,
+      "benchmarkSeconds": 1005
+    },
+    {
+      "slug": "in-ambenali-ghat",
+      "km": 40.1,
+      "turns": 313,
+      "difficulty": 5,
+      "benchmarkSeconds": 2138
+    },
+    {
+      "slug": "in-athirappilly",
+      "km": 47.3,
+      "turns": 204,
+      "difficulty": 4,
+      "benchmarkSeconds": 2226
+    },
+    {
+      "slug": "in-charmadi-ghat",
+      "km": 27.6,
+      "turns": 281,
+      "difficulty": 5,
+      "benchmarkSeconds": 1594
+    },
+    {
+      "slug": "in-coonoor-ghat",
+      "km": 43.8,
+      "turns": 423,
+      "difficulty": 5,
+      "benchmarkSeconds": 2445
+    },
+    {
+      "slug": "in-ecr-mahabalipuram",
+      "km": 25.2,
+      "turns": 3,
+      "difficulty": 2,
+      "benchmarkSeconds": 1048
+    },
+    {
+      "slug": "in-horsley-hills",
+      "km": 9.2,
+      "turns": 15,
+      "difficulty": 4,
+      "benchmarkSeconds": 419
+    },
+    {
+      "slug": "in-karwar-coastal",
+      "km": 32.7,
+      "turns": 31,
+      "difficulty": 2,
+      "benchmarkSeconds": 1375
+    },
+    {
+      "slug": "in-khandala-ghat",
+      "km": 12.3,
+      "turns": 71,
+      "difficulty": 5,
+      "benchmarkSeconds": 633
+    },
+    {
+      "slug": "in-kodaikanal-ghat",
+      "km": 33.4,
+      "turns": 310,
+      "difficulty": 5,
+      "benchmarkSeconds": 1860
+    },
+    {
+      "slug": "in-kolli-hills",
+      "km": 32.5,
+      "turns": 386,
+      "difficulty": 5,
+      "benchmarkSeconds": 2148
+    },
+    {
+      "slug": "in-lansdowne",
+      "km": 44,
+      "turns": 454,
+      "difficulty": 5,
+      "benchmarkSeconds": 2560
+    },
+    {
+      "slug": "in-madikeri-talakaveri",
+      "km": 42.7,
+      "turns": 289,
+      "difficulty": 4,
+      "benchmarkSeconds": 2153
+    },
+    {
+      "slug": "in-malshej-ghat",
+      "km": 31,
+      "turns": 107,
+      "difficulty": 5,
+      "benchmarkSeconds": 1393
+    },
+    {
+      "slug": "in-matheran-approach",
+      "km": 7.9,
+      "turns": 63,
+      "difficulty": 5,
+      "benchmarkSeconds": 455
+    },
+    {
+      "slug": "in-mount-abu",
+      "km": 27.8,
+      "turns": 183,
+      "difficulty": 5,
+      "benchmarkSeconds": 1395
+    },
+    {
+      "slug": "in-mullayanagiri",
+      "km": 21.4,
+      "turns": 125,
+      "difficulty": 5,
+      "benchmarkSeconds": 1060
+    },
+    {
+      "slug": "in-munnar-gap-road",
+      "km": 18.7,
+      "turns": 205,
+      "difficulty": 4,
+      "benchmarkSeconds": 1126
+    },
+    {
+      "slug": "in-mussoorie-climb",
+      "km": 27.2,
+      "turns": 299,
+      "difficulty": 4,
+      "benchmarkSeconds": 1647
+    },
+    {
+      "slug": "in-nainital-climb",
+      "km": 42.5,
+      "turns": 423,
+      "difficulty": 4,
+      "benchmarkSeconds": 2419
+    },
+    {
+      "slug": "in-nandi-hills",
+      "km": 11.3,
+      "turns": 66,
+      "difficulty": 5,
+      "benchmarkSeconds": 600
+    },
+    {
+      "slug": "in-ponmudi-climb",
+      "km": 22.5,
+      "turns": 187,
+      "difficulty": 5,
+      "benchmarkSeconds": 1279
+    },
+    {
+      "slug": "in-road-to-heaven",
+      "km": 60.2,
+      "turns": 27,
+      "difficulty": 2,
+      "benchmarkSeconds": 2464
+    },
+    {
+      "slug": "in-saputara-ghat",
+      "km": 52.3,
+      "turns": 226,
+      "difficulty": 4,
+      "benchmarkSeconds": 2405
+    },
+    {
+      "slug": "in-shillong-cherrapunji",
+      "km": 50.1,
+      "turns": 332,
+      "difficulty": 4,
+      "benchmarkSeconds": 2470
+    },
+    {
+      "slug": "in-solang-run",
+      "km": 12.4,
+      "turns": 90,
+      "difficulty": 4,
+      "benchmarkSeconds": 669
+    },
+    {
+      "slug": "in-tamhini-ghat",
+      "km": 16,
+      "turns": 38,
+      "difficulty": 4,
+      "benchmarkSeconds": 704
+    },
+    {
+      "slug": "in-valparai-climb",
+      "km": 47.7,
+      "turns": 454,
+      "difficulty": 5,
+      "benchmarkSeconds": 2799
+    },
+    {
+      "slug": "in-wayanad-churam",
+      "km": 15,
+      "turns": 114,
+      "difficulty": 5,
+      "benchmarkSeconds": 830
+    },
+    {
+      "slug": "in-yercaud-loop",
+      "km": 23.5,
+      "turns": 188,
+      "difficulty": 5,
+      "benchmarkSeconds": 1331
+    },
+    {
+      "slug": "it-amalfi-positano",
+      "km": 16.3,
+      "turns": 161,
+      "difficulty": 5,
+      "benchmarkSeconds": 948
+    },
+    {
+      "slug": "it-passo-giau",
+      "km": 27,
+      "turns": 278,
+      "difficulty": 5,
+      "benchmarkSeconds": 1649
+    },
+    {
+      "slug": "it-passo-pordoi",
+      "km": 20.9,
+      "turns": 245,
+      "difficulty": 5,
+      "benchmarkSeconds": 1370
+    },
+    {
+      "slug": "it-passo-sella",
+      "km": 21,
+      "turns": 195,
+      "difficulty": 5,
+      "benchmarkSeconds": 1200
+    },
+    {
+      "slug": "it-spluga-italian",
+      "km": 30.4,
+      "turns": 181,
+      "difficulty": 5,
+      "benchmarkSeconds": 1648
+    },
+    {
+      "slug": "it-stelvio-east",
+      "km": 24.5,
+      "turns": 114,
+      "difficulty": 5,
+      "benchmarkSeconds": 1318
+    },
+    {
+      "slug": "it-stelvio-west",
+      "km": 21.1,
+      "turns": 137,
+      "difficulty": 5,
+      "benchmarkSeconds": 1140
+    },
+    {
+      "slug": "jp-hakone-turnpike",
+      "km": 18.6,
+      "turns": 158,
+      "difficulty": 5,
+      "benchmarkSeconds": 1021
+    },
+    {
+      "slug": "jp-haruna-akina",
+      "km": 7.5,
+      "turns": 35,
+      "difficulty": 5,
+      "benchmarkSeconds": 392
+    },
+    {
+      "slug": "jp-irohazaka",
+      "km": 12.8,
+      "turns": 125,
+      "difficulty": 5,
+      "benchmarkSeconds": 755
+    },
+    {
+      "slug": "jp-venus-line",
+      "km": 13.2,
+      "turns": 82,
+      "difficulty": 4,
+      "benchmarkSeconds": 664
+    },
+    {
+      "slug": "nl-posbank",
+      "km": 3.7,
+      "turns": 13,
+      "difficulty": 4,
+      "benchmarkSeconds": 181
+    },
+    {
+      "slug": "no-atlantic-road",
+      "km": 22.4,
+      "turns": 22,
+      "difficulty": 2,
+      "benchmarkSeconds": 940
+    },
+    {
+      "slug": "no-lysevegen",
+      "km": 12.2,
+      "turns": 120,
+      "difficulty": 5,
+      "benchmarkSeconds": 755
+    },
+    {
+      "slug": "no-sognefjellet",
+      "km": 19.1,
+      "turns": 53,
+      "difficulty": 4,
+      "benchmarkSeconds": 854
+    },
+    {
+      "slug": "no-trollstigen",
+      "km": 18.9,
+      "turns": 47,
+      "difficulty": 5,
+      "benchmarkSeconds": 873
+    },
+    {
+      "slug": "nz-crown-range",
+      "km": 38.5,
+      "turns": 109,
+      "difficulty": 4,
+      "benchmarkSeconds": 1759
+    },
+    {
+      "slug": "nz-milford-road",
+      "km": 50.6,
+      "turns": 31,
+      "difficulty": 3,
+      "benchmarkSeconds": 2086
+    },
+    {
+      "slug": "nz-remutaka",
+      "km": 28,
+      "turns": 117,
+      "difficulty": 5,
+      "benchmarkSeconds": 1307
+    },
+    {
+      "slug": "nz-takaka-hill",
+      "km": 56.6,
+      "turns": 247,
+      "difficulty": 5,
+      "benchmarkSeconds": 2675
+    },
+    {
+      "slug": "ro-transalpina",
+      "km": 20.7,
+      "turns": 112,
+      "difficulty": 5,
+      "benchmarkSeconds": 1027
+    },
+    {
+      "slug": "ro-transfagarasan",
+      "km": 28.1,
+      "turns": 211,
+      "difficulty": 5,
+      "benchmarkSeconds": 1488
+    },
+    {
+      "slug": "us-angeles-crest",
+      "km": 42.1,
+      "turns": 173,
+      "difficulty": 5,
+      "benchmarkSeconds": 1878
+    },
+    {
+      "slug": "us-beartooth",
+      "km": 39.1,
+      "turns": 72,
+      "difficulty": 4,
+      "benchmarkSeconds": 1698
+    },
+    {
+      "slug": "us-big-sur",
+      "km": 32.4,
+      "turns": 40,
+      "difficulty": 3,
+      "benchmarkSeconds": 1366
+    },
+    {
+      "slug": "us-blue-ridge-linn-cove",
+      "km": 21.8,
+      "turns": 112,
+      "difficulty": 4,
+      "benchmarkSeconds": 1044
+    },
+    {
+      "slug": "us-cherohala-skyway",
+      "km": 41.4,
+      "turns": 135,
+      "difficulty": 4,
+      "benchmarkSeconds": 1809
+    },
+    {
+      "slug": "us-chuckanut",
+      "km": 20.3,
+      "turns": 32,
+      "difficulty": 3,
+      "benchmarkSeconds": 865
+    },
+    {
+      "slug": "us-columbia-gorge",
+      "km": 20.3,
+      "turns": 34,
+      "difficulty": 3,
+      "benchmarkSeconds": 885
+    },
+    {
+      "slug": "us-death-valley-straight",
+      "km": 39.2,
+      "turns": 1,
+      "difficulty": 1,
+      "benchmarkSeconds": 1608
+    },
+    {
+      "slug": "us-decker-canyon",
+      "km": 17.8,
+      "turns": 54,
+      "difficulty": 5,
+      "benchmarkSeconds": 808
+    },
+    {
+      "slug": "us-going-to-the-sun",
+      "km": 24.9,
+      "turns": 67,
+      "difficulty": 4,
+      "benchmarkSeconds": 1098
+    },
+    {
+      "slug": "us-latigo-canyon",
+      "km": 8,
+      "turns": 76,
+      "difficulty": 5,
+      "benchmarkSeconds": 466
+    },
+    {
+      "slug": "us-malibu-canyon",
+      "km": 12.7,
+      "turns": 22,
+      "difficulty": 3,
+      "benchmarkSeconds": 557
+    },
+    {
+      "slug": "us-million-dollar",
+      "km": 37.6,
+      "turns": 114,
+      "difficulty": 5,
+      "benchmarkSeconds": 1717
+    },
+    {
+      "slug": "us-ortega-highway",
+      "km": 48.9,
+      "turns": 105,
+      "difficulty": 4,
+      "benchmarkSeconds": 2077
+    },
+    {
+      "slug": "us-palomar-south-grade",
+      "km": 9.1,
+      "turns": 110,
+      "difficulty": 5,
+      "benchmarkSeconds": 566
+    },
+    {
+      "slug": "us-pig-trail",
+      "km": 36.7,
+      "turns": 51,
+      "difficulty": 4,
+      "benchmarkSeconds": 1564
+    },
+    {
+      "slug": "us-pikes-peak",
+      "km": 25.2,
+      "turns": 161,
+      "difficulty": 5,
+      "benchmarkSeconds": 1278
+    },
+    {
+      "slug": "us-skyline-drive",
+      "km": 51.7,
+      "turns": 35,
+      "difficulty": 2,
+      "benchmarkSeconds": 2160
+    },
+    {
+      "slug": "us-stunt-road",
+      "km": 7.6,
+      "turns": 46,
+      "difficulty": 5,
+      "benchmarkSeconds": 380
+    },
+    {
+      "slug": "us-tail-of-the-dragon",
+      "km": 24.3,
+      "turns": 214,
+      "difficulty": 5,
+      "benchmarkSeconds": 1341
+    },
+    {
+      "slug": "us-the-snake",
+      "km": 16.6,
+      "turns": 64,
+      "difficulty": 5,
+      "benchmarkSeconds": 766
+    },
+    {
+      "slug": "us-tioga-pass",
+      "km": 20.4,
+      "turns": 12,
+      "difficulty": 3,
+      "benchmarkSeconds": 866
+    },
+    {
+      "slug": "us-tunnel-of-trees",
+      "km": 26.4,
+      "turns": 17,
+      "difficulty": 3,
+      "benchmarkSeconds": 1098
+    },
+    {
+      "slug": "us-twisted-sisters",
+      "km": 27.1,
+      "turns": 48,
+      "difficulty": 4,
+      "benchmarkSeconds": 1170
+    }
+  ],
+  "rejected": []
+}
