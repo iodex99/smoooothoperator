@@ -332,6 +332,7 @@ final class CourseDetailModel {
 
 #if DEBUG
 import SOSimulator
+import SOTelemetry
 
 /// The simulator's demo course — mock mode drives it end to end (spec §89).
 enum DemoCourse {
@@ -340,5 +341,19 @@ enum DemoCourse {
         .enumerated().map { sequence, index in
             Checkpoint(sequence: sequence, center: route[index], radiusMeters: 40)
         }
+
+    /// A rival built from a genuinely separate simulated run, through the
+    /// real GhostEngine — so mock mode exercises the whole ghost path
+    /// (generation, storage shape, interpolation, gap math, map position)
+    /// instead of a hand-written stand-in.
+    static let rivalGhost: GhostTrajectory? = {
+        let run = TelemetrySimulator(profile: .fastSmooth, seed: 99).simulate(route: route)
+        let processed = TrajectoryProcessor().process(run.gps)
+        return try? GhostEngine.generate(
+            trajectory: processed,
+            polyline: route,
+            checkpoints: gates
+        )
+    }()
 }
 #endif

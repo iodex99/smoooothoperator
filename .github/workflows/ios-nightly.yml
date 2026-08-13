@@ -62,7 +62,7 @@ jobs:
           # Scripted tour: tabs, course map, then a full mock drive (with the
           # drive follow-cam map) to the result screen.
           SIMCTL_CHILD_SMOOOOTH_DEMO_TOUR=1 xcrun simctl launch "${{ steps.sim.outputs.udid }}" app.smooooth.operator
-          for i in $(seq -w 1 48); do
+          for i in $(seq -w 1 60); do
             sleep 2
             xcrun simctl io "${{ steps.sim.outputs.udid }}" screenshot "shots/tour-$i.png" || true
           done

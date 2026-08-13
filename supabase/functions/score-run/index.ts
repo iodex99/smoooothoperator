@@ -156,8 +156,12 @@ export async function handleScoreRun(
     });
     const isPro = proResponse.ok ? await proResponse.json() === true : false;
     if (!isPro) {
+      // Keyed on `verification`, NOT `status`: status is client-writable
+      // within its allowed transition, so counting it let an attacker flip
+      // scored runs back and reset the meter while keeping their rankings.
+      // `verification` has no client grant at all.
       const todayResponse = await rest(
-        `/runs?user_id=eq.${run.user_id}&status=eq.scored` +
+        `/runs?user_id=eq.${run.user_id}&verification=not.is.null` +
           `&created_at=gte.${utcDayStart()}&select=id`,
       );
       const scoredToday = todayResponse.ok

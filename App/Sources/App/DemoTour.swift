@@ -1,4 +1,8 @@
 #if DEBUG
+import SOGhost
+import SOModels
+import SOScoring
+import SOSimulator
 import SOSync
 import SOTelemetry
 import SwiftUI
@@ -48,19 +52,30 @@ struct DemoTourView: View {
     }
 }
 
-/// Course map first (tiles get time to load), then the mock drive.
+/// Course map first (tiles get time to load), then a mock drive that
+/// actually RACES A GHOST — the ghost is generated from a separate
+/// simulated run through the real GhostEngine, so the screenshots exercise
+/// the whole competitive path rather than a stubbed one.
 private struct DemoDriveFlow: View {
     @Environment(AppEnvironment.self) private var environment
-    @State private var driving = false
+    @State private var stage = Stage.course
+
+    enum Stage { case course, driving, shareCard }
 
     var body: some View {
         Group {
-            if driving {
+            switch stage {
+            case .course:
+                NavigationStack {
+                    CourseDetailView(courseId: "demo")
+                }
+            case .driving:
                 DriveView(
                     polyline: DemoCourse.route,
                     gates: DemoCourse.gates,
                     benchmarkSeconds: 300,
-                    ghost: nil,
+                    // A real rival: a faster ghost built from its own run.
+                    ghost: DemoCourse.rivalGhost,
                     courseId: "demo",
                     debugEvents: MockSensorFeed.stream(
                         profile: .fastSmooth,
@@ -68,16 +83,34 @@ private struct DemoDriveFlow: View {
                         speedup: 30
                     )
                 )
-            } else {
-                NavigationStack {
-                    CourseDetailView(courseId: "demo")
+            case .shareCard:
+                // The card exactly as ImageRenderer renders it for sharing.
+                ZStack {
+                    SOTheme.ground.ignoresSafeArea()
+                    RunShareCard(
+                        score: 8_847,
+                        breakdown: ScoreBreakdown(
+                            paceBps: 10_000, smoothnessBps: 6_700,
+                            controlBps: 10_000, complianceBps: 10_000
+                        ),
+                        durationText: "3:15",
+                        courseName: "Malibu #042",
+                        route: DemoCourse.route,
+                        verdict: .verified,
+                        rankText: "#1 on this course"
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 22))
+                    .shadow(color: .black.opacity(0.6), radius: 30, y: 12)
                 }
             }
         }
         .environment(environment)
         .task {
             try? await Task.sleep(for: .seconds(10))
-            driving = true
+            stage = .driving
+            // Long enough for the 30x mock drive to finish and be scored.
+            try? await Task.sleep(for: .seconds(50))
+            stage = .shareCard
         }
     }
 }
