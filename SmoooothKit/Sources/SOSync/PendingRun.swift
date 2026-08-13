@@ -11,6 +11,12 @@ import SOModels
 public struct PendingRun: Codable, Sendable, Equatable, Identifiable {
     public let id: UUID
     public let courseId: String
+    /// Who recorded this drive. nil = recorded while signed out, so the
+    /// next account to sign in adopts it. A non-nil value that doesn't
+    /// match the current user must NEVER upload — otherwise signing out
+    /// and signing in as someone else silently posts your drive to their
+    /// account and their leaderboard.
+    public let userId: String?
     public let outcome: DriveRunOutcome
     public let createdAt: Date
     public var state: UploadState
@@ -22,6 +28,7 @@ public struct PendingRun: Codable, Sendable, Equatable, Identifiable {
     public init(
         id: UUID = UUID(),
         courseId: String,
+        userId: String? = nil,
         outcome: DriveRunOutcome,
         createdAt: Date = Date(),
         state: UploadState = .pending,
@@ -31,6 +38,7 @@ public struct PendingRun: Codable, Sendable, Equatable, Identifiable {
     ) {
         self.id = id
         self.courseId = courseId
+        self.userId = userId
         self.outcome = outcome
         self.createdAt = createdAt
         self.state = state

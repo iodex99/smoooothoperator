@@ -9,7 +9,14 @@ struct QueuedRunUploader: RunUploading {
 
     func upload(_ run: PendingRun) async throws {
         guard let api else { throw SupabaseAPI.APIError.notConfigured }
-        guard await api.userId != nil else { throw SupabaseAPI.APIError.notAuthenticated }
+        guard let current = await api.userId else {
+            throw SupabaseAPI.APIError.notAuthenticated
+        }
+        // Belt and braces with the queue's own check: a drive recorded by a
+        // different account must never reach this one's leaderboard.
+        if let owner = run.userId, owner != current {
+            throw SupabaseAPI.APIError.notAuthenticated
+        }
         _ = try await RunUploader(api: api).upload(
             outcome: run.outcome,
             courseId: run.courseId

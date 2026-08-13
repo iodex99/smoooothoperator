@@ -34,8 +34,17 @@ public actor UploadQueue {
     /// before attempting upload — so the drive is durable even if the app
     /// dies during the network call.
     @discardableResult
-    public func enqueue(courseId: String, outcome: DriveRunOutcome) throws -> PendingRun {
-        let run = PendingRun(courseId: courseId, outcome: outcome, createdAt: now())
+    public func enqueue(
+        courseId: String,
+        outcome: DriveRunOutcome,
+        userId: String? = nil
+    ) throws -> PendingRun {
+        let run = PendingRun(
+            courseId: courseId,
+            userId: userId,
+            outcome: outcome,
+            createdAt: now()
+        )
         try store.save(run)
         return run
     }
@@ -67,8 +76,11 @@ public actor UploadQueue {
     ///
     /// Re-entrant calls are ignored rather than queued: a foreground event
     /// storm must not multiply in-flight uploads of the same run.
+    /// Uploads only what the CURRENT account may claim. Pass the signed-in
+    /// user id; runs recorded while signed out (nil owner) are adopted, and
+    /// runs belonging to a different account are left untouched.
     @discardableResult
-    public func flush() async -> FlushSummary {
+    public func flush(currentUserId: String? = nil) async -> FlushSummary {
         guard !flushing else { return FlushSummary() }
         flushing = true
         defer { flushing = false }
@@ -80,6 +92,11 @@ public actor UploadQueue {
             // abandoned in `.uploading` forever.
             if run.state == .uploading {
                 run.state = .pending
+            }
+            // Never post someone else's drive to the account signed in now.
+            if let owner = run.userId, owner != currentUserId {
+                summary.skipped += 1
+                continue
             }
             guard run.isReady(at: now()) else {
                 summary.skipped += 1

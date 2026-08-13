@@ -196,7 +196,8 @@ struct RunResultView: View {
         hasEnqueued = true
         let pending = try? await environment.uploadQueue.enqueue(
             courseId: courseId,
-            outcome: outcome
+            outcome: outcome,
+            userId: await environment.api?.userId
         )
         savedLocally = pending != nil
         await environment.refreshPendingCount()

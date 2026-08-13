@@ -251,3 +251,54 @@ struct UploadQueueTests {
         #expect(leftovers.isEmpty)
     }
 }
+
+/// Account switching: one device, two drivers. A queued run must never be
+/// posted to whoever happens to be signed in later.
+@Suite("Upload queue account ownership")
+struct UploadQueueOwnershipTests {
+    @Test("a run recorded by another account is never uploaded")
+    func foreignRunIsRefused() async throws {
+        let store = InMemoryRunStore()
+        let uploader = UploadQueueTests.ScriptedUploader(.succeed)
+        let queue = UploadQueue(store: store, uploader: uploader)
+
+        try await queue.enqueue(
+            courseId: "c",
+            outcome: UploadQueueTests.outcome(),
+            userId: "driver-A"
+        )
+        // Driver B is signed in now.
+        let summary = await queue.flush(currentUserId: "driver-B")
+
+        #expect(summary.uploaded == 0)
+        #expect(await uploader.attemptCount() == 0)
+        #expect(try store.loadAll().count == 1, "A's run is kept, not destroyed")
+    }
+
+    @Test("the owner signing back in uploads their own run")
+    func ownerCanUpload() async throws {
+        let store = InMemoryRunStore()
+        let uploader = UploadQueueTests.ScriptedUploader(.succeed)
+        let queue = UploadQueue(store: store, uploader: uploader)
+
+        try await queue.enqueue(
+            courseId: "c",
+            outcome: UploadQueueTests.outcome(),
+            userId: "driver-A"
+        )
+        let summary = await queue.flush(currentUserId: "driver-A")
+        #expect(summary.uploaded == 1)
+    }
+
+    @Test("a run recorded signed out is adopted by whoever signs in")
+    func signedOutRunIsAdopted() async throws {
+        let store = InMemoryRunStore()
+        let uploader = UploadQueueTests.ScriptedUploader(.succeed)
+        let queue = UploadQueue(store: store, uploader: uploader)
+
+        // No account existed when this drive was recorded.
+        try await queue.enqueue(courseId: "c", outcome: UploadQueueTests.outcome())
+        let summary = await queue.flush(currentUserId: "driver-A")
+        #expect(summary.uploaded == 1, "the drive you did before signing up still counts")
+    }
+}

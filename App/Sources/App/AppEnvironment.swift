@@ -115,7 +115,7 @@ final class AppEnvironment {
     /// Drains the offline queue and refreshes the badge. Safe to call often:
     /// the queue ignores overlapping flushes and honors per-run backoff.
     func flushPendingRuns() async {
-        let summary = await uploadQueue.flush()
+        let summary = await uploadQueue.flush(currentUserId: await api?.userId)
         pendingRunCount = summary.remaining
     }
 
