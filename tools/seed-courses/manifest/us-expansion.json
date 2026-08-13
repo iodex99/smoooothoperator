@@ -1,0 +1,750 @@
+[
+{
+"slug": "us-kancamagus",
+"name": "Kancamagus Highway",
+"country": "US",
+"region": "New Hampshire",
+"city": "Lincoln",
+"category": "forest",
+"description": "New England's famous fall-color mountain highway.",
+"waypoints": [
+[
+44.046,
+-71.681
+],
+[
+43.99,
+-71.12
+]
+],
+"expectedKm": [
+40,
+60
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-smugglers-notch",
+"name": "Smugglers' Notch \u2014 VT-108",
+"country": "US",
+"region": "Vermont",
+"city": "Stowe",
+"category": "alpine",
+"description": "A boulder-squeezed single-lane notch through the Green Mountains.",
+"waypoints": [
+[
+44.47,
+-72.69
+],
+[
+44.64,
+-72.83
+]
+],
+"expectedKm": [
+20,
+40
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-hawks-nest",
+"name": "Hawk's Nest \u2014 NY-97",
+"country": "US",
+"region": "New York",
+"city": "Port Jervis",
+"category": "canyon",
+"description": "The cliff-carved curves above the Delaware that star in every car ad.",
+"waypoints": [
+[
+41.375,
+-74.7
+],
+[
+41.475,
+-74.91
+]
+],
+"expectedKm": [
+18,
+35
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-seven-lakes",
+"name": "Seven Lakes Drive \u2014 Harriman",
+"country": "US",
+"region": "New York",
+"city": "Sloatsburg",
+"category": "forest",
+"description": "Lake-to-lake parkway sweepers an hour from Manhattan.",
+"waypoints": [
+[
+41.16,
+-74.19
+],
+[
+41.31,
+-73.99
+]
+],
+"expectedKm": [
+22,
+40
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-whiteface",
+"name": "Whiteface Veterans Memorial Highway",
+"country": "US",
+"region": "New York",
+"city": "Wilmington",
+"category": "alpine",
+"description": "Hairpins to an Adirondack summit castle.",
+"waypoints": [
+[
+44.386,
+-73.82
+],
+[
+44.366,
+-73.903
+]
+],
+"expectedKm": [
+8,
+18
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-back-of-the-dragon",
+"name": "Back of the Dragon \u2014 VA-16",
+"country": "US",
+"region": "Virginia",
+"city": "Tazewell",
+"category": "canyon",
+"description": "Virginia's answer to Deals Gap: 32 miles over three mountains.",
+"waypoints": [
+[
+36.835,
+-81.515
+],
+[
+37.115,
+-81.52
+]
+],
+"expectedKm": [
+40,
+60
+],
+"difficultyHint": 5
+},
+{
+"slug": "us-diamondback",
+"name": "The Diamondback \u2014 NC-226A",
+"country": "US",
+"region": "North Carolina",
+"city": "Little Switzerland",
+"category": "canyon",
+"description": "190 curves in 12 miles of Blue Ridge escarpment.",
+"waypoints": [
+[
+35.845,
+-82.09
+],
+[
+35.77,
+-82.05
+]
+],
+"expectedKm": [
+10,
+25
+],
+"difficultyHint": 5
+},
+{
+"slug": "us-foothills-parkway",
+"name": "Foothills Parkway West",
+"country": "US",
+"region": "Tennessee",
+"city": "Walland",
+"category": "forest",
+"description": "The Smokies' quiet balcony with Look Rock views.",
+"waypoints": [
+[
+35.73,
+-83.81
+],
+[
+35.61,
+-83.95
+]
+],
+"expectedKm": [
+20,
+35
+],
+"difficultyHint": 2
+},
+{
+"slug": "us-wolf-pen-gap",
+"name": "Wolf Pen Gap \u2014 GA-180",
+"country": "US",
+"region": "Georgia",
+"city": "Suches",
+"category": "forest",
+"description": "North Georgia's tight mountain-gap favourite.",
+"waypoints": [
+[
+34.73,
+-84.05
+],
+[
+34.766,
+-83.93
+]
+],
+"expectedKm": [
+10,
+32
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-triple-nickel",
+"name": "Triple Nickel \u2014 Ohio 555",
+"country": "US",
+"region": "Ohio",
+"city": "Chesterhill",
+"category": "forest",
+"description": "Appalachian rollercoaster crests through Amish country.",
+"waypoints": [
+[
+39.79,
+-81.86
+],
+[
+39.6,
+-81.86
+]
+],
+"expectedKm": [
+20,
+40
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-red-river-gorge",
+"name": "Red River Gorge \u2014 KY-77 Nada Tunnel",
+"country": "US",
+"region": "Kentucky",
+"city": "Slade",
+"category": "forest",
+"description": "Through the one-lane Nada Tunnel into climbing country.",
+"waypoints": [
+[
+37.78,
+-83.68
+],
+[
+37.82,
+-83.61
+]
+],
+"expectedKm": [
+8,
+22
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-mt-lemmon",
+"name": "Mount Lemmon \u2014 Catalina Highway",
+"country": "US",
+"region": "Arizona",
+"city": "Tucson",
+"category": "canyon",
+"description": "Desert floor to alpine forest in 27 engineered miles.",
+"waypoints": [
+[
+32.31,
+-110.72
+],
+[
+32.44,
+-110.76
+]
+],
+"expectedKm": [
+30,
+50
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-oak-creek",
+"name": "Oak Creek Canyon \u2014 AZ-89A",
+"country": "US",
+"region": "Arizona",
+"city": "Sedona",
+"category": "canyon",
+"description": "Red-rock switchbacks stacked above Sedona.",
+"waypoints": [
+[
+34.87,
+-111.76
+],
+[
+35.02,
+-111.73
+]
+],
+"expectedKm": [
+18,
+35
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-mingus-mountain",
+"name": "Mingus Mountain \u2014 AZ-89A Jerome",
+"country": "US",
+"region": "Arizona",
+"city": "Jerome",
+"category": "canyon",
+"description": "Ghost-town hairpins over the Verde Valley.",
+"waypoints": [
+[
+34.749,
+-112.11
+],
+[
+34.61,
+-112.32
+]
+],
+"expectedKm": [
+22,
+40
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-mt-evans",
+"name": "Mount Blue Sky Scenic Byway",
+"country": "US",
+"region": "Colorado",
+"city": "Idaho Springs",
+"category": "alpine",
+"description": "North America's highest paved road \u2014 14,000 feet of it.",
+"waypoints": [
+[
+39.66,
+-105.6
+],
+[
+39.588,
+-105.643
+]
+],
+"expectedKm": [
+18,
+32
+],
+"difficultyHint": 5
+},
+{
+"slug": "us-independence-pass",
+"name": "Independence Pass \u2014 CO-82",
+"country": "US",
+"region": "Colorado",
+"city": "Aspen",
+"category": "alpine",
+"description": "The Continental Divide the hard, narrow, gorgeous way.",
+"waypoints": [
+[
+39.08,
+-106.48
+],
+[
+39.19,
+-106.82
+]
+],
+"expectedKm": [
+30,
+55
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-peak-to-peak",
+"name": "Peak to Peak Highway \u2014 CO-72",
+"country": "US",
+"region": "Colorado",
+"city": "Nederland",
+"category": "forest",
+"description": "Front Range cruising under the Indian Peaks.",
+"waypoints": [
+[
+39.96,
+-105.51
+],
+[
+40.2,
+-105.53
+]
+],
+"expectedKm": [
+28,
+45
+],
+"difficultyHint": 2
+},
+{
+"slug": "us-scenic-byway-12",
+"name": "Scenic Byway 12 \u2014 The Hogback",
+"country": "US",
+"region": "Utah",
+"city": "Escalante",
+"category": "highland",
+"description": "A knife-edge ridge with thousand-foot drops both sides.",
+"waypoints": [
+[
+37.77,
+-111.6
+],
+[
+37.91,
+-111.42
+]
+],
+"expectedKm": [
+22,
+40
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-little-cottonwood",
+"name": "Little Cottonwood Canyon \u2014 UT-210",
+"country": "US",
+"region": "Utah",
+"city": "Sandy",
+"category": "canyon",
+"description": "Granite-walled climb to Alta and Snowbird.",
+"waypoints": [
+[
+40.57,
+-111.79
+],
+[
+40.588,
+-111.638
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-mt-baker",
+"name": "Mount Baker Highway \u2014 SR-542",
+"country": "US",
+"region": "Washington",
+"city": "Glacier",
+"category": "alpine",
+"description": "Rainforest to Artist Point's staggering volcano views.",
+"waypoints": [
+[
+48.887,
+-121.94
+],
+[
+48.845,
+-121.69
+]
+],
+"expectedKm": [
+28,
+45
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-mckenzie-pass",
+"name": "McKenzie Pass \u2014 OR-242",
+"country": "US",
+"region": "Oregon",
+"city": "Sisters",
+"category": "alpine",
+"description": "A narrow lava-field pass to the Dee Wright Observatory.",
+"waypoints": [
+[
+44.29,
+-121.55
+],
+[
+44.26,
+-121.8
+]
+],
+"expectedKm": [
+18,
+35
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-mt-tam",
+"name": "Mount Tamalpais \u2014 Panoramic Highway",
+"country": "US",
+"region": "California",
+"city": "Mill Valley",
+"category": "coastal",
+"description": "Redwoods to the ocean above the fog line.",
+"waypoints": [
+[
+37.9,
+-122.55
+],
+[
+37.9,
+-122.64
+]
+],
+"expectedKm": [
+12,
+25
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-highway-1-marin",
+"name": "Highway 1 \u2014 Stinson to Olema",
+"country": "US",
+"region": "California",
+"city": "Stinson Beach",
+"category": "coastal",
+"description": "Marin's cypress-lined coast along the San Andreas.",
+"waypoints": [
+[
+37.9,
+-122.64
+],
+[
+38.04,
+-122.79
+]
+],
+"expectedKm": [
+15,
+30
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-ebbetts-pass",
+"name": "Ebbetts Pass \u2014 CA-4",
+"country": "US",
+"region": "California",
+"city": "Markleeville",
+"category": "alpine",
+"description": "The Sierra's centerline-free secret pass.",
+"waypoints": [
+[
+38.69,
+-119.78
+],
+[
+38.46,
+-120.04
+]
+],
+"expectedKm": [
+35,
+60
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-sonora-pass",
+"name": "Sonora Pass \u2014 CA-108",
+"country": "US",
+"region": "California",
+"city": "Dardanelle",
+"category": "alpine",
+"description": "26% grades and granite \u2014 the Sierra's steepest crossing.",
+"waypoints": [
+[
+38.31,
+-119.75
+],
+[
+38.26,
+-119.49
+]
+],
+"expectedKm": [
+20,
+58
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-emory-pass",
+"name": "Emory Pass \u2014 NM-152",
+"country": "US",
+"region": "New Mexico",
+"city": "Hillsboro",
+"category": "canyon",
+"description": "The Black Range's forgotten hairpin classic.",
+"waypoints": [
+[
+32.92,
+-107.57
+],
+[
+32.8,
+-107.88
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-tantalus",
+"name": "Tantalus\u2013Round Top Drive",
+"country": "US",
+"region": "Hawaii",
+"city": "Honolulu",
+"category": "forest",
+"description": "Jungle switchbacks with Waikiki glittering below.",
+"waypoints": [
+[
+21.31,
+-157.827
+],
+[
+21.333,
+-157.813
+],
+[
+21.306,
+-157.802
+]
+],
+"expectedKm": [
+10,
+22
+],
+"difficultyHint": 4
+},
+{
+"slug": "us-angeles-forest",
+"name": "Angeles Forest Highway",
+"country": "US",
+"region": "California",
+"city": "Palmdale",
+"category": "canyon",
+"description": "The Crest's faster, emptier sibling.",
+"waypoints": [
+[
+34.372,
+-118.087
+],
+[
+34.282,
+-118.172
+]
+],
+"expectedKm": [
+15,
+30
+],
+"difficultyHint": 3
+},
+{
+"slug": "us-glendora-mountain",
+"name": "Glendora Mountain Road",
+"country": "US",
+"region": "California",
+"city": "Glendora",
+"category": "canyon",
+"description": "GMR \u2014 LA's cyclist-and-driver dawn ritual.",
+"waypoints": [
+[
+34.162,
+-117.842
+],
+[
+34.24,
+-117.81
+]
+],
+"expectedKm": [
+12,
+25
+],
+"difficultyHint": 5
+},
+{
+"slug": "us-mt-hamilton",
+"name": "Mount Hamilton Road \u2014 CA-130",
+"country": "US",
+"region": "California",
+"city": "San Jose",
+"category": "canyon",
+"description": "365 bends to the Lick Observatory.",
+"waypoints": [
+[
+37.342,
+-121.8
+],
+[
+37.341,
+-121.643
+]
+],
+"expectedKm": [
+18,
+32
+],
+"difficultyHint": 5
+},
+{
+"slug": "us-natchez-trace",
+"name": "Natchez Trace Parkway \u2014 Leiper's Fork",
+"country": "US",
+"region": "Tennessee",
+"city": "Franklin",
+"category": "forest",
+"description": "Serene, commercial-free parkway flow.",
+"waypoints": [
+[
+35.885,
+-87.035
+],
+[
+35.68,
+-87.26
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 1
+}
+]

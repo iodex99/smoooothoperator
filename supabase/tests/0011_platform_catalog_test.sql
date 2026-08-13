@@ -5,12 +5,12 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(8);
+select plan(9);
 
 -- Catalog size floor (raise deliberately as the catalog grows).
 select cmp_ok(
     (select count(*)::int from public.courses where creator_id is null),
-    '>=', 80,
+    '>=', 220,
     'the platform catalog is seeded'
 );
 
@@ -60,11 +60,19 @@ select is(
     'every platform course has an ISO2 country'
 );
 
--- The user's home market and the flagship market are both represented.
+-- Revenue markets lead the catalog; India keeps real depth (directive
+-- 2026-08-13: weight monetization regions, keep IN strong).
 select ok(
-    (select count(*) from public.courses where creator_id is null and country = 'IN') >= 20
-    and (select count(*) from public.courses where creator_id is null and country = 'US') >= 15,
-    'India and US both have real catalog depth'
+    (select count(*) from public.courses where creator_id is null and country = 'US') >= 40
+    and (select count(*) from public.courses where creator_id is null and country = 'GB') >= 15
+    and (select count(*) from public.courses where creator_id is null and country = 'IN') >= 20,
+    'US and UK lead; India keeps depth'
+);
+
+select cmp_ok(
+    (select count(distinct country)::int from public.courses where creator_id is null),
+    '>=', 25,
+    'the catalog spans at least 25 countries'
 );
 
 select * from finish();

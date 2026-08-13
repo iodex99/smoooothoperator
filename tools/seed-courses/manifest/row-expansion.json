@@ -1,0 +1,774 @@
+[
+{
+"slug": "au-putty-road",
+"name": "Putty Road \u2014 Colo to Putty",
+"country": "AU",
+"region": "New South Wales",
+"city": "Colo",
+"category": "forest",
+"description": "Sydney's 'Ten Mile' rhythm section through Yengo wilderness.",
+"waypoints": [
+[
+-33.43,
+150.83
+],
+[
+-32.96,
+150.66
+]
+],
+"expectedKm": [
+40,
+65
+],
+"difficultyHint": 3
+},
+{
+"slug": "au-bells-line",
+"name": "Bells Line of Road",
+"country": "AU",
+"region": "New South Wales",
+"city": "Kurrajong",
+"category": "forest",
+"description": "The quieter, curvier Blue Mountains crossing.",
+"waypoints": [
+[
+-33.55,
+150.66
+],
+[
+-33.51,
+150.28
+]
+],
+"expectedKm": [
+30,
+50
+],
+"difficultyHint": 3
+},
+{
+"slug": "au-gorge-road",
+"name": "Gorge Road \u2014 Adelaide Hills",
+"country": "AU",
+"region": "South Australia",
+"city": "Athelstone",
+"category": "canyon",
+"description": "Adelaide's river-gorge ribbon to Cudlee Creek.",
+"waypoints": [
+[
+-34.87,
+138.7
+],
+[
+-34.83,
+138.82
+]
+],
+"expectedKm": [
+10,
+22
+],
+"difficultyHint": 4
+},
+{
+"slug": "au-norton-summit",
+"name": "Norton Summit Road",
+"country": "AU",
+"region": "South Australia",
+"city": "Adelaide",
+"category": "canyon",
+"description": "The hillclimb out of the city every Adelaide driver knows.",
+"waypoints": [
+[
+-34.92,
+138.66
+],
+[
+-34.92,
+138.72
+]
+],
+"expectedKm": [
+4,
+12
+],
+"difficultyHint": 4
+},
+{
+"slug": "au-great-alpine-hotham",
+"name": "Great Alpine Road \u2014 Harrietville to Hotham",
+"country": "AU",
+"region": "Victoria",
+"city": "Harrietville",
+"category": "alpine",
+"description": "Australia's highest sealed crossing, CRB corners and snow poles.",
+"waypoints": [
+[
+-36.89,
+147.06
+],
+[
+-36.98,
+147.13
+]
+],
+"expectedKm": [
+20,
+35
+],
+"difficultyHint": 4
+},
+{
+"slug": "au-mount-buffalo",
+"name": "Mount Buffalo Road",
+"country": "AU",
+"region": "Victoria",
+"city": "Porepunkah",
+"category": "alpine",
+"description": "Granite-plateau hairpins above the Ovens Valley.",
+"waypoints": [
+[
+-36.7,
+146.9
+],
+[
+-36.74,
+146.81
+]
+],
+"expectedKm": [
+15,
+32
+],
+"difficultyHint": 4
+},
+{
+"slug": "au-kangaroo-valley",
+"name": "Moss Vale Road \u2014 Kangaroo Valley",
+"country": "AU",
+"region": "New South Wales",
+"city": "Kangaroo Valley",
+"category": "forest",
+"description": "Sandstone switchbacks past Fitzroy Falls.",
+"waypoints": [
+[
+-34.74,
+150.53
+],
+[
+-34.65,
+150.48
+]
+],
+"expectedKm": [
+10,
+20
+],
+"difficultyHint": 4
+},
+{
+"slug": "au-mt-nebo",
+"name": "Mount Nebo Road",
+"country": "AU",
+"region": "Queensland",
+"city": "Brisbane",
+"category": "forest",
+"description": "The first act of Brisbane's D'Aguilar twisties.",
+"waypoints": [
+[
+-27.44,
+152.94
+],
+[
+-27.398,
+152.784
+]
+],
+"expectedKm": [
+15,
+28
+],
+"difficultyHint": 4
+},
+{
+"slug": "nz-arthurs-pass",
+"name": "Arthur's Pass \u2014 Otira Gorge",
+"country": "NZ",
+"region": "Canterbury",
+"city": "Arthur's Pass",
+"category": "alpine",
+"description": "The viaduct-hung crossing of the Southern Alps.",
+"waypoints": [
+[
+-42.83,
+171.56
+],
+[
+-42.94,
+171.56
+],
+[
+-43.03,
+171.75
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 4
+},
+{
+"slug": "nz-glenorchy",
+"name": "Queenstown\u2013Glenorchy Road",
+"country": "NZ",
+"region": "Otago",
+"city": "Queenstown",
+"category": "coastal",
+"description": "Lake Wakatipu's cliff-clinging film-set drive.",
+"waypoints": [
+[
+-45.03,
+168.66
+],
+[
+-44.85,
+168.38
+]
+],
+"expectedKm": [
+35,
+55
+],
+"difficultyHint": 3
+},
+{
+"slug": "nz-desert-road",
+"name": "Desert Road \u2014 SH1",
+"country": "NZ",
+"region": "Waikato",
+"city": "Waiouru",
+"category": "straight",
+"description": "Volcano-flanked tussock straights under Ruapehu.",
+"waypoints": [
+[
+-39.48,
+175.67
+],
+[
+-39.03,
+175.78
+]
+],
+"expectedKm": [
+40,
+60
+],
+"difficultyHint": 1
+},
+{
+"slug": "nz-coronet-peak",
+"name": "Coronet Peak Road",
+"country": "NZ",
+"region": "Otago",
+"city": "Queenstown",
+"category": "alpine",
+"description": "Ski-field hairpins with Wakatipu below.",
+"waypoints": [
+[
+-45.0,
+168.74
+],
+[
+-44.92,
+168.73
+]
+],
+"expectedKm": [
+8,
+30
+],
+"difficultyHint": 4
+},
+{
+"slug": "nz-karangahake",
+"name": "Karangahake Gorge \u2014 SH2",
+"country": "NZ",
+"region": "Waikato",
+"city": "Paeroa",
+"category": "canyon",
+"description": "Gold-rush gorge curves between rail tunnels.",
+"waypoints": [
+[
+-37.42,
+175.72
+],
+[
+-37.45,
+175.83
+]
+],
+"expectedKm": [
+8,
+18
+],
+"difficultyHint": 3
+},
+{
+"slug": "ca-cypress-bowl",
+"name": "Cypress Bowl Road",
+"country": "CA",
+"region": "British Columbia",
+"city": "West Vancouver",
+"category": "alpine",
+"description": "Vancouver's switchback lookout climb.",
+"waypoints": [
+[
+49.36,
+-123.2
+],
+[
+49.396,
+-123.19
+]
+],
+"expectedKm": [
+6,
+16
+],
+"difficultyHint": 4
+},
+{
+"slug": "ca-mount-seymour",
+"name": "Mount Seymour Road",
+"country": "CA",
+"region": "British Columbia",
+"city": "North Vancouver",
+"category": "alpine",
+"description": "Thirteen kilometres of rainforest hairpins.",
+"waypoints": [
+[
+49.32,
+-122.98
+],
+[
+49.37,
+-122.95
+]
+],
+"expectedKm": [
+8,
+18
+],
+"difficultyHint": 4
+},
+{
+"slug": "ca-highwood-pass",
+"name": "Highwood Pass \u2014 AB-40",
+"country": "CA",
+"region": "Alberta",
+"city": "Kananaskis",
+"category": "alpine",
+"description": "Canada's highest paved pass, bighorn sheep included.",
+"waypoints": [
+[
+50.92,
+-115.14
+],
+[
+50.59,
+-114.98
+]
+],
+"expectedKm": [
+30,
+50
+],
+"difficultyHint": 3
+},
+{
+"slug": "ca-gaspesie",
+"name": "Gasp\u00e9sie \u2014 Route 132 North Shore",
+"country": "CA",
+"region": "Quebec",
+"city": "Mont-Saint-Pierre",
+"category": "coastal",
+"description": "Cliff-and-cove theatre on the St. Lawrence.",
+"waypoints": [
+[
+49.22,
+-65.79
+],
+[
+49.23,
+-65.13
+]
+],
+"expectedKm": [
+35,
+60
+],
+"difficultyHint": 3
+},
+{
+"slug": "ca-westside-road",
+"name": "Westside Road \u2014 Okanagan",
+"country": "CA",
+"region": "British Columbia",
+"city": "Vernon",
+"category": "coastal",
+"description": "Okanagan Lake's twisting western shoreline.",
+"waypoints": [
+[
+50.24,
+-119.35
+],
+[
+49.93,
+-119.52
+]
+],
+"expectedKm": [
+40,
+60
+],
+"difficultyHint": 3
+},
+{
+"slug": "ca-niagara-parkway",
+"name": "Niagara Parkway",
+"country": "CA",
+"region": "Ontario",
+"city": "Niagara-on-the-Lake",
+"category": "straight",
+"description": "Churchill's 'prettiest Sunday afternoon drive in the world'.",
+"waypoints": [
+[
+43.25,
+-79.07
+],
+[
+43.09,
+-79.07
+]
+],
+"expectedKm": [
+18,
+32
+],
+"difficultyHint": 1
+},
+{
+"slug": "ae-kalba-road",
+"name": "Sharjah\u2013Kalba Mountain Road \u2014 E102",
+"country": "AE",
+"region": "Sharjah",
+"city": "Kalba",
+"category": "canyon",
+"description": "Hajar mountain sweepers to the east coast.",
+"waypoints": [
+[
+25.13,
+56.12
+],
+[
+25.05,
+56.32
+]
+],
+"expectedKm": [
+20,
+45
+],
+"difficultyHint": 3
+},
+{
+"slug": "ae-liwa-moreeb",
+"name": "Liwa \u2014 Moreeb Dune Road",
+"country": "AE",
+"region": "Abu Dhabi",
+"city": "Liwa Oasis",
+"category": "straight",
+"description": "A lone black ribbon into the Empty Quarter's tallest dunes.",
+"waypoints": [
+[
+23.13,
+53.78
+],
+[
+22.98,
+53.79
+]
+],
+"expectedKm": [
+12,
+30
+],
+"difficultyHint": 1
+},
+{
+"slug": "jp-bandai-azuma",
+"name": "Bandai-Azuma Skyline",
+"country": "JP",
+"region": "Fukushima",
+"city": "Fukushima",
+"category": "alpine",
+"description": "Volcanic skyline touge past smoking craters.",
+"waypoints": [
+[
+37.76,
+140.38
+],
+[
+37.72,
+140.26
+]
+],
+"expectedKm": [
+12,
+30
+],
+"difficultyHint": 4
+},
+{
+"slug": "jp-izu-skyline",
+"name": "Izu Skyline",
+"country": "JP",
+"region": "Shizuoka",
+"city": "Atami",
+"category": "highland",
+"description": "Ridge-running toll road with Fuji over every crest.",
+"waypoints": [
+[
+35.09,
+139.05
+],
+[
+34.87,
+139.03
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 3
+},
+{
+"slug": "hk-route-twisk",
+"name": "Route Twisk",
+"country": "HK",
+"region": "New Territories",
+"city": "Tsuen Wan",
+"category": "ghat",
+"description": "Hong Kong's mountain pass over Tai Mo Shan's shoulder.",
+"waypoints": [
+[
+22.38,
+114.1
+],
+[
+22.43,
+114.09
+]
+],
+"expectedKm": [
+6,
+16
+],
+"difficultyHint": 4
+},
+{
+"slug": "tw-yangmingshan",
+"name": "Yangmingshan \u2014 Balaka Highway",
+"country": "TW",
+"region": "Taipei",
+"city": "Taipei",
+"category": "forest",
+"description": "Taipei's volcano-park playground.",
+"waypoints": [
+[
+25.155,
+121.55
+],
+[
+25.18,
+121.46
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 3
+},
+{
+"slug": "tw-hehuanshan",
+"name": "Hehuanshan \u2014 Highway 14A",
+"country": "TW",
+"region": "Nantou",
+"city": "Wushe",
+"category": "alpine",
+"description": "East Asia's highest road, cloud-sea hairpins at 3,275 m.",
+"waypoints": [
+[
+24.02,
+121.13
+],
+[
+24.14,
+121.27
+]
+],
+"expectedKm": [
+25,
+45
+],
+"difficultyHint": 5
+},
+{
+"slug": "kr-misiryeong",
+"name": "Misiryeong Old Road",
+"country": "KR",
+"region": "Gangwon",
+"city": "Sokcho",
+"category": "alpine",
+"description": "The Seoraksan pass the tunnel forgot.",
+"waypoints": [
+[
+38.21,
+128.52
+],
+[
+38.22,
+128.43
+]
+],
+"expectedKm": [
+8,
+22
+],
+"difficultyHint": 4
+},
+{
+"slug": "za-chapmans-peak",
+"name": "Chapman's Peak Drive",
+"country": "ZA",
+"region": "Western Cape",
+"city": "Hout Bay",
+"category": "coastal",
+"description": "114 curves blasted into an Atlantic cliff face.",
+"waypoints": [
+[
+-34.05,
+18.36
+],
+[
+-34.1,
+18.36
+]
+],
+"expectedKm": [
+5,
+14
+],
+"difficultyHint": 4
+},
+{
+"slug": "za-clarence-drive",
+"name": "Clarence Drive \u2014 R44",
+"country": "ZA",
+"region": "Western Cape",
+"city": "Gordon's Bay",
+"category": "coastal",
+"description": "False Bay's whale-watching cliff road.",
+"waypoints": [
+[
+-34.16,
+18.87
+],
+[
+-34.3,
+18.82
+]
+],
+"expectedKm": [
+12,
+25
+],
+"difficultyHint": 3
+},
+{
+"slug": "za-franschhoek-pass",
+"name": "Franschhoek Pass",
+"country": "ZA",
+"region": "Western Cape",
+"city": "Franschhoek",
+"category": "alpine",
+"description": "Winelands hairpins over the Middagkrans ridge.",
+"waypoints": [
+[
+-33.91,
+19.13
+],
+[
+-33.99,
+19.19
+]
+],
+"expectedKm": [
+8,
+20
+],
+"difficultyHint": 4
+},
+{
+"slug": "za-ou-kaapse-weg",
+"name": "Ou Kaapse Weg",
+"country": "ZA",
+"region": "Western Cape",
+"city": "Cape Town",
+"category": "alpine",
+"description": "The Old Cape Road over Silvermine's fynbos.",
+"waypoints": [
+[
+-34.07,
+18.4
+],
+[
+-34.1,
+18.46
+]
+],
+"expectedKm": [
+5,
+14
+],
+"difficultyHint": 3
+},
+{
+"slug": "cl-los-caracoles",
+"name": "Los Caracoles \u2014 Paso Los Libertadores",
+"country": "CL",
+"region": "Valpara\u00edso",
+"city": "Los Andes",
+"category": "alpine",
+"description": "The Andes' stacked snail-shell switchbacks toward Aconcagua.",
+"waypoints": [
+[
+-32.87,
+-70.31
+],
+[
+-32.835,
+-70.13
+]
+],
+"expectedKm": [
+18,
+40
+],
+"difficultyHint": 5
+}
+]

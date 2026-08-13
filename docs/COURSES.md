@@ -52,10 +52,14 @@ OpenStreetMap. Course names/descriptions are our own editorial content.
 
 ## Catalog philosophy
 
-Quality and leaderboard density over blanket coverage: a few hundred
-courses drivers recognize and rave about beat thousands of dead ones.
-Scaling to more regions is a manifest edit — the pipeline, validation,
-and benchmarking are already automatic.
+Broad, revenue-weighted coverage (directive 2026-08-13): the catalog leads
+with the monetization markets (spec §10 — US, UK, DE, CA, AU, NZ, CH,
+Nordics, NL, IE, UAE) while keeping India genuinely deep, and only ships
+courses drivers recognize. Current shape: 250 courses across 30 countries
+(US 53, IN 30, GB 20, AU 17, IT 13, CH/DE/FR 11 each, CA 10, …).
+Growth is a manifest edit — pipeline, validation, and benchmarking are
+automatic; the pgTAP catalog suite enforces size floors, market depth, and
+integrity on every regeneration.
 
 ## Known-unroutable famous roads (drop list)
 
