@@ -21,6 +21,7 @@ struct RunResultView: View {
     @State private var uploadError: String?
     @State private var shareImage: Image?
     @State private var savedLocally = false
+    @State private var hasEnqueued = false
 
     var body: some View {
         ScrollView {
@@ -170,6 +171,8 @@ struct RunResultView: View {
     /// network call, so a crash, a force-quit or a dead battery during upload
     /// cannot destroy it. Only a server acknowledgement removes it.
     private func upload() async {
+        guard !hasEnqueued else { return }
+        hasEnqueued = true
         let pending = try? await environment.uploadQueue.enqueue(
             courseId: courseId,
             outcome: outcome
