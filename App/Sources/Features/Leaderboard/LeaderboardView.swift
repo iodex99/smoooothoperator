@@ -9,7 +9,7 @@ import SwiftUI
 struct LeaderboardView: View {
     @Environment(AppEnvironment.self) private var environment
     @State private var scope: Scope = .global
-    @State private var state: State = .loading
+    @State private var state: LoadState = .loading
     @State private var courseId: String?
     @State private var courseName = ""
 
@@ -21,7 +21,7 @@ struct LeaderboardView: View {
         var id: String { rawValue }
     }
 
-    enum State {
+    enum LoadState {
         case loading
         case ready([Entry])
         case failed(String)
