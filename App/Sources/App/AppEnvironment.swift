@@ -19,6 +19,8 @@ final class AppEnvironment {
     var pendingRunCount = 0
     /// Live Pro entitlement, refreshed at launch and on every transaction.
     var isPro = false
+    /// Scored runs started today (local date), for the free-tier limit.
+    private(set) var runsToday = 0
     var hasAcknowledgedSafety: Bool {
         didSet { UserDefaults.standard.set(hasAcknowledgedSafety, forKey: "safetyAcknowledged") }
     }
@@ -43,6 +45,39 @@ final class AppEnvironment {
 
         hasAcknowledgedSafety = UserDefaults.standard.bool(forKey: "safetyAcknowledged")
         hasOnboarded = UserDefaults.standard.bool(forKey: "hasOnboarded")
+        runsToday = Self.storedRunsToday()
+    }
+
+    // MARK: - Free tier
+
+    private static let runCountKey = "runsToday"
+    private static let runDateKey = "runsTodayDate"
+
+    private static func todayKey() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: Date())
+    }
+
+    private static func storedRunsToday() -> Int {
+        guard UserDefaults.standard.string(forKey: runDateKey) == todayKey() else { return 0 }
+        return UserDefaults.standard.integer(forKey: runCountKey)
+    }
+
+    /// Whether another run may start now (spec §§8, 74).
+    var canStartRun: Bool {
+        DailyRunAllowance.allows(runsToday: runsToday, isPro: isPro)
+    }
+
+    /// nil = unlimited.
+    var runsRemainingToday: Int? {
+        DailyRunAllowance.remaining(runsToday: runsToday, isPro: isPro)
+    }
+
+    func recordRunStarted() {
+        runsToday = Self.storedRunsToday() + 1
+        UserDefaults.standard.set(runsToday, forKey: Self.runCountKey)
+        UserDefaults.standard.set(Self.todayKey(), forKey: Self.runDateKey)
     }
 
     /// Onboarding ends with the safety gate — both stick together.

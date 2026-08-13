@@ -110,6 +110,14 @@ actor SupabaseAPI {
         )
     }
 
+    func patch(_ path: String, json: [String: Any]) async throws {
+        _ = try await send(
+            path: "rest/v1/\(path)",
+            method: "PATCH",
+            body: try JSONSerialization.data(withJSONObject: json)
+        )
+    }
+
     func rpc(_ name: String, json: [String: Any]) async throws -> Data {
         try await send(
             path: "rest/v1/rpc/\(name)",

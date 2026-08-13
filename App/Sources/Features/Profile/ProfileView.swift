@@ -5,6 +5,9 @@ import SwiftUI
 struct ProfileView: View {
     @Environment(AppEnvironment.self) private var environment
     @State private var showPaywall = false
+    @State private var confirmDelete = false
+    @State private var deleting = false
+    @State private var notice: String?
 
     var body: some View {
         NavigationStack {
@@ -112,8 +115,7 @@ struct ProfileView: View {
                         .buttonStyle(.plain)
                         Divider().overlay(SOTheme.hairline)
                         Button(role: .destructive) {
-                            // Account + telemetry deletion flow (spec §62) —
-                            // server endpoint wired at device stage.
+                            confirmDelete = true
                         } label: {
                             AccountRow(
                                 icon: "trash",
@@ -135,6 +137,40 @@ struct ProfileView: View {
             .background(SOTheme.ground)
             .navigationTitle("Profile")
             .sheet(isPresented: $showPaywall) { PaywallView() }
+            .confirmationDialog(
+                "Delete your account?",
+                isPresented: $confirmDelete,
+                titleVisibility: .visible
+            ) {
+                Button("Delete everything", role: .destructive) {
+                    Task { await deleteAccount() }
+                }
+                Button("Keep my account", role: .cancel) {}
+            } message: {
+                Text("This erases your profile, runs, telemetry and friendships. It cannot be undone.")
+            }
+            .alert(
+                notice ?? "",
+                isPresented: Binding(get: { notice != nil }, set: { if !$0 { notice = nil } })
+            ) {
+                Button("OK") { notice = nil }
+            }
+        }
+    }
+
+    private func deleteAccount() async {
+        guard let api = environment.api, await api.userId != nil else {
+            notice = "You're not signed in on this device."
+            return
+        }
+        deleting = true
+        defer { deleting = false }
+        do {
+            _ = try await api.rpc("delete_my_account", json: [:])
+            await api.signOut()
+            notice = "Your account and all its data have been deleted."
+        } catch {
+            notice = "We couldn't delete your account. Please try again, or contact support."
         }
     }
 }
@@ -168,8 +204,15 @@ struct AccountRow: View {
 }
 
 /// Ghost + location privacy controls (spec §§35, 62, 70).
+///
+/// The server enforces from `profiles.ghost_visibility`, so this MUST write
+/// there. It previously only set a local @AppStorage key nothing read or
+/// transmitted: choosing "Nobody" changed the UI and kept serving your ghost
+/// to strangers.
 struct PrivacySettingsView: View {
-    @AppStorage("ghostVisibility") private var ghostVisibility = "everyone"
+    @Environment(AppEnvironment.self) private var environment
+    @State private var ghostVisibility = "everyone"
+    @State private var saveError: String?
 
     var body: some View {
         List {
@@ -180,12 +223,44 @@ struct PrivacySettingsView: View {
                     Text("Nobody").tag("nobody")
                 }
                 .listRowBackground(SOTheme.surface)
+                .onChange(of: ghostVisibility) { _, value in
+                    Task { await save(value) }
+                }
             } footer: {
-                Text("Ghosts share only your pace along the course — never your raw location.")
+                if let saveError {
+                    Text(saveError).foregroundStyle(SOTheme.caution)
+                } else {
+                    Text("Ghosts share only your pace along the course — never your raw location.")
+                }
             }
         }
         .scrollContentBackground(.hidden)
         .background(SOTheme.ground)
         .navigationTitle("Privacy")
+        .task { await load() }
+    }
+
+    private func load() async {
+        guard let api = environment.api, let id = await api.userId else { return }
+        struct Row: Decodable { var ghost_visibility: String }
+        if let rows = try? await api.get(
+            "profiles?id=eq.\(id)&select=ghost_visibility", as: [Row].self
+        ), let row = rows.first {
+            ghostVisibility = row.ghost_visibility
+        }
+    }
+
+    private func save(_ value: String) async {
+        guard let api = environment.api, let id = await api.userId else {
+            saveError = "Sign in to change this — it is stored on the server."
+            return
+        }
+        do {
+            try await api.patch("profiles?id=eq.\(id)", json: ["ghost_visibility": value])
+            saveError = nil
+        } catch {
+            saveError = "Couldn't save that setting. Try again."
+            await load()
+        }
     }
 }

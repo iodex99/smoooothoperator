@@ -1,3 +1,4 @@
+import SOSync
 import StoreKit
 import SwiftUI
 
@@ -8,6 +9,8 @@ struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var products: [Product] = []
     @State private var purchasing = false
+    @State private var loading = true
+    @State private var notice: String?
 
     var body: some View {
         ScrollView {
@@ -32,17 +35,36 @@ struct PaywallView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 14) {
-                    Benefit(icon: "flag.checkered.2.crossed", text: "Unlimited challenges & ghost racing")
-                    Benefit(icon: "point.topleft.down.curvedto.point.bottomright.up", text: "Create custom courses and challenge friends")
-                    Benefit(icon: "chart.xyaxis.line", text: "Advanced driving analytics")
+                    Benefit(
+                        icon: "infinity",
+                        text: "Unlimited daily challenges — the free tier allows \(DailyRunAllowance.freeRunsPerDay) runs a day"
+                    )
+                    Benefit(
+                        icon: "point.topleft.down.curvedto.point.bottomright.up",
+                        text: "Create custom courses and challenge friends"
+                    )
+                    Benefit(
+                        icon: "square.and.arrow.up",
+                        text: "Support an independent app built by one driver"
+                    )
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .soCard(padding: 18)
 
-                if products.isEmpty {
+                if loading {
                     ProgressView()
                         .tint(SOTheme.heatStart)
                         .padding(.vertical, 20)
+                } else if products.isEmpty {
+                    VStack(spacing: 10) {
+                        Text("Subscriptions aren't available right now.")
+                            .font(.subheadline)
+                            .foregroundStyle(SOTheme.textSecondary)
+                            .multilineTextAlignment(.center)
+                        Button("Try again") { Task { await loadProducts() } }
+                            .buttonStyle(GhostButtonStyle())
+                    }
+                    .padding(.vertical, 12)
                 } else {
                     ForEach(products, id: \.id) { product in
                         Button {
@@ -77,22 +99,41 @@ struct PaywallView: View {
                     }
                 }
 
-                Button("Restore purchases") {
-                    Task { try? await environment.subscriptions.restore() }
-                }
-                .font(.footnote.weight(.semibold))
-                .tint(SOTheme.heatStart)
+                Button("Restore purchases") { Task { await restore() } }
+                    .font(.footnote.weight(.semibold))
+                    .tint(SOTheme.heatStart)
+                    .padding(.vertical, 10)
 
-                Text("Subscriptions renew automatically until cancelled in your App Store settings.")
+                // Required disclosure (App Store 3.1.2). Full opacity: this
+                // was the least legible text in the app at 3.63:1, below the
+                // 4.5:1 minimum, on the one paragraph Apple requires be
+                // readable.
+                Text("""
+                Payment is charged to your Apple ID at confirmation. \
+                Subscriptions renew automatically unless cancelled at least \
+                24 hours before the end of the current period. Manage or \
+                cancel in your App Store settings.
+                """)
                     .font(.caption2)
-                    .foregroundStyle(SOTheme.textSecondary.opacity(0.7))
+                    .foregroundStyle(SOTheme.textSecondary)
                     .multilineTextAlignment(.center)
+
+                HStack(spacing: 18) {
+                    Link("Terms of Use", destination: URL(string: "https://smooooth.app/terms")!)
+                    Link("Privacy Policy", destination: URL(string: "https://smooooth.app/privacy")!)
+                }
+                .font(.caption2.weight(.semibold))
+                .tint(SOTheme.heatStart)
             }
             .padding(24)
         }
         .background(SOTheme.ground)
-        .task {
-            products = (try? await environment.subscriptions.products()) ?? []
+        .task { await loadProducts() }
+        .alert(
+            notice ?? "",
+            isPresented: Binding(get: { notice != nil }, set: { if !$0 { notice = nil } })
+        ) {
+            Button("OK") { notice = nil }
         }
     }
 
@@ -100,9 +141,39 @@ struct PaywallView: View {
         purchasing = true
         Task {
             defer { purchasing = false }
-            if (try? await environment.subscriptions.purchase(product)) == true {
+            switch await environment.subscriptions.purchase(product) {
+            case .success:
+                await environment.refreshEntitlement()
                 dismiss()
+            case .cancelled:
+                break
+            case .pending:
+                // Ask to Buy: the charge may be approved later, and the
+                // transaction observer is what will notice.
+                notice = "Waiting for approval. Pro unlocks as soon as it's approved."
+            case .unverified:
+                notice = "That purchase couldn't be verified. You have not been charged twice — contact support if it persists."
+            case .failed(let message):
+                notice = message
             }
+        }
+    }
+
+    private func loadProducts() async {
+        loading = true
+        defer { loading = false }
+        products = (try? await environment.subscriptions.products()) ?? []
+    }
+
+    private func restore() async {
+        do {
+            try await environment.subscriptions.restore()
+            await environment.refreshEntitlement()
+            notice = environment.isPro
+                ? "Your Pro subscription is active."
+                : "No previous purchase found on this Apple ID."
+        } catch {
+            notice = "Couldn't reach the App Store. Try again in a moment."
         }
     }
 

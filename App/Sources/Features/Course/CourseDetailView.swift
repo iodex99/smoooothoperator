@@ -14,6 +14,7 @@ struct CourseDetailView: View {
     var preloaded: CourseDetailModel.Course? = nil
 
     @State private var model = CourseDetailModel()
+    @State private var showPaywall = false
 
     var body: some View {
         ScrollView {
@@ -75,20 +76,49 @@ struct CourseDetailView: View {
                         .soCard(padding: 14)
                     }
 
-                    NavigationLink {
-                        DriveView(
-                            polyline: course.polyline,
-                            gates: course.gates,
-                            benchmarkSeconds: course.benchmarkSeconds ?? 0,
-                            ghost: nil,
-                            courseId: courseId
-                        )
-                        .navigationBarBackButtonHidden()
-                    } label: {
-                        Text("START CHALLENGE")
+                    if environment.canStartRun {
+                        NavigationLink {
+                            DriveView(
+                                polyline: course.polyline,
+                                gates: course.gates,
+                                benchmarkSeconds: course.benchmarkSeconds ?? 0,
+                                ghost: nil,
+                                courseId: courseId
+                            )
+                            .navigationBarBackButtonHidden()
+                            .onAppear { environment.recordRunStarted() }
+                        } label: {
+                            Text("START CHALLENGE")
+                        }
+                        .buttonStyle(HeatButtonStyle())
+                        .padding(.top, 6)
+
+                        if let remaining = environment.runsRemainingToday {
+                            Text(remaining == 1
+                                ? "1 run left today on the free tier"
+                                : "\(remaining) runs left today on the free tier")
+                                .font(.caption)
+                                .foregroundStyle(SOTheme.textSecondary)
+                                .frame(maxWidth: .infinity)
+                        }
+                    } else {
+                        // The free limit is the one moment of genuine upgrade
+                        // intent in the product — meet it here, not buried in
+                        // a settings tab.
+                        VStack(spacing: 8) {
+                            Text("You've used today's free runs")
+                                .font(.system(.headline, design: .rounded).weight(.heavy))
+                                .foregroundStyle(.white)
+                            Text("Pro drives as many challenges as you like — today and every day.")
+                                .font(.caption)
+                                .foregroundStyle(SOTheme.textSecondary)
+                                .multilineTextAlignment(.center)
+                            Button("GO PRO") { showPaywall = true }
+                                .buttonStyle(HeatButtonStyle())
+                        }
+                        .soCard(padding: 18)
+                        .padding(.top, 6)
                     }
-                    .buttonStyle(HeatButtonStyle())
-                    .padding(.top, 6)
                 case .loading:
                     ProgressView()
                         .tint(SOTheme.heatStart)
@@ -124,6 +154,7 @@ struct CourseDetailView: View {
         .navigationTitle(model.course?.name ?? "")
         .navigationBarTitleDisplayMode(.inline)
         .task { await model.load(courseId: courseId, preloaded: preloaded, api: environment.api) }
+        .sheet(isPresented: $showPaywall) { PaywallView() }
     }
 }
 
