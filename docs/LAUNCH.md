@@ -71,7 +71,7 @@ does not exist there yet. All 19 migrations are still local-only.
 
    ```bash
    supabase functions deploy score-run today-challenge \
-       validate-course resolve-challenge appstore-notifications
+       validate-course resolve-challenge appstore-notifications delete-account
    ```
 
 7. **YOU — set the one secret that is not automatic:**

@@ -29,6 +29,35 @@ syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
 
+### 2026-08-14 — A systematic audit, along defined axes
+Run after "time and again you find something new — do it once for all". The
+difference from previous passes is method: fixed axes, each worked to
+exhaustion, rather than following whatever a grep turned up.
+
+- **Course creation was not properly tested.** Unit tests on the builder, a
+  geometry contract — and nothing exercising the actual endpoint, its Pro
+  gate or its insert. Four e2e cases now, in `make e2e-test`.
+- **The ghost port was cross-validated by nothing.** Golden vectors carry
+  scores, flags and verdicts, not ghosts — so `ghost.ts` had no coverage at
+  all on the competitive moat, and it changed three times in one day.
+  `sogen ghost-xval` now holds it to the Swift reference point for point,
+  inside `tools/xval.sh`.
+- **TRUNCATE was granted to every client role** by a Supabase platform
+  default, and TRUNCATE bypasses RLS entirely. Not reachable through
+  PostgREST; revoked anyway, with the default privileges changed so new
+  tables do not re-acquire it.
+- **"All its data have been deleted" was false.** The cascade cannot reach
+  the raw GPS blobs — storage tables refuse direct deletes — so they
+  survived the account. A `delete-account` edge function now clears them
+  first and fails closed.
+- **Four screens shared one dead end**: a signed-out state rendered as a
+  failure with a "Try again" button that could never work. Fixed once in
+  `CourseDetailView` last week and not generalised; now one `SignInPrompt`.
+- A quarantined run was silent; `pendingCount()` was dead and wrong.
+
+**317 Kit · 268 pgTAP · 102 Deno · 9 e2e · xval (now with ghosts) · parse ·
+a11y.**
+
 ### 2026-08-14 — Course creation, and the moat
 The catalog was a fixed asset: 397 curated courses and no way to add one.
 `validate-course` had existed and been tested since L8 with nothing able to
