@@ -29,6 +29,41 @@ syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
 
+### 2026-08-14 — Re-auditing the day's own fixes
+The recurring lesson here is that **fixes need their own adversarial pass**.
+Swept everything written this week; found nine defects, five of them in code
+written hours earlier.
+
+- **Crash recovery was dead code.** `InFlightRecorder.recover()` was never
+  called by anything. The recorder journalled every drive and orphaned the
+  file forever — the feature looked finished and did nothing.
+- **Journal writes were unordered.** A `Task` per sample meant thousands of
+  independent actor calls racing at 50 Hz, with no ordering guarantee. A
+  recovered file could hold a scrambled timeline.
+- **The journal was deleted before the run was queued**, reopening the exact
+  crash window it exists to close.
+- **Staging counted as traffic.** Stopped time was measured across the whole
+  recording, so 70 s waiting at the line — which calibration asks for —
+  flagged a flawless run as held up. Measured 59.9 s of "traffic" on a run
+  with none.
+- **Every user-created course scored ZERO pace, permanently.**
+  `validate-course` never set a benchmark, `paceScore` returns 0 without one,
+  and pace is 35% of the score. Custom courses are a paid feature. Fixed in
+  the database with a trigger + backfill + check constraint, so the invalid
+  state is now unrepresentable rather than merely fixed at one call site.
+- Recovered drives were scored against a hardcoded 300 s benchmark; the
+  Explore "New" filter reversed distance order and called the furthest
+  courses new; `abort()` orphaned the journal; and a signed-out driver
+  arriving from Explore or a shared link hit "Sign in to load this course"
+  rendered as an error with a Try again button that could never work.
+
+Also verified, and holding: RLS survives the new browse aggregates (a
+private course leaks through neither `courses_near`, `courses_in_region`
+nor `course_regions`), every `admin_*` function 401s to anon, and no
+trigger has regressed to the `current_user`-in-a-DEFINER bug.
+
+**303 Kit · 242 pgTAP · 76 Deno · xval · parse · a11y.**
+
 ### 2026-08-13 — The share card, and the reason nobody saw it
 The result screen showed the score one way and hid a completely different
 card behind a button. A driver who had never tapped it had no reason to
