@@ -15,6 +15,8 @@ struct ExploreView: View {
     @State private var filter: Filter = .nearby
     @State private var state: LoadState = .loading
     @State private var origin: CLLocationCoordinate2D?
+    @State private var showCreate = false
+    @State private var showPaywall = false
 
     /// No "New" filter. It existed and was a lie: it reversed the
     /// distance ordering, so it showed the FURTHEST courses and called them
@@ -77,6 +79,22 @@ struct ExploreView: View {
             }
             .background(SOTheme.ground)
             .navigationTitle("Explore")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        // Gated here for honesty and on the server for real:
+                        // validate-course re-checks entitlement on every call.
+                        if environment.isPro { showCreate = true } else { showPaywall = true }
+                    } label: {
+                        Label("Create a course", systemImage: "plus")
+                    }
+                    .accessibilityLabel("Create a course")
+                }
+            }
+            .sheet(isPresented: $showCreate, onDismiss: { Task { await load() } }) {
+                CreateCourseView()
+            }
+            .sheet(isPresented: $showPaywall) { PaywallView() }
             .refreshable { await load() }
             .task(id: filter) { await load() }
         }

@@ -48,6 +48,10 @@ struct PaywallView: View {
                     // pay for it. Gating a feature without naming it at the
                     // point of purchase is the wrong half of a paywall.
                     Benefit(
+                        icon: "point.topleft.down.curvedto.point.bottomright.up",
+                        text: "Make your own courses — drive a road once and it's on the map"
+                    )
+                    Benefit(
                         icon: "car.2",
                         text: "A garage — add every car you drive, and see which of them is fastest on a road"
                     )

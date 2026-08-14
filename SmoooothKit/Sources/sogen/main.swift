@@ -45,6 +45,16 @@ func writeJSON<Value: Encodable>(_ value: Value, to path: String, pretty: Bool) 
 let arguments = Array(CommandLine.arguments.dropFirst())
 
 switch arguments.first {
+case "course-proposal":
+    // Emits what the app would post to validate-course for a synthetic
+    // drive, so the TypeScript half can be tested against the Swift half's
+    // real output rather than a fixture that drifts.
+    print(CourseProposalDump.emit(
+        metres: Double(argumentValue("--metres", in: arguments) ?? "6000") ?? 6000,
+        curviness: Double(argumentValue("--curviness", in: arguments) ?? "0.04") ?? 0.04,
+        seed: UInt64(argumentValue("--seed", in: arguments) ?? "7") ?? 7
+    ))
+
 case "version", "--version":
     print("sogen \(KitInfo.version)")
 

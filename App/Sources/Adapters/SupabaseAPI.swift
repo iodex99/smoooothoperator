@@ -285,6 +285,40 @@ actor SupabaseAPI {
         )
     }
 
+    /// Publishes a course the driver just recorded.
+    ///
+    /// The app has already run the shared validator, but this is the door
+    /// that matters: `validate-course` re-checks every rule with the same
+    /// logic and inserts with the service role, because clients are
+    /// read-only on the catalog. Unvalidated geometry cannot get in.
+    func createCourse(
+        name: String,
+        visibility: String,
+        difficulty: Int,
+        polyline: [GeoCoordinate],
+        checkpoints: [Checkpoint]
+    ) async throws -> String {
+        // The endpoint returns `courseId`, not `id`. Decoding the wrong key
+        // would fail only against the real server, which is exactly the kind
+        // of mismatch a Linux gate cannot see.
+        struct Created: Decodable { var courseId: String }
+        let payload: [String: Any] = [
+            "name": name,
+            "visibility": visibility,
+            "difficulty": difficulty,
+            "polyline": polyline.map { [$0.latitude, $0.longitude] },
+            "checkpoints": checkpoints.map {
+                [Double($0.sequence), $0.center.latitude, $0.center.longitude, $0.radiusMeters]
+            },
+        ]
+        let data = try await send(
+            path: "functions/v1/validate-course",
+            method: "POST",
+            body: try JSONSerialization.data(withJSONObject: payload)
+        )
+        return try JSONDecoder().decode(Created.self, from: data).courseId
+    }
+
     /// Resolves a shared challenge code to the course it points at.
     ///
     /// Deliberately callable signed out — a shared link has to open for
