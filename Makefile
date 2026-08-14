@@ -27,7 +27,8 @@ edge-test:
 e2e-test:
 	cd supabase/functions && $(DENO) test --allow-read=../../fixtures,../../configs --allow-net \
 		tests/score_run_integration_test.ts \
-		tests/course_creation_integration_test.ts
+		tests/course_creation_integration_test.ts \
+		tests/delete_account_integration_test.ts
 
 ## Cross-validate Swift reference scorer against the TS port on all golden vectors.
 xval:

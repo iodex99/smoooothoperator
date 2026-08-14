@@ -285,6 +285,20 @@ actor SupabaseAPI {
         )
     }
 
+    /// Deletes the caller's account, their rows AND their raw telemetry.
+    ///
+    /// Goes through the edge function rather than `delete_my_account`
+    /// directly: the RPC cannot remove storage objects, so on its own it
+    /// leaves every GPS trace the person ever recorded in the bucket while
+    /// the app tells them their data is gone.
+    func deleteAccount() async throws {
+        _ = try await send(
+            path: "functions/v1/delete-account",
+            method: "POST",
+            body: Data("{}".utf8)
+        )
+    }
+
     /// Publishes a course the driver just recorded.
     ///
     /// The app has already run the shared validator, but this is the door

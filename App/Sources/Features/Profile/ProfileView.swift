@@ -288,7 +288,11 @@ struct ProfileView: View {
         deleting = true
         defer { deleting = false }
         do {
-            _ = try await api.rpc("delete_my_account", json: [:])
+            // The edge function, not the RPC directly: the RPC deletes rows
+            // and cannot reach the raw GPS traces in storage, so calling it
+            // alone would leave a person's whole location history behind
+            // while telling them it was gone.
+            _ = try await api.deleteAccount()
             // "All its data" has to include what is still on this phone —
             // queued runs and any journalled drive. Otherwise their GPS
             // traces outlive the account they belonged to.
