@@ -69,6 +69,16 @@ struct RunResultView: View {
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                 }
+                if heavilyInterrupted {
+                    Label(
+                        "You spent a lot of this run stopped. That's traffic, not driving — so the time isn't comparable and the run isn't ranked.",
+                        systemImage: "car.side.lock"
+                    )
+                    .font(.footnote)
+                    .foregroundStyle(SOTheme.caution)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                }
                 if let uploadError {
                     // Spec §78: stored locally, never lost.
                     Label(uploadError, systemImage: "externaldrive.badge.checkmark")
@@ -156,10 +166,18 @@ struct RunResultView: View {
         outcome.integrityFlags.contains(IntegrityFlag.flyingStart.rawValue)
     }
 
+    /// Traffic. Not the driver's fault and never phrased as though it were.
+    private var heavilyInterrupted: Bool {
+        outcome.integrityFlags.contains(IntegrityFlag.heavilyInterrupted.rawValue)
+    }
+
     private var verdictTitle: String {
         switch outcome.provisionalVerdict {
         case .verified: "RUN COMPLETE"
-        case .questionable: flyingStart ? "FLYING START — NOT RANKED" : "RUN COMPLETE — NOT RANKED"
+        case .questionable:
+            if flyingStart { "FLYING START — NOT RANKED" }
+            else if heavilyInterrupted { "HELD UP IN TRAFFIC — NOT RANKED" }
+            else { "RUN COMPLETE — NOT RANKED" }
         case .invalid: outcome.deviationDetected
             ? "LEFT THE COURSE — NOT RANKED"
             : "RUN NOT ELIGIBLE"

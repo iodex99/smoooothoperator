@@ -17,6 +17,19 @@ public struct IntegrityConfig: Codable, Sendable, Equatable {
     ///
     /// 8 m/s ≈ 29 km/h: a slow roll-up, achievable where stopping is not.
     public var maxStartEntrySpeedMps: Double
+
+    /// Below this the car is treated as stopped, m/s. Not zero: a stationary
+    /// car still reports drift.
+    public var stoppedSpeedMps: Double
+    /// A run may be interrupted for this fraction of its duration before its
+    /// pace stops being comparable.
+    public var maxStoppedFraction: Double
+    /// …but never flag less than this many seconds of stopping. One junction
+    /// on a short course can exceed the fraction while being completely
+    /// normal driving, and an accusation-shaped label for a single red light
+    /// would train drivers to run them.
+    public var minStoppedSecondsToFlag: Double
+
     public var maxPlausibleSpeedMps: Double
     /// Consecutive fix pairs whose *implied* speed must exceed the limit
     /// before it counts as cheating — isolated impossible pairs are honest
@@ -58,6 +71,9 @@ public struct IntegrityConfig: Codable, Sendable, Equatable {
 
     public init(
         maxStartEntrySpeedMps: Double = 8,
+        stoppedSpeedMps: Double = 0.5,
+        maxStoppedFraction: Double = 0.25,
+        minStoppedSecondsToFlag: Double = 20,
         maxPlausibleSpeedMps: Double,
         minImpossibleSpeedPairs: Int,
         maxPlausibleAccelMps2: Double,
@@ -75,6 +91,9 @@ public struct IntegrityConfig: Codable, Sendable, Equatable {
         minLocationConfidence: Int
     ) {
         self.maxStartEntrySpeedMps = maxStartEntrySpeedMps
+        self.stoppedSpeedMps = stoppedSpeedMps
+        self.maxStoppedFraction = maxStoppedFraction
+        self.minStoppedSecondsToFlag = minStoppedSecondsToFlag
         self.maxPlausibleSpeedMps = maxPlausibleSpeedMps
         self.minImpossibleSpeedPairs = minImpossibleSpeedPairs
         self.maxPlausibleAccelMps2 = maxPlausibleAccelMps2
@@ -188,6 +207,7 @@ public struct RunIntegrityEngine: Sendable {
         var findings: [IntegrityFinding] = []
 
         findings += startLineFindings(entrySpeedMps: startEntrySpeedMps)
+        findings += interruptionFindings(trajectory: trajectory)
 
         findings += timestampFindings(rawGPS: rawGPS)
         findings += impossiblePhysicsFindings(rawGPS: rawGPS)
@@ -317,6 +337,49 @@ public struct RunIntegrityEngine: Sendable {
     /// the start gate, so entry speed is worth free seconds no skill can
     /// recover. This does not accuse anyone: the run is scored and shown,
     /// it simply cannot rank beside runs that launched from the line.
+    /// How long the car spent stopped, in seconds.
+    ///
+    /// Deliberately part of the determinism contract rather than a UI
+    /// convenience: it decides a verdict, so both implementations must agree
+    /// on it exactly. Gaps are not counted — a lost signal is not a red
+    /// light, and `suspiciousGap` already judges those.
+    public static func stoppedSeconds(
+        trajectory: ProcessedTrajectory,
+        stoppedSpeedMps: Double,
+        maxGapSeconds: Double = 3
+    ) -> Double {
+        var total = 0.0
+        for (a, b) in zip(trajectory.points, trajectory.points.dropFirst()) {
+            let dt = b.timestamp - a.timestamp
+            guard dt > 0, dt <= maxGapSeconds else { continue }
+            // Both ends slow: a car braking to a stop is not yet stopped.
+            if a.speedMps < stoppedSpeedMps && b.speedMps < stoppedSpeedMps {
+                total += dt
+            }
+        }
+        return total
+    }
+
+    private func interruptionFindings(trajectory: ProcessedTrajectory) -> [IntegrityFinding] {
+        let duration = trajectory.duration
+        guard duration > 0 else { return [] }
+        let stopped = Self.stoppedSeconds(
+            trajectory: trajectory,
+            stoppedSpeedMps: config.stoppedSpeedMps
+        )
+        guard stopped >= config.minStoppedSecondsToFlag else { return [] }
+        let fraction = stopped / duration
+        guard fraction > config.maxStoppedFraction else { return [] }
+        return [IntegrityFinding(
+            flag: .heavilyInterrupted,
+            severity: .warning,
+            detail: String(
+                format: "stopped for %.0f s of %.0f s (%.0f%% of the run)",
+                stopped, duration, fraction * 100
+            )
+        )]
+    }
+
     private func startLineFindings(entrySpeedMps: Double?) -> [IntegrityFinding] {
         guard let entrySpeedMps, entrySpeedMps.isFinite else { return [] }
         guard entrySpeedMps > config.maxStartEntrySpeedMps else { return [] }

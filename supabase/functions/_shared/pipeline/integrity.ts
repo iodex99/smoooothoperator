@@ -11,6 +11,7 @@ import {
   type IntegrityFlag,
   type ProcessedTrajectory,
   type RunVerificationStatus,
+  trajectoryDuration,
 } from "./types.ts";
 
 /** Inclusive band, mirroring Swift `ClosedRange<Double>`. */
@@ -41,6 +42,14 @@ export interface IntegrityConfig {
   maxRejectedFraction: number;
   minLocationConfidence: number;
   maxStartEntrySpeedMps: number;
+  /** Below this the car is treated as stopped, m/s. */
+  stoppedSpeedMps: number;
+  /** Fraction of the run that may be spent stopped before pace stops being
+   * comparable. */
+  maxStoppedFraction: number;
+  /** …but never flag less than this many seconds. One junction on a short
+   * course can exceed the fraction while being completely normal driving. */
+  minStoppedSecondsToFlag: number;
 }
 
 /** Mirrors Swift `IntegrityConfig.default`. */
@@ -63,6 +72,9 @@ export const DEFAULT_INTEGRITY_CONFIG: IntegrityConfig = {
   /** Mirrors IntegrityConfig.maxStartEntrySpeedMps in the Swift reference —
    * these two numbers must never diverge (ADR-0002). */
   maxStartEntrySpeedMps: 8,
+  stoppedSpeedMps: 0.5,
+  maxStoppedFraction: 0.25,
+  minStoppedSecondsToFlag: 20,
 };
 
 export type IntegritySeverity = "warning" | "critical";
@@ -106,6 +118,55 @@ function startLineFindings(
   }];
 }
 
+/** How long the car spent stopped, in seconds. Mirrors Swift
+ * `RunIntegrityEngine.stoppedSeconds`.
+ *
+ * Part of the determinism contract rather than a UI convenience: it decides
+ * a verdict, so both implementations must agree exactly. Gaps are not
+ * counted — a lost signal is not a red light, and `suspiciousGap` already
+ * judges those. */
+export function stoppedSeconds(
+  trajectory: ProcessedTrajectory,
+  stoppedSpeedMps: number,
+  maxGapSeconds = 3,
+): number {
+  let total = 0;
+  for (let i = 0; i + 1 < trajectory.points.length; i++) {
+    const a = trajectory.points[i];
+    const b = trajectory.points[i + 1];
+    const dt = b.timestamp - a.timestamp;
+    if (!(dt > 0) || dt > maxGapSeconds) continue;
+    // Both ends slow: a car braking to a stop is not yet stopped.
+    if (a.speedMps < stoppedSpeedMps && b.speedMps < stoppedSpeedMps) {
+      total += dt;
+    }
+  }
+  return total;
+}
+
+/** Traffic and stopped time — the mirror of
+ * RunIntegrityEngine.interruptionFindings. Pace is 35% of the score, so a
+ * driver who caught three red lights is not comparable to one who caught
+ * none. A warning, never critical: this is not cheating and is not treated
+ * as such. */
+function interruptionFindings(
+  trajectory: ProcessedTrajectory,
+  config: IntegrityConfig,
+): IntegrityFinding[] {
+  const duration = trajectoryDuration(trajectory);
+  if (!(duration > 0)) return [];
+  const stopped = stoppedSeconds(trajectory, config.stoppedSpeedMps);
+  if (stopped < config.minStoppedSecondsToFlag) return [];
+  const fraction = stopped / duration;
+  if (!(fraction > config.maxStoppedFraction)) return [];
+  return [{
+    flag: "heavilyInterrupted",
+    severity: "warning",
+    detail: `stopped for ${stopped.toFixed(0)} s of ${duration.toFixed(0)} s ` +
+      `(${(fraction * 100).toFixed(0)}% of the run)`,
+  }];
+}
+
 /** Evaluates a completed run for cheating and data-quality problems. */
 export function evaluateRunIntegrity(
   rawGPS: readonly GPSSample[],
@@ -120,6 +181,7 @@ export function evaluateRunIntegrity(
   let findings: IntegrityFinding[] = [];
 
   findings = findings.concat(startLineFindings(startEntrySpeedMps, config));
+  findings = findings.concat(interruptionFindings(trajectory, config));
   findings = findings.concat(timestampFindings(rawGPS));
   findings = findings.concat(impossiblePhysicsFindings(rawGPS, config));
   findings = findings.concat(speedRatioFindings(rawGPS, config));

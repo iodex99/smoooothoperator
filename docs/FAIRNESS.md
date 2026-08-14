@@ -50,26 +50,35 @@ which would otherwise make "which gate did I just cross" ambiguous.
 
 ## Identified, NOT yet handled — ranked by how much unfairness they cause
 
-### A. Traffic, and stopping mid-run — **the biggest one**
-A driver who catches three red lights is compared against a driver who
-caught none, on a pace score, as though they drove the same road. On urban
-courses this dwarfs every other effect in this document.
+> The two biggest entries here — traffic and the ghost clock — were both
+> closed on 2026-08-14 and are kept below with what the fix was.
 
-Nothing currently measures stopped time. The honest options, in order of
-preference:
+### 4. Traffic, and stopping mid-run — **fixed 2026-08-14**
+This was the largest gap in the document: a driver who caught three red
+lights was scored against one who caught none, on a score that is 35% pace.
 
-1. **Measure and report it** — record `stoppedSeconds` on the run and show
-   it. Cheap, honest, immediately useful, and a prerequisite for anything
-   else.
-2. **Flag heavily-interrupted runs** as not-ranked, the same way a flying
-   start is flagged. Needs a threshold that does not punish a single
-   junction.
-3. **Excluding stopped time from the clock** is tempting and probably wrong:
-   it rewards stopping (a driver could stop to reset a bad segment) and it
-   stops measuring the thing the score claims to measure.
+**Now:** stopped time is measured (`RunIntegrityEngine.stoppedSeconds`) and
+a run stopped for more than **25% of its duration** is flagged
+`heavilyInterrupted` at *warning* severity — kept, scored, shown, ranked
+nowhere. The result screen says so in the driver's own terms: *"That's
+traffic, not driving."*
 
-This should be done the same way the flying start was: both implementations,
-one commit, goldens re-proved.
+Three deliberate choices:
+
+- **An absolute floor of 20 s** sits under the fraction. On a short course a
+  single red light can exceed 25% while being completely ordinary driving,
+  and an accusation-shaped label for one junction would teach drivers to run
+  them. That is the opposite of what this app is for.
+- **Gaps are not stops.** A lost signal in a tunnel has no speed either, but
+  it is `suspiciousGap`'s business, not this rule's.
+- **Stopped time is NOT excluded from the clock.** That was the tempting
+  option and it is the wrong one: it would reward stopping — a driver could
+  pause to reset a bad segment — and it would stop measuring the thing the
+  score claims to measure.
+
+Implemented in the Swift reference and the TypeScript port in one commit
+with byte-identical evidence strings, because golden vectors compare
+integrity findings. 16 tests, 8 per side.
 
 ### B. ~~The ghost clock defect~~ — **fixed 2026-08-14**
 Racing your own identical run used to show you **~2.6 s ahead of yourself**

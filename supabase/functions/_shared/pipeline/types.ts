@@ -153,7 +153,8 @@ export type IntegrityFlag =
   | "sensorMismatch"
   | "suspiciousGap"
   | "deviceIntegrity"
-  | "flyingStart";
+  | "flyingStart"
+  | "heavilyInterrupted";
 
 /** Verification outcome of a run. Raw values persisted — never change. */
 export type RunVerificationStatus = "verified" | "questionable" | "invalid";
