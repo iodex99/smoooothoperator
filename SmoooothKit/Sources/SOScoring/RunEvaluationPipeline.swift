@@ -54,6 +54,19 @@ public enum RunEvaluationPipeline {
         }
         tracker.ingest(trajectory)
 
+        // Speed as the driver crossed the START gate — the fairness signal
+        // for pace. Taken from the processed trajectory point nearest the
+        // gate-0 hit, so it is the same number the server recomputes.
+        let startEntrySpeed: Double? = tracker.checkpointHits
+            .first(where: { $0.sequence == 0 })
+            .flatMap { hit in
+                trajectory.points
+                    .min(by: {
+                        abs($0.timestamp - hit.timestamp) < abs($1.timestamp - hit.timestamp)
+                    })?
+                    .speedMps
+            }
+
         let integrity = RunIntegrityEngine().evaluate(
             rawGPS: gps,
             rawIMU: imu,
@@ -63,7 +76,8 @@ public enum RunEvaluationPipeline {
                 expectedGates: gates.count,
                 gatesHit: tracker.checkpointHits.count,
                 deviationDetected: tracker.deviationDetected
-            )
+            ),
+            startEntrySpeedMps: startEntrySpeed
         )
 
         let score = ScoringEngine(config: scoringConfig).score(

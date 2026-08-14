@@ -40,6 +40,7 @@ export interface IntegrityConfig {
   suspiciousGapSeconds: number;
   maxRejectedFraction: number;
   minLocationConfidence: number;
+  maxStartEntrySpeedMps: number;
 }
 
 /** Mirrors Swift `IntegrityConfig.default`. */
@@ -59,6 +60,9 @@ export const DEFAULT_INTEGRITY_CONFIG: IntegrityConfig = {
   suspiciousGapSeconds: 4,
   maxRejectedFraction: 0.01,
   minLocationConfidence: 50,
+  /** Mirrors IntegrityConfig.maxStartEntrySpeedMps in the Swift reference —
+   * these two numbers must never diverge (ADR-0002). */
+  maxStartEntrySpeedMps: 8,
 };
 
 export type IntegritySeverity = "warning" | "critical";
@@ -84,6 +88,24 @@ export interface IntegrityReport {
   verdict: RunVerificationStatus;
 }
 
+/** Start-line fairness — the mirror of RunIntegrityEngine.startLineFindings.
+ * Pace is measured from the start gate, so entry speed is free seconds no
+ * skill can recover. A warning, never critical: the run is scored and shown,
+ * it just cannot rank beside runs that launched from the line. */
+function startLineFindings(
+  entrySpeedMps: number | null,
+  config: IntegrityConfig,
+): IntegrityFinding[] {
+  if (entrySpeedMps === null || !Number.isFinite(entrySpeedMps)) return [];
+  if (entrySpeedMps <= config.maxStartEntrySpeedMps) return [];
+  return [{
+    flag: "flyingStart",
+    severity: "warning",
+    detail: `crossed the start line at ${entrySpeedMps.toFixed(1)} m/s ` +
+      `(limit ${config.maxStartEntrySpeedMps.toFixed(1)})`,
+  }];
+}
+
 /** Evaluates a completed run for cheating and data-quality problems. */
 export function evaluateRunIntegrity(
   rawGPS: readonly GPSSample[],
@@ -92,9 +114,12 @@ export function evaluateRunIntegrity(
   locationConfidence: number | null,
   routeAdherence: RouteAdherence | null,
   config: IntegrityConfig = DEFAULT_INTEGRITY_CONFIG,
+  /** Speed as the driver crossed the START gate, m/s; null when unknown. */
+  startEntrySpeedMps: number | null = null,
 ): IntegrityReport {
   let findings: IntegrityFinding[] = [];
 
+  findings = findings.concat(startLineFindings(startEntrySpeedMps, config));
   findings = findings.concat(timestampFindings(rawGPS));
   findings = findings.concat(impossiblePhysicsFindings(rawGPS, config));
   findings = findings.concat(speedRatioFindings(rawGPS, config));

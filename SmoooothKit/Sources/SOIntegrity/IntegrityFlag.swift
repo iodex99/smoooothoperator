@@ -12,4 +12,8 @@ public enum IntegrityFlag: String, Codable, Sendable, CaseIterable {
     case sensorMismatch
     case suspiciousGap
     case deviceIntegrity
+    /// Crossed the start line already at speed. Not cheating — but a
+    /// flying start is free pace, so the run cannot be ranked against
+    /// drivers who launched from the line.
+    case flyingStart
 }

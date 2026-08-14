@@ -9,6 +9,14 @@ import SOTelemetry
 /// equivalent by the cheat-profile golden vectors.
 public struct IntegrityConfig: Codable, Sendable, Equatable {
     /// Ground speed above this is cheat-grade impossible, m/s (~200 mph).
+    /// Speed permitted when crossing the START gate, m/s. Pace is the
+    /// largest slice of the score, so a driver who arrives at the line at
+    /// 100 km/h banks an advantage no amount of skill can answer. Runs above
+    /// this are kept and scored but never ranked (a warning, not an
+    /// accusation — most flying starts are honest mistakes).
+    ///
+    /// 8 m/s ≈ 29 km/h: a slow roll-up, achievable where stopping is not.
+    public var maxStartEntrySpeedMps: Double
     public var maxPlausibleSpeedMps: Double
     /// Consecutive fix pairs whose *implied* speed must exceed the limit
     /// before it counts as cheating — isolated impossible pairs are honest
@@ -49,6 +57,7 @@ public struct IntegrityConfig: Codable, Sendable, Equatable {
     public var minLocationConfidence: Int
 
     public init(
+        maxStartEntrySpeedMps: Double = 8,
         maxPlausibleSpeedMps: Double,
         minImpossibleSpeedPairs: Int,
         maxPlausibleAccelMps2: Double,
@@ -65,6 +74,7 @@ public struct IntegrityConfig: Codable, Sendable, Equatable {
         maxRejectedFraction: Double,
         minLocationConfidence: Int
     ) {
+        self.maxStartEntrySpeedMps = maxStartEntrySpeedMps
         self.maxPlausibleSpeedMps = maxPlausibleSpeedMps
         self.minImpossibleSpeedPairs = minImpossibleSpeedPairs
         self.maxPlausibleAccelMps2 = maxPlausibleAccelMps2
@@ -83,6 +93,7 @@ public struct IntegrityConfig: Codable, Sendable, Equatable {
     }
 
     public static let `default` = IntegrityConfig(
+        maxStartEntrySpeedMps: 8,
         maxPlausibleSpeedMps: 90,
         minImpossibleSpeedPairs: 3,
         maxPlausibleAccelMps2: 12,
@@ -168,9 +179,15 @@ public struct RunIntegrityEngine: Sendable {
         rawIMU: [IMUSample],
         trajectory: ProcessedTrajectory,
         locationConfidence: Int?,
-        routeAdherence: RouteAdherence?
+        routeAdherence: RouteAdherence?,
+        /// Speed as the driver crossed the START gate, m/s. nil when the
+        /// crossing is unknown (no gate hit), which is not a finding —
+        /// a run that never started is caught elsewhere.
+        startEntrySpeedMps: Double? = nil
     ) -> IntegrityReport {
         var findings: [IntegrityFinding] = []
+
+        findings += startLineFindings(entrySpeedMps: startEntrySpeedMps)
 
         findings += timestampFindings(rawGPS: rawGPS)
         findings += impossiblePhysicsFindings(rawGPS: rawGPS)
@@ -293,6 +310,23 @@ public struct RunIntegrityEngine: Sendable {
             flag: .timestampAnomaly,
             severity: .critical,
             detail: "median implied/reported speed ratio \(String(format: "%.2f", median)) outside \(config.speedRatioBand)"
+        )]
+    }
+
+    /// Start-line fairness. Pace is 35% of the score and is measured from
+    /// the start gate, so entry speed is worth free seconds no skill can
+    /// recover. This does not accuse anyone: the run is scored and shown,
+    /// it simply cannot rank beside runs that launched from the line.
+    private func startLineFindings(entrySpeedMps: Double?) -> [IntegrityFinding] {
+        guard let entrySpeedMps, entrySpeedMps.isFinite else { return [] }
+        guard entrySpeedMps > config.maxStartEntrySpeedMps else { return [] }
+        return [IntegrityFinding(
+            flag: .flyingStart,
+            severity: .warning,
+            detail: String(
+                format: "crossed the start line at %.1f m/s (limit %.1f)",
+                entrySpeedMps, config.maxStartEntrySpeedMps
+            )
         )]
     }
 

@@ -78,6 +78,23 @@ export function evaluate(input: PipelineInput): PipelineOutcome | null {
   if (tracker === null) return null;
   tracker.ingestTrajectory(trajectory);
 
+  // Speed at the START gate — mirrors RunEvaluationPipeline: the processed
+  // trajectory point nearest the gate-0 hit.
+  const startHit = tracker.checkpointHits.find((h) => h.sequence === 0) ?? null;
+  let startEntrySpeedMps: number | null = null;
+  if (startHit !== null && trajectory.points.length > 0) {
+    let nearest = trajectory.points[0];
+    for (const point of trajectory.points) {
+      if (
+        Math.abs(point.timestamp - startHit.timestamp) <
+          Math.abs(nearest.timestamp - startHit.timestamp)
+      ) {
+        nearest = point;
+      }
+    }
+    startEntrySpeedMps = nearest.speedMps;
+  }
+
   const integrity = evaluateRunIntegrity(
     gps,
     imu,
@@ -88,6 +105,8 @@ export function evaluate(input: PipelineInput): PipelineOutcome | null {
       gatesHit: tracker.checkpointHits.length,
       deviationDetected: tracker.deviationDetected,
     },
+    undefined,
+    startEntrySpeedMps,
   );
 
   const score = scoreRun(

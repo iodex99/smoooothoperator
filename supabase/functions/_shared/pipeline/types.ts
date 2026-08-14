@@ -152,7 +152,8 @@ export type IntegrityFlag =
   | "gpsJump"
   | "sensorMismatch"
   | "suspiciousGap"
-  | "deviceIntegrity";
+  | "deviceIntegrity"
+  | "flyingStart";
 
 /** Verification outcome of a run. Raw values persisted — never change. */
 export type RunVerificationStatus = "verified" | "questionable" | "invalid";
