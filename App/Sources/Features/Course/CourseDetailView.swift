@@ -8,6 +8,7 @@ import SwiftUI
 /// benchmark, START. The map is view-only — course geometry is cached,
 /// no per-open routing calls (spec §90).
 struct CourseDetailView: View {
+    @State private var showSignIn = false
     @Environment(AppEnvironment.self) private var environment
     let courseId: String
     /// Server-fetched course handed over by the caller (Today's Challenge
@@ -140,6 +141,30 @@ struct CourseDetailView: View {
                     ProgressView()
                         .tint(SOTheme.heatStart)
                         .frame(maxWidth: .infinity, minHeight: 300)
+                case .needsSignIn:
+                    VStack(spacing: 16) {
+                        ZStack {
+                            GlowRing(progress: 1, lineWidth: 5)
+                                .frame(width: 78, height: 78)
+                            Image(systemName: "flag.checkered")
+                                .font(.title2)
+                                .foregroundStyle(SOTheme.heat)
+                        }
+                        Text("Sign in to open this course")
+                            .font(.system(.title3, design: .rounded).weight(.heavy))
+                            .foregroundStyle(.white)
+                            .multilineTextAlignment(.center)
+                        Text("Courses, ghosts and leaderboards need an account. It takes one tap.")
+                            .font(.subheadline)
+                            .foregroundStyle(SOTheme.textSecondary)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Button("Sign in") { showSignIn = true }
+                            .buttonStyle(HeatButtonStyle())
+                    }
+                    .padding(.horizontal, 24)
+                    .frame(maxWidth: .infinity, minHeight: 320)
+
                 case .failed(let message):
                     VStack(spacing: 14) {
                         Image(systemName: "exclamationmark.triangle")
@@ -175,6 +200,18 @@ struct CourseDetailView: View {
             await model.loadRival(courseId: courseId, api: environment.api)
         }
         .sheet(isPresented: $showPaywall) { PaywallView() }
+        .sheet(isPresented: $showSignIn, onDismiss: {
+            // Signing in is what was missing — retry immediately rather than
+            // leaving the driver on the prompt they just satisfied.
+            Task {
+                model.state = .loading
+                await model.load(
+                    courseId: courseId, preloaded: preloaded, api: environment.api
+                )
+            }
+        }) {
+            SignInView()
+        }
     }
 }
 
@@ -249,6 +286,13 @@ final class CourseDetailModel {
         case loading
         case ready(Course)
         case failed(String)
+        /// Not an error. Course geometry is authenticated-only by design, so
+        /// a signed-out driver who arrives here — from Explore, which lists
+        /// courses to anyone, or from a shared challenge link, whose whole
+        /// point is to open for someone who has not installed the app — needs
+        /// a way forward, not a dead end reading "Sign in to load this
+        /// course."
+        case needsSignIn
     }
 
     var state: State = .loading
@@ -291,7 +335,7 @@ final class CourseDetailModel {
         #endif
         guard let api, await api.userId != nil else {
             // Never spin forever: say what is wrong and offer a way out.
-            state = .failed("Sign in to load this course.")
+            state = .needsSignIn
             return
         }
         do {
