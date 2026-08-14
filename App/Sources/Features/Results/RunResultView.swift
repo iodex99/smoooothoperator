@@ -295,6 +295,14 @@ struct RunShareCard: View {
     /// composition at different scales, never two different layouts.
     static let size = CGSize(width: 420, height: 560)
 
+    // NOTE ON DYNAMIC TYPE: every font in this card is a fixed point size,
+    // and that is deliberate. The card is rendered to a PNG at a fixed
+    // 420x560 and posted to other people; if it scaled with the *sender's*
+    // text-size setting the exported image would differ per device and the
+    // layout would break at the extremes. The card is an image, not a
+    // screen. Accessibility is served instead by the surrounding result
+    // screen, which does scale, and by the accessibility label below.
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             SOTheme.ground
@@ -408,6 +416,25 @@ struct RunShareCard: View {
             .padding(26)
         }
         .frame(width: Self.size.width, height: Self.size.height)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(spokenSummary)
+    }
+
+    /// What the card says, as a sentence. Read out, fifteen separate
+    /// fragments ("8", "847", "SMOOOOTH SCORE", "3:15"…) are noise.
+    private var spokenSummary: String {
+        let verdictWord = switch verdict {
+        case .verified: "Verified"
+        case .questionable: "Not ranked"
+        case .invalid: "Not eligible"
+        }
+        var parts = ["\(verdictWord). Score \(score) on \(courseName), \(durationText)"]
+        if let rankText { parts.append(rankText) }
+        parts.append(
+            "Pace \(breakdown.paceBps / 100), smoothness \(breakdown.smoothnessBps / 100), "
+            + "control \(breakdown.controlBps / 100), legal \(breakdown.complianceBps / 100)"
+        )
+        return parts.joined(separator: ". ")
     }
 
     /// Honest either way. A card that simply omitted the badge on an

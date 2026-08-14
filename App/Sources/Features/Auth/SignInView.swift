@@ -35,14 +35,14 @@ struct SignInView: View {
                     GlowRing(progress: 1, lineWidth: 5)
                         .frame(width: 84, height: 84)
                     Image(systemName: "person.badge.shield.checkmark")
-                        .font(.system(size: 30))
+                        .font(.system(.title))
                         .foregroundStyle(SOTheme.heat)
                 }
                 .accessibilityHidden(true)
 
                 VStack(spacing: 6) {
                     Text("Make it count")
-                        .font(.system(size: 32, weight: .black, design: .rounded))
+                        .font(.system(.title, design: .rounded).weight(.black))
                         .foregroundStyle(.white)
                     Text("An account is what turns a drive into a ranked, verified run.")
                         .font(.subheadline)
@@ -108,7 +108,7 @@ struct SignInView: View {
                     }
                     .font(.footnote.weight(.semibold))
                     .tint(SOTheme.textSecondary)
-                    .padding(.vertical, 8)
+                    .frame(minHeight: 44)   // tap target, not decoration
 
                     Text("We store the id your provider gives us and the runs you record. Nothing else — no password, no contacts.")
                         .font(.caption2)

@@ -121,6 +121,14 @@ select ok(
 -- ── money is never invented ───────────────────────────────────────────────
 
 set local role postgres;
+
+-- MRR is a GLOBAL sum by definition, so this assertion cannot be scoped to
+-- the fixture the way the others are — and the end-to-end suite leaves real
+-- subscription rows behind in this database. Clear the table inside the
+-- transaction so the arithmetic is about exactly the two rows below; the
+-- rollback puts everything back.
+delete from public.subscriptions;
+
 update public.product_prices set price_minor = 999 where product_id = 'smooooth.pro.monthly';
 insert into public.subscriptions (
     user_id, product_id, original_transaction_id, latest_transaction_id,

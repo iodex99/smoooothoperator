@@ -112,7 +112,7 @@ struct TodaysChallengeCard: View {
                 }
 
                 Text(challenge.name)
-                    .font(.system(size: 27, weight: .black, design: .rounded))
+                    .font(.system(.title, design: .rounded).weight(.black))
                     .foregroundStyle(.white)
 
                 HStack(spacing: 8) {
@@ -213,7 +213,7 @@ struct ChallengeEmptyCard: View {
                 GlowRing(progress: 1, lineWidth: 5)
                     .frame(width: 74, height: 74)
                 Image(systemName: "flag.checkered")
-                    .font(.system(size: 26))
+                    .font(.system(.title))
                     .foregroundStyle(SOTheme.heat)
             }
             Text("TODAY'S CHALLENGE")

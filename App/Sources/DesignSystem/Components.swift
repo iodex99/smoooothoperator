@@ -105,8 +105,11 @@ struct SelectableChip: View {
             Text(label)
                 .font(.system(.subheadline, design: .rounded).weight(.bold))
                 .foregroundStyle(selected ? .black : SOTheme.textSecondary)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 9)
+                .padding(.horizontal, 18)
+                // 44pt. Every filter chip in Explore and Leaderboards is one
+                // of these, and they were ~35pt — small enough to miss, and
+                // there are four of them side by side.
+                .frame(minHeight: 44)
                 .background {
                     if selected {
                         Capsule().fill(SOTheme.heat)

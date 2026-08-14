@@ -403,6 +403,7 @@ struct ActiveDriveOverlay: View {
                             .monospacedDigit()
                             .foregroundStyle(.white)
                             .shadow(color: .black.opacity(0.8), radius: 6)
+                            .accessibilityLabel("Elapsed \(Int(elapsed)) seconds")
                     }
                 }
                 HeatBar(progress: progress)
@@ -431,16 +432,31 @@ struct ActiveDriveOverlay: View {
                         .monospacedDigit()
                         .foregroundStyle(gap <= 0 ? SOTheme.verified : SOTheme.caution)
                         .shadow(color: .black.opacity(0.8), radius: 8)
+                        // "+2.3s" means nothing read aloud. Colour alone
+                        // carries ahead/behind on screen, which is also the
+                        // one thing a colourblind driver cannot see.
+                        .accessibilityLabel(
+                            gap <= 0
+                                ? "\(abs(gap), specifier: "%.1f") seconds ahead of the ghost"
+                                : "\(gap, specifier: "%.1f") seconds behind the ghost"
+                        )
                 }
                 Button(action: onEnd) {
                     Label("End run", systemImage: "xmark")
                         .font(.footnote.weight(.bold))
                         .foregroundStyle(SOTheme.textSecondary)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 9)
+                        .padding(.horizontal, 20)
+                        // 44pt minimum. This control is pressed in a car,
+                        // sometimes by someone who has just decided to stop
+                        // driving — it was 34pt, and a missed tap here is a
+                        // driver looking at their phone for longer.
+                        .frame(minHeight: 44)
                         .background(SOTheme.ground.opacity(0.85), in: Capsule())
                         .overlay(Capsule().strokeBorder(SOTheme.hairline, lineWidth: 1))
+                        .contentShape(Capsule())
                 }
+                .accessibilityLabel("End run")
+                .accessibilityHint("Stops the run. Ended runs are never submitted.")
             }
             .padding(.bottom, 26)
             .frame(maxWidth: .infinity)

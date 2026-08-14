@@ -38,6 +38,7 @@ regen-goldens:
 ## Parse-check the iOS layer on Linux (no type resolution — see docs/TESTING.md).
 syntax-check:
 	tools/ios-syntax-check.sh
+	tools/a11y-check.sh
 
 ## Enforce Kit purity: no Apple-only framework imports in SmoooothKit.
 lint:

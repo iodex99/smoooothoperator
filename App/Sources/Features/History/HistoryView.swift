@@ -53,7 +53,7 @@ struct HistoryView: View {
                             GlowRing(progress: 1, lineWidth: 5)
                                 .frame(width: 88, height: 88)
                             Image(systemName: "flag.checkered")
-                                .font(.system(size: 30))
+                                .font(.system(.title))
                                 .foregroundStyle(SOTheme.heat)
                         }
                         .accessibilityHidden(true)
@@ -144,7 +144,7 @@ struct HistoryRow: View {
                     .foregroundStyle(.white)
                 if run.isProvisional {
                     Text("PROVISIONAL")
-                        .font(.system(size: 9, weight: .bold))
+                        .font(.system(.caption2).weight(.bold))
                         .tracking(0.8)
                         .foregroundStyle(SOTheme.textSecondary)
                 }

@@ -190,7 +190,7 @@ private struct ScorePage: View {
         VStack(spacing: 26) {
             Spacer()
             Text("One score.\nFour disciplines.")
-                .font(.system(size: 30, weight: .black, design: .rounded))
+                .font(.system(.title, design: .rounded).weight(.black))
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
             VStack(spacing: 16) {
@@ -252,7 +252,7 @@ private struct SafetyPage: View {
                 GlowRing(progress: 1, lineWidth: 5)
                     .frame(width: 84, height: 84)
                 Image(systemName: "shield.fill")
-                    .font(.system(size: 32))
+                    .font(.system(.title))
                     .foregroundStyle(SOTheme.heat)
             }
             VStack(spacing: 4) {
@@ -300,12 +300,12 @@ private struct LocationPage: View {
                 GlowRing(progress: 1, lineWidth: 5)
                     .frame(width: 84, height: 84)
                 Image(systemName: granted ? "location.fill" : "location")
-                    .font(.system(size: 30))
+                    .font(.system(.title))
                     .foregroundStyle(granted ? AnyShapeStyle(SOTheme.verified) : AnyShapeStyle(SOTheme.heat))
             }
             VStack(spacing: 6) {
                 Text(granted ? "You're set" : "Find the roads near you")
-                    .font(.system(size: 30, weight: .black, design: .rounded))
+                    .font(.system(.title, design: .rounded).weight(.black))
                     .foregroundStyle(.white)
                     .multilineTextAlignment(.center)
                 Text(granted
@@ -355,11 +355,11 @@ private struct OnboardPage: View {
                 GlowRing(progress: 1, lineWidth: 5)
                     .frame(width: 84, height: 84)
                 Image(systemName: icon)
-                    .font(.system(size: 30))
+                    .font(.system(.title))
                     .foregroundStyle(SOTheme.heat)
             }
             Text(title)
-                .font(.system(size: 30, weight: .black, design: .rounded))
+                .font(.system(.title, design: .rounded).weight(.black))
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
             VStack(alignment: .leading, spacing: 18) {

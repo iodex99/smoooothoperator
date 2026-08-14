@@ -26,7 +26,7 @@ struct PaywallView: View {
 
                 VStack(spacing: 4) {
                     Text("SMOOOOTH PRO")
-                        .font(.system(size: 30, weight: .black, design: .rounded))
+                        .font(.system(.title, design: .rounded).weight(.black))
                         .tracking(1.5)
                         .foregroundStyle(.white)
                     Text("Drive the whole game.")
@@ -102,7 +102,7 @@ struct PaywallView: View {
                 Button("Restore purchases") { Task { await restore() } }
                     .font(.footnote.weight(.semibold))
                     .tint(SOTheme.heatStart)
-                    .padding(.vertical, 10)
+                    .frame(minHeight: 44)   // tap target, not decoration
 
                 // Required disclosure (App Store 3.1.2). Full opacity: this
                 // was the least legible text in the app at 3.63:1, below the

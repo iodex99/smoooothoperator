@@ -115,7 +115,7 @@ struct SafetyAcknowledgementView: View {
                         GlowRing(progress: 1, lineWidth: 5)
                             .frame(width: 84, height: 84)
                         Image(systemName: "shield.fill")
-                            .font(.system(size: 32))
+                            .font(.system(.title))
                             .foregroundStyle(SOTheme.heat)
                     }
                     Spacer()

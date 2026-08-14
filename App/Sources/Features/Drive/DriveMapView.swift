@@ -170,7 +170,7 @@ struct GhostPuck: View {
                 .strokeBorder(tint, lineWidth: 2)
                 .frame(width: 26, height: 26)
             Image(systemName: "figure.wave")
-                .font(.system(size: 11, weight: .bold))
+                .font(.system(.caption2).weight(.bold))
                 .foregroundStyle(tint)
         }
         .accessibilityLabel(behind ? "Rival ahead of you" : "Rival behind you")
@@ -186,7 +186,7 @@ struct DriverPuck: View {
                 .fill(SOTheme.heatStart.opacity(0.25))
                 .frame(width: 44, height: 44)
             Image(systemName: "location.north.fill")
-                .font(.system(size: 16, weight: .black))
+                .font(.system(.callout).weight(.black))
                 .foregroundStyle(.white)
                 .padding(7)
                 .background(SOTheme.heat, in: Circle())

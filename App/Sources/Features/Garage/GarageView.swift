@@ -73,7 +73,7 @@ struct GarageView: View {
                             Spacer()
                             if vehicle.is_default {
                                 Text("DEFAULT")
-                                    .font(.system(size: 9, weight: .black))
+                                    .font(.system(.caption2).weight(.black))
                                     .tracking(1)
                                     .foregroundStyle(SOTheme.heatStart)
                             } else {

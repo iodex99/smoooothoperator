@@ -33,7 +33,7 @@ struct CourseDetailView: View {
 
                     HStack {
                         Text(course.name)
-                            .font(.system(size: 28, weight: .black, design: .rounded))
+                            .font(.system(.title, design: .rounded).weight(.black))
                             .foregroundStyle(.white)
                         Spacer()
                         Text(String(repeating: "★", count: course.difficulty))
