@@ -140,6 +140,16 @@ final class AppEnvironment {
                   let config = scoringConfig ?? Self.bundledScoringConfig()
             else { continue }
 
+            // The course's OWN benchmark, not a placeholder. Pace is 35% of
+            // the score and is measured against this number — scoring a
+            // recovered run against a hardcoded 300 s would show the driver
+            // a provisional score for a course they did not drive.
+            struct BenchmarkRow: Decodable { var benchmark_seconds: Double? }
+            let benchmark = (try? await api.get(
+                "courses?id=eq.\(drive.courseId)&select=benchmark_seconds",
+                as: [BenchmarkRow].self
+            ))?.first?.benchmark_seconds ?? 0
+
             // An interrupted drive often never reached the finish gate, in
             // which case there is genuinely no run to recover and the
             // pipeline says so by returning nil.
@@ -148,7 +158,7 @@ final class AppEnvironment {
                 imu: drive.imu,
                 route: route.polyline,
                 gates: route.gates,
-                benchmarkSeconds: 300,
+                benchmarkSeconds: benchmark,
                 scoringConfig: config
             ) else { continue }
 
