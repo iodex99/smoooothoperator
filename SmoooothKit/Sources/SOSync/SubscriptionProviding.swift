@@ -30,5 +30,23 @@ public enum ProGate: String, Codable, Sendable, CaseIterable {
 
     /// Free users get today's challenge, leaderboards, one ghost slot,
     /// friends, and joining shared courses — competing stays free.
-    public static func requiresPro(_ gate: ProGate) -> Bool { true }
+    ///
+    /// Every case of `ProGate` is, by construction, a thing behind the
+    /// paywall; the free features above are simply not gates. This returned
+    /// a bare `true` while nothing called it, which reads as a stub and is
+    /// a trap: whoever wired it up would get the right answer for the wrong
+    /// reason and never notice if a free feature were added to the enum.
+    ///
+    /// `@unknown`-style exhaustiveness is the point — adding a case forces
+    /// a decision here rather than defaulting it to paid.
+    public static func requiresPro(_ gate: ProGate) -> Bool {
+        switch gate {
+        case .unlimitedChallenges,
+             .customCourseCreation,
+             .advancedAnalytics,
+             .unlimitedGhostRacing,
+             .advancedFriendChallenges:
+            true
+        }
+    }
 }

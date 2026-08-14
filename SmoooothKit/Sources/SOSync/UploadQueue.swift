@@ -62,6 +62,27 @@ public actor UploadQueue {
         try? store.delete(id: id)
     }
 
+    /// Erases every queued run belonging to a driver.
+    ///
+    /// For account deletion. The app tells the driver "your account and all
+    /// its data have been deleted", and that has to include the runs still
+    /// sitting on this phone waiting to upload — otherwise the sentence is
+    /// false and their GPS traces outlive the account.
+    ///
+    /// Unowned runs are erased too when a userId is given: they were
+    /// recorded on this device and would otherwise be claimed by the next
+    /// person to sign in.
+    @discardableResult
+    public func purge(userId: String) -> Int {
+        let runs = (try? store.loadAll()) ?? []
+        var removed = 0
+        for run in runs where run.userId == userId || run.userId == nil {
+            try? store.delete(id: run.id)
+            removed += 1
+        }
+        return removed
+    }
+
     public func pending() throws -> [PendingRun] {
         try store.loadAll()
     }

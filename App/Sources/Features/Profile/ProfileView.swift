@@ -281,7 +281,7 @@ struct ProfileView: View {
     }
 
     private func deleteAccount() async {
-        guard let api = environment.api, await api.userId != nil else {
+        guard let api = environment.api, let userId = await api.userId else {
             notice = "You're not signed in on this device."
             return
         }
@@ -289,6 +289,10 @@ struct ProfileView: View {
         defer { deleting = false }
         do {
             _ = try await api.rpc("delete_my_account", json: [:])
+            // "All its data" has to include what is still on this phone —
+            // queued runs and any journalled drive. Otherwise their GPS
+            // traces outlive the account they belonged to.
+            await environment.purgeLocalData(for: userId)
             // Go through the environment so isSignedIn updates and every
             // view keyed on it refetches — calling api.signOut() directly
             // left the deleted account's stats on screen.

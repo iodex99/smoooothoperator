@@ -103,6 +103,21 @@ final class AppEnvironment {
         hasOnboarded = true
     }
 
+    /// Erases everything about a driver that lives on this phone.
+    ///
+    /// Called when an account is deleted, because the app tells the driver
+    /// "your account and all its data have been deleted" and that sentence
+    /// has to be true. The server row goes; so must the runs still queued
+    /// here and any half-finished drive journalled to disk. Their GPS traces
+    /// must not outlive the account that recorded them.
+    func purgeLocalData(for userId: String) async {
+        await uploadQueue.purge(userId: userId)
+        if let directory = inFlightDirectory {
+            InFlightRecorder.discardAll(in: directory)
+        }
+        await refreshPendingCount()
+    }
+
     /// The scoring config shipped in the bundle, for when the server's has
     /// not loaded yet. Shared with DriveView so a recovered drive and a live
     /// one are scored against the same rules.
@@ -124,7 +139,15 @@ final class AppEnvironment {
         guard let directory = inFlightDirectory else { return }
         let recovered = InFlightRecorder.recover(in: directory)
         guard !recovered.isEmpty else { return }
+        let currentUserId = await api?.userId
         for drive in recovered {
+            // One device, two drivers. A journal belonging to someone else is
+            // left exactly where it is — not uploaded, and not deleted, since
+            // its owner may sign back in on this phone. The upload queue
+            // already works this way; the journal now matches it rather than
+            // handing one driver's GPS trace to another driver's account.
+            guard drive.belongs(to: currentUserId) else { continue }
+
             // A recovered drive is not special — it goes through the same
             // evaluation pipeline as any other, and the server rescores it
             // afterwards like any other. The only difference is that it took
@@ -167,7 +190,7 @@ final class AppEnvironment {
                 outcome: DriveRunOutcome(
                     evaluation: outcome, rawGPS: drive.gps, rawIMU: drive.imu
                 ),
-                userId: await api.userId
+                userId: currentUserId
             )
         }
         await refreshPendingCount()

@@ -79,6 +79,47 @@ struct CourseDetailView: View {
                         .soCard(padding: 14)
                     }
 
+                    // The garage's whole selling point, finally on screen:
+                    // which of YOUR cars is fastest on THIS road. It was
+                    // answerable only in SQL until now.
+                    if model.vehicleBests.count > 1 {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("YOUR CARS HERE")
+                                .font(.caption2.weight(.black))
+                                .tracking(1.4)
+                                .foregroundStyle(SOTheme.textSecondary)
+                            ForEach(model.vehicleBests) { best in
+                                HStack(spacing: 10) {
+                                    Image(systemName: "car.fill")
+                                        .font(.caption)
+                                        .foregroundStyle(
+                                            best.best_score == nil
+                                                ? SOTheme.textSecondary
+                                                : SOTheme.heatStart
+                                        )
+                                    Text(best.vehicle_name)
+                                        .font(.subheadline.weight(.semibold))
+                                        .foregroundStyle(.white)
+                                        .lineLimit(1)
+                                    Spacer(minLength: 8)
+                                    // No time is shown as no time, never as
+                                    // a zero — a car you have not driven
+                                    // here has not lost to anything.
+                                    Text(best.best_score.map { "\($0)" } ?? "—")
+                                        .font(.system(.subheadline, design: .rounded).weight(.heavy))
+                                        .monospacedDigit()
+                                        .foregroundStyle(
+                                            best.best_score == nil
+                                                ? SOTheme.textSecondary
+                                                : .white
+                                        )
+                                }
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .soCard(padding: 14)
+                    }
+
                     if let rival = model.rival {
                         Toggle(isOn: $raceGhost) {
                             VStack(alignment: .leading, spacing: 2) {
@@ -299,6 +340,17 @@ final class CourseDetailModel {
     /// The best ghost available to race here, if any.
     var rival: (ghost: GhostTrajectory, username: String, score: Int)?
 
+    /// Per-car bests on this course. Only shown when there is more than one
+    /// car — a single-car driver has nothing to compare and does not need a
+    /// card telling them so.
+    struct VehicleBest: Decodable, Identifiable, Hashable {
+        var vehicle_id: String
+        var vehicle_name: String
+        var best_score: Int?
+        var id: String { vehicle_id }
+    }
+    var vehicleBests: [VehicleBest] = []
+
     /// Convenience for the view's title.
     var course: Course? {
         if case .ready(let course) = state { return course }
@@ -354,6 +406,12 @@ final class CourseDetailModel {
                 state = .failed("This course is no longer available.")
                 return
             }
+            // Best-effort and non-blocking: a driver with no garage, or a
+            // failure here, must never stop the course from loading.
+            vehicleBests = (try? await api.rpc(
+                "my_vehicle_bests", json: ["p_course": courseId]
+            )).flatMap { try? JSONDecoder().decode([VehicleBest].self, from: $0) } ?? []
+
             let route = try await api.courseRoute(courseId: courseId)
             state = .ready(Course(
                 name: row.name,

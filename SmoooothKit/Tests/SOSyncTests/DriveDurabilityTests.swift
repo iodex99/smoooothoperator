@@ -240,6 +240,55 @@ struct DriveDurabilityTests {
         #expect(recovered.map(\.startedAt) == [1_000, 3_000, 5_000])
     }
 
+    // MARK: - One device, two drivers
+
+    @Test("a crashed drive is never handed to the next person who signs in")
+    func journalIsAccountScoped() async throws {
+        // Driver A drives, the app is killed mid-run, A signs out, B signs
+        // in. Without an owner on the journal, A's GPS trace is recovered
+        // and uploaded to B's account — someone else's drive on someone
+        // else's leaderboard. PendingRun already learned this; the journal
+        // had to learn it too.
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("owner-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: dir) }
+
+        let recorder = try InFlightRecorder(
+            directory: dir, courseId: "course-a", startedAt: 11_000,
+            userId: "driver-A", flushEvery: 1
+        )
+        let run = TelemetrySimulator(profile: .fastSmooth, seed: 31).simulate(route: Self.route)
+        await recorder.record(gps: Array(run.gps.prefix(20)), imu: [])
+
+        let recovered = try #require(InFlightRecorder.recover(in: dir).first)
+        #expect(recovered.userId == "driver-A", "the journal must remember who drove")
+        #expect(!recovered.belongs(to: "driver-B"), "B must not be given A's drive")
+        #expect(!recovered.belongs(to: nil), "a signed-out session must not claim A's drive")
+        #expect(recovered.belongs(to: "driver-A"), "A gets their own drive back")
+    }
+
+    @Test("a drive recorded signed out is claimable by whoever signs in")
+    func unownedJournalIsClaimable() async throws {
+        // The app drives, scores and queues signed out by design, so an
+        // unowned journal is not an error — it belongs to whoever this
+        // device's driver turns out to be. Same rule the upload queue
+        // already applies to an unowned pending run.
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("unowned-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: dir) }
+
+        let recorder = try InFlightRecorder(
+            directory: dir, courseId: "course-b", startedAt: 12_000, flushEvery: 1
+        )
+        let run = TelemetrySimulator(profile: .fastSmooth, seed: 32).simulate(route: Self.route)
+        await recorder.record(gps: Array(run.gps.prefix(20)), imu: [])
+
+        let recovered = try #require(InFlightRecorder.recover(in: dir).first)
+        #expect(recovered.userId == nil)
+        #expect(recovered.belongs(to: "anyone"))
+        #expect(recovered.belongs(to: nil))
+    }
+
     @Test("journalled samples come back in the order they were recorded")
     func journalPreservesOrder() async throws {
         // The first version spawned a Task per sample. Independent tasks

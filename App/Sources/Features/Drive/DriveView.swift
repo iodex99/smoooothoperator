@@ -232,7 +232,10 @@ struct DriveView: View {
            let recorder = try? InFlightRecorder(
                directory: directory,
                courseId: courseId,
-               startedAt: Date().timeIntervalSince1970
+               startedAt: Date().timeIntervalSince1970,
+               // Stamped now, so a crash cannot hand this drive to whoever
+               // signs in next on a shared phone.
+               userId: await environment.api?.userId
            ) {
             await session.attach(recorder: recorder)
         }

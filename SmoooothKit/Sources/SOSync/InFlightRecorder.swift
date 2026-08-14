@@ -25,6 +25,16 @@ public actor InFlightRecorder {
         var kind: String
         var courseId: String?
         var startedAt: Double?
+        /// Who was driving. One device, two drivers is a real situation, and
+        /// a journal without an owner is a drive that can be handed to the
+        /// wrong account on recovery — someone else's GPS trace on someone
+        /// else's leaderboard. `PendingRun` learned this the hard way; the
+        /// journal must not relearn it.
+        ///
+        /// Nil is legitimate: a drive recorded while signed out belongs to
+        /// whoever signs in on that device, exactly as the upload queue
+        /// already treats an unowned pending run.
+        var userId: String?
         var gps: GPSSample?
         var imu: IMUSample?
     }
@@ -32,8 +42,21 @@ public actor InFlightRecorder {
     public struct Recovered: Sendable, Equatable {
         public var courseId: String
         public var startedAt: Double
+        /// Who drove it. Nil means the drive was recorded signed out.
+        public var userId: String?
         public var gps: [GPSSample]
         public var imu: [IMUSample]
+
+        /// Whether this drive may be handed to `currentUserId`.
+        ///
+        /// Deliberately the same rule the upload queue applies to a pending
+        /// run: an unowned drive is claimable by whoever is signed in, and a
+        /// drive belonging to someone else is left alone — never uploaded,
+        /// and never deleted either, because its owner may sign back in.
+        public func belongs(to currentUserId: String?) -> Bool {
+            guard let userId else { return true }
+            return userId == currentUserId
+        }
     }
 
     private let fileURL: URL
@@ -49,7 +72,13 @@ public actor InFlightRecorder {
     private static let encoder = JSONEncoder()
     private static let decoder = JSONDecoder()
 
-    public init(directory: URL, courseId: String, startedAt: Double, flushEvery: Int = 50) throws {
+    public init(
+        directory: URL,
+        courseId: String,
+        startedAt: Double,
+        userId: String? = nil,
+        flushEvery: Int = 50
+    ) throws {
         self.flushEvery = max(1, flushEvery)
         try FileManager.default.createDirectory(
             at: directory, withIntermediateDirectories: true
@@ -63,7 +92,7 @@ public actor InFlightRecorder {
         // rather than through `append`, which is actor-isolated and cannot be
         // called before `self` is fully initialised.
         var header = try Self.encoder.encode(
-            Line(kind: "h", courseId: courseId, startedAt: startedAt)
+            Line(kind: "h", courseId: courseId, startedAt: startedAt, userId: userId)
         )
         header.append(0x0A)
         FileManager.default.createFile(atPath: fileURL.path, contents: header)
@@ -158,6 +187,7 @@ public actor InFlightRecorder {
 
         var courseId: String?
         var startedAt: Double?
+        var userId: String?
         var gps: [GPSSample] = []
         var imu: [IMUSample] = []
 
@@ -169,6 +199,7 @@ public actor InFlightRecorder {
             case "h":
                 courseId = line.courseId
                 startedAt = line.startedAt
+                userId = line.userId
             case "g":
                 if let sample = line.gps { gps.append(sample) }
             case "i":
@@ -181,6 +212,8 @@ public actor InFlightRecorder {
         // A header and nothing else is a session that died before the driver
         // moved. There is no drive in it to recover.
         guard let courseId, let startedAt, !gps.isEmpty else { return nil }
-        return Recovered(courseId: courseId, startedAt: startedAt, gps: gps, imu: imu)
+        return Recovered(
+            courseId: courseId, startedAt: startedAt, userId: userId, gps: gps, imu: imu
+        )
     }
 }
