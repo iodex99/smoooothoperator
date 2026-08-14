@@ -193,7 +193,7 @@ struct ProfileView: View {
                         }
                         .buttonStyle(.plain)
                         Divider().overlay(SOTheme.hairline)
-                        Link(destination: URL(string: "https://smooooth.app/support")!) {
+                        Link(destination: Brand.support) {
                             AccountRow(icon: "questionmark.circle", title: "Support", showsChevron: true)
                         }
                         Divider().overlay(SOTheme.hairline)

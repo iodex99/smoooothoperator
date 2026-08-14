@@ -40,7 +40,7 @@ struct FriendsView: View {
                         .buttonStyle(.borderless)
                 }
                 .listRowBackground(SOTheme.surface)
-                ShareLink(item: "Race me on Smooooth Operator — smooooth.app") {
+                ShareLink(item: "Race me on \(Brand.name) — \(Brand.domain)") {
                     Label("Invite friends", systemImage: "square.and.arrow.up")
                 }
                 .listRowBackground(SOTheme.surface)

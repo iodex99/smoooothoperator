@@ -56,9 +56,9 @@ struct AboutView: View {
                 .soCard(padding: 18)
 
                 HStack(spacing: 18) {
-                    Link("Terms", destination: URL(string: "https://smooooth.app/terms")!)
-                    Link("Privacy", destination: URL(string: "https://smooooth.app/privacy")!)
-                    Link("Support", destination: URL(string: "https://smooooth.app/support")!)
+                    Link("Terms", destination: Brand.terms)
+                    Link("Privacy", destination: Brand.privacy)
+                    Link("Support", destination: Brand.support)
                 }
                 .font(.footnote.weight(.semibold))
                 .tint(SOTheme.heatStart)

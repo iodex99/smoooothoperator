@@ -23,7 +23,7 @@ layer and **never move logic out of the Kit to work around an error**.
 2. Set the development team; verify bundle id `app.smooooth.operator`.
 3. Build; fix adapter/view compile errors (expected).
 4. Verify entitlements: Sign in with Apple, associated domains
-   (`applinks:smooooth.app` — domain + AASA hosting must exist by then).
+   (`applinks:smoooothoperator.com` — domain + AASA hosting must exist by then).
 5. Run scheme uses `App/Configs/Products.storekit` — StoreKit sandbox test:
    purchase, restore, expiry of weekly/monthly/yearly.
 6. Location permission flow: when-in-use + `allowsBackgroundLocationUpdates`
@@ -57,4 +57,4 @@ layer and **never move logic out of the Kit to work around an error**.
 - Background location: when-in-use + background updates during active
   challenge; honest usage strings; fallback plan if review objects is
   foreground-only recording with screen-lock guidance.
-- Universal links: `smooooth.app/challenge/<CODE>` with custom-scheme fallback.
+- Universal links: `smoooothoperator.com/challenge/<CODE>` with custom-scheme fallback.

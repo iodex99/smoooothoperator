@@ -169,7 +169,7 @@ struct RunResultView: View {
 
     private var shareText: String {
         // A share with no link is a dead end for whoever receives it.
-        "I scored \(score) on \(courseName) in Smooooth Operator. Beat it: https://smooooth.app"
+        "I scored \(score) on \(courseName) in \(Brand.name). Beat it: \(Brand.site.absoluteString)"
     }
 
     /// Best-effort: a rank makes the card worth posting, but never blocks it.
@@ -354,7 +354,7 @@ struct RunShareCard: View {
                             .font(.system(size: 17, weight: .heavy, design: .rounded))
                             .foregroundStyle(.white)
                             .lineLimit(1)
-                        Text("smooooth.app")
+                        Text(Brand.shortDomain)
                             .font(.system(size: 11, weight: .semibold))
                             .foregroundStyle(SOTheme.textSecondary)
                     }

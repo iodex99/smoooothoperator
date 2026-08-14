@@ -280,8 +280,7 @@ final class CourseDetailModel {
                 name: "Malibu #042",
                 polyline: route,
                 gates: DemoCourse.gates,
-                distanceText: Measurement(value: 4.3, unit: UnitLength.kilometers)
-                    .formatted(.measurement(width: .abbreviated)),
+                distanceText: DistanceFormatter.label(meters: 4_300),
                 difficulty: 4,
                 turnCount: 23,
                 drivers: 0,
@@ -316,9 +315,7 @@ final class CourseDetailModel {
                 name: row.name,
                 polyline: route.polyline,
                 gates: route.gates,
-                distanceText: Measurement(value: row.distance_meters, unit: UnitLength.meters)
-                    .converted(to: .kilometers)
-                    .formatted(.measurement(width: .abbreviated)),
+                distanceText: DistanceFormatter.label(meters: row.distance_meters),
                 difficulty: row.difficulty,
                 turnCount: row.turn_count,
                 drivers: 0,

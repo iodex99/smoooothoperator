@@ -380,9 +380,7 @@ final class HomeModel {
             name: course.name,
             formatTitle: payload.format?.title ?? "Smooth Sprint",
             tagline: payload.format?.tagline ?? "Find your fastest smooth drive.",
-            distanceText: Measurement(value: course.distanceMeters, unit: UnitLength.meters)
-                .converted(to: .kilometers)
-                .formatted(.measurement(width: .abbreviated)),
+            distanceText: DistanceFormatter.label(meters: course.distanceMeters),
             durationText: durationSeconds.map { "~\(Int((Double($0) / 60).rounded())) min" },
             difficulty: course.difficulty,
             participantsToday: payload.participantsToday ?? 0,
@@ -394,9 +392,7 @@ final class HomeModel {
                 name: course.name,
                 polyline: route,
                 gates: gates,
-                distanceText: Measurement(value: course.distanceMeters, unit: UnitLength.meters)
-                    .converted(to: .kilometers)
-                    .formatted(.measurement(width: .abbreviated)),
+                distanceText: DistanceFormatter.label(meters: course.distanceMeters),
                 difficulty: course.difficulty,
                 turnCount: course.turnCount,
                 drivers: payload.participantsToday ?? 0,
@@ -419,8 +415,7 @@ final class HomeModel {
             name: "Malibu #042",
             formatTitle: "Smooth Sprint",
             tagline: "Find your fastest smooth drive.",
-            distanceText: Measurement(value: 4.3, unit: UnitLength.kilometers)
-                .formatted(.measurement(width: .abbreviated)),
+            distanceText: DistanceFormatter.label(meters: 4_300),
             durationText: "~5 min",
             difficulty: 4,
             participantsToday: 0,

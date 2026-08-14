@@ -82,7 +82,7 @@ provider SDK ships in the binary.
   this — the callback is how the app receives the session.
 
 ### 3. A domain — **~$15/year**
-`smooooth.app` (or whatever you choose) needs to serve four things, all of
+`smoooothoperator.com` (or whatever you choose) needs to serve four things, all of
 which are App Store requirements or already referenced by the app:
 - `/.well-known/apple-app-site-association` — makes shared challenge links open the app *(the file exists in the repo; it needs your Team ID substituted)*
 - `/privacy` — **required** for App Store review
@@ -105,7 +105,7 @@ Only three things, none of them secret:
 
 1. **Your Supabase Project URL and anon key** — I put them in a gitignored config file and the app starts talking to your server. (Not the service role key.)
 2. **Your Apple Team ID** — a 10-character string, to finish the universal-links file.
-3. **Your chosen domain**, if it isn't `smooooth.app`.
+3. **Your chosen domain**, if it isn't `smoooothoperator.com`.
 
 I can do everything else from here: deploy the migrations and functions,
 seed the catalog, wire the webhook, write the privacy and terms pages, and

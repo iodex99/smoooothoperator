@@ -119,8 +119,8 @@ struct PaywallView: View {
                     .multilineTextAlignment(.center)
 
                 HStack(spacing: 18) {
-                    Link("Terms of Use", destination: URL(string: "https://smooooth.app/terms")!)
-                    Link("Privacy Policy", destination: URL(string: "https://smooooth.app/privacy")!)
+                    Link("Terms of Use", destination: Brand.terms)
+                    Link("Privacy Policy", destination: Brand.privacy)
                 }
                 .font(.caption2.weight(.semibold))
                 .tint(SOTheme.heatStart)
