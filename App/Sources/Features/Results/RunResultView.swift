@@ -46,7 +46,7 @@ struct RunResultView: View {
                 ScaledShareCard(card: shareCard)
                     .padding(.horizontal, 2)
 
-                Text(authoritative == nil ? "PROVISIONAL — THE SERVER RESCORES EVERY RUN" : "SERVER VERIFIED")
+                Text(scoreCaption)
                     .font(.caption2.weight(.bold))
                     .tracking(1.4)
                     .foregroundStyle(
@@ -119,6 +119,18 @@ struct RunResultView: View {
 
     private var score: Int {
         authoritative?.score ?? outcome.provisionalScore
+    }
+
+    /// What the number under the card means — or, for an ineligible run, why
+    /// there is no number. Saying "provisional" over a score that can never
+    /// become final is the misleading part.
+    private var scoreCaption: String {
+        if outcome.provisionalVerdict == .invalid {
+            return "NOT ELIGIBLE — THIS RUN CANNOT BE SCORED"
+        }
+        return authoritative == nil
+            ? "PROVISIONAL — THE SERVER RESCORES EVERY RUN"
+            : "SERVER VERIFIED"
     }
 
     /// Never show a UUID to a human — the share card is the growth loop and
@@ -297,7 +309,13 @@ struct RunShareCard: View {
                 // a driver is actually judged on.
                 HStack(alignment: .lastTextBaseline, spacing: 18) {
                     VStack(alignment: .leading, spacing: 1) {
-                        Text("\(score)")
+                        // An ineligible run has no meaningful score. A drive
+                        // with no GPS still computes ~6,500 and looping the
+                        // course ten times computes 10,000; the server marks
+                        // both invalid so neither can ever rank, but showing
+                        // the number anyway told the driver they had done
+                        // well. A dash is the honest answer.
+                        Text(verdict == .invalid ? "—" : "\(score)")
                             .font(.system(size: 80, weight: .black, design: .rounded))
                             .monospacedDigit()
                             .foregroundStyle(
