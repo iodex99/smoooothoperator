@@ -25,6 +25,9 @@ struct LeaderboardView: View {
         case loading
         case ready([Entry])
         case failed(String)
+        /// Not a failure. "Try again" cannot create an account, and showing
+        /// a retry button that can never work is a wall with a lie on it.
+        case needsSignIn
     }
 
     struct Entry: Identifiable, Decodable {
@@ -76,7 +79,14 @@ struct LeaderboardView: View {
                         ForEach(entries) { entry in
                             LeaderboardRow(entry: entry)
                         }
-                    case .failed(let message):
+                    case .needsSignIn:
+                    SignInPrompt(
+                        icon: "trophy.fill",
+                        title: "See how you rank",
+                        message: "Leaderboards need an account so your runs can be attributed to you."
+                    ) { await load() }
+
+                case .failed(let message):
                         VStack(spacing: 14) {
                             Image(systemName: "wifi.exclamationmark")
                                 .font(.largeTitle)
@@ -132,7 +142,7 @@ struct LeaderboardView: View {
 
     private func load() async {
         guard let api = environment.api, await api.userId != nil else {
-            state = .failed("Sign in to see how you rank.")
+            state = .needsSignIn
             return
         }
         do {

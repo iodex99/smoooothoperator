@@ -45,6 +45,13 @@ func writeJSON<Value: Encodable>(_ value: Value, to path: String, pretty: Bool) 
 let arguments = Array(CommandLine.arguments.dropFirst())
 
 switch arguments.first {
+case "ghost-xval":
+    // Swift ghosts for every golden vector, so the TypeScript port has
+    // something to be held to. The goldens themselves carry no ghost data.
+    print(GhostXvalDump.emit(
+        fixturesPath: argumentValue("--fixtures", in: arguments) ?? "../fixtures/golden"
+    ))
+
 case "course-proposal":
     // Emits what the app would post to validate-course for a synthetic
     // drive, so the TypeScript half can be tested against the Swift half's

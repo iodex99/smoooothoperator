@@ -25,7 +25,9 @@ edge-test:
 ## End-to-end: golden run through storage + score-run against the LOCAL stack
 ## (requires `supabase start`; skips itself when the stack is down).
 e2e-test:
-	cd supabase/functions && $(DENO) test --allow-read=../../fixtures,../../configs --allow-net tests/score_run_integration_test.ts
+	cd supabase/functions && $(DENO) test --allow-read=../../fixtures,../../configs --allow-net \
+		tests/score_run_integration_test.ts \
+		tests/course_creation_integration_test.ts
 
 ## Cross-validate Swift reference scorer against the TS port on all golden vectors.
 xval:
@@ -51,3 +53,10 @@ regen-course-contract:
 	cd SmoooothKit && swift run sogen course-proposal --metres 6000 --curviness 0.04 --seed 7 \
 		> ../fixtures/contracts/course_proposal.json
 	@echo "regenerated fixtures/contracts/course_proposal.json"
+
+# Swift ghosts for every golden vector. The goldens carry no ghost data, so
+# without this the ghost port — the moat — is cross-validated by nothing.
+regen-ghost-xval:
+	cd SmoooothKit && swift run sogen ghost-xval --fixtures ../fixtures/golden \
+		> ../fixtures/contracts/ghost_xval.json
+	@echo "regenerated fixtures/contracts/ghost_xval.json"

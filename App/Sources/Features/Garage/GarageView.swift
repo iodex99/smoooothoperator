@@ -42,6 +42,15 @@ struct GarageView: View {
                 if loading {
                     HStack { Spacer(); ProgressView().tint(SOTheme.heatStart); Spacer() }
                         .listRowBackground(Color.clear)
+                } else if !environment.isSignedIn {
+                    // An empty garage and a signed-out garage look identical
+                    // otherwise, and "Add a car" would fail on save.
+                    SignInPrompt(
+                        icon: "car.2",
+                        title: "Your garage",
+                        message: "Sign in to add the cars you drive — every run records which one it was."
+                    ) { await load() }
+                    .listRowBackground(Color.clear)
                 } else if vehicles.isEmpty {
                     Text("Add the car you drive and every run records which one it was.")
                         .font(.subheadline)
@@ -97,6 +106,9 @@ struct GarageView: View {
                     : "The free tier includes one car. Pro adds a garage — and lets you race your cars against each other.")
             }
 
+            // Hidden when signed out: the prompt above is the action, and
+            // "Add a car" would fail on save with nowhere to save it to.
+            if environment.isSignedIn {
             Section {
                 Button {
                     // The ceiling is the database's to enforce; the UI just
@@ -110,6 +122,7 @@ struct GarageView: View {
                     Label("Add a car", systemImage: "plus.circle.fill")
                 }
                 .listRowBackground(SOTheme.surface)
+            }
             }
         }
         .scrollContentBackground(.hidden)

@@ -11,6 +11,9 @@ struct HistoryView: View {
         case loading
         case ready([Run])
         case failed(String)
+        /// Not a failure. "Try again" cannot create an account, and showing
+        /// a retry button that can never work is a wall with a lie on it.
+        case needsSignIn
     }
 
     struct Run: Identifiable, Decodable {
@@ -67,9 +70,33 @@ struct HistoryView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 60)
                 case .ready(let runs):
+                    // Orthogonal to the load state: the readable runs are
+                    // fine and should still be shown. A quarantined run is
+                    // one the result screen already promised was "saved on
+                    // this phone" and which will never upload — silence
+                    // would leave that promise standing.
+                    if environment.quarantinedRunCount > 0 {
+                        Label(
+                            environment.quarantinedRunCount == 1
+                                ? "One run on this phone couldn't be read, and won't upload."
+                                : "\(environment.quarantinedRunCount) runs on this phone couldn't be read, and won't upload.",
+                            systemImage: "exclamationmark.triangle"
+                        )
+                        .font(.footnote)
+                        .foregroundStyle(SOTheme.caution)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                    }
                     ForEach(runs) { run in
                         HistoryRow(run: run)
                     }
+                case .needsSignIn:
+                    SignInPrompt(
+                        icon: "clock.arrow.circlepath",
+                        title: "Your drives, kept",
+                        message: "Sign in and every run you record is saved to your account."
+                    ) { await load() }
+
                 case .failed(let message):
                     VStack(spacing: 14) {
                         Image(systemName: "wifi.exclamationmark")
@@ -98,7 +125,7 @@ struct HistoryView: View {
 
     private func load() async {
         guard let api = environment.api, await api.userId != nil else {
-            state = .failed("Sign in to see your runs.")
+            state = .needsSignIn
             return
         }
         do {

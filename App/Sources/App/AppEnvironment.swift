@@ -21,6 +21,9 @@ final class AppEnvironment {
     var scoringConfig: ScoringConfig?
     /// Runs still owed to the server — surfaced honestly in the UI.
     var pendingRunCount = 0
+    /// Runs on this phone that could not be read back. Rare, and worth
+    /// admitting when it happens — the app told the driver they were safe.
+    var quarantinedRunCount = 0
     /// Live Pro entitlement, refreshed at launch and on every transaction.
     var isPro = false
     /// Whether a session exists. Drives the "sign in to compete" affordances.
@@ -228,6 +231,11 @@ final class AppEnvironment {
         let me = await api?.userId
         let runs = (try? await uploadQueue.pending()) ?? []
         pendingRunCount = runs.filter { $0.userId == nil || $0.userId == me }.count
+        // A run whose file could not be decoded is moved aside so the queue
+        // keeps draining. That is the right behaviour, but it was silent:
+        // the result screen had already promised "saved on this phone", and
+        // a quarantined run will never upload. Say so instead.
+        quarantinedRunCount = await uploadQueue.quarantinedCount()
     }
 
     // MARK: - Account

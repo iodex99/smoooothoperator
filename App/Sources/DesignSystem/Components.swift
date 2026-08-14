@@ -178,3 +178,55 @@ struct Wordmark: View {
         }
     }
 }
+
+/// "You need an account for this" — as an invitation, not an error.
+///
+/// Four screens had grown their own version of this and three rendered it as
+/// a FAILURE: a warning triangle, a message, and a "Try again" button that
+/// could never work because retrying does not create an account. A driver
+/// signed out of Leaderboards, History, Friends or the Garage hit a wall
+/// with a button that lied.
+///
+/// One component so the next screen that needs an account inherits the
+/// right behaviour instead of inventing the wrong one again.
+struct SignInPrompt: View {
+    @Environment(AppEnvironment.self) private var environment
+    let icon: String
+    let title: String
+    let message: String
+    /// Run after signing in — usually a reload, so the screen fills in
+    /// rather than leaving the driver on the prompt they just satisfied.
+    var onSignedIn: () async -> Void = {}
+
+    @State private var showSignIn = false
+
+    var body: some View {
+        VStack(spacing: 16) {
+            ZStack {
+                GlowRing(progress: 1, lineWidth: 5)
+                    .frame(width: 78, height: 78)
+                Image(systemName: icon)
+                    .font(.title2)
+                    .foregroundStyle(SOTheme.heat)
+            }
+            Text(title)
+                .font(.system(.title3, design: .rounded).weight(.heavy))
+                .foregroundStyle(.white)
+                .multilineTextAlignment(.center)
+            Text(message)
+                .font(.subheadline)
+                .foregroundStyle(SOTheme.textSecondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            Button("Sign in") { showSignIn = true }
+                .buttonStyle(HeatButtonStyle())
+                .padding(.horizontal, 30)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 30)
+        .padding(.horizontal, 22)
+        .sheet(isPresented: $showSignIn, onDismiss: { Task { await onSignedIn() } }) {
+            SignInView()
+        }
+    }
+}

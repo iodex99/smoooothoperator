@@ -51,10 +51,6 @@ public actor UploadQueue {
         return run
     }
 
-    public func pendingCount() throws -> Int {
-        try store.loadAll().count
-    }
-
     /// Drops a run the caller uploaded directly (the finish-screen fast path
     /// still wants the server's authoritative score immediately). Only ever
     /// called after the server acknowledged the run.
@@ -81,6 +77,16 @@ public actor UploadQueue {
             removed += 1
         }
         return removed
+    }
+
+    /// Runs whose file could not be decoded and were set aside.
+    ///
+    /// Surfaced rather than swallowed: the result screen promises a run is
+    /// "saved on this phone", and a quarantined one will never upload. A
+    /// driver who is told their drive is safe deserves to hear when it
+    /// turns out not to be.
+    public func quarantinedCount() -> Int {
+        (store as? FileRunStore)?.quarantinedCount() ?? 0
     }
 
     public func pending() throws -> [PendingRun] {

@@ -79,7 +79,16 @@ struct FriendsView: View {
             }
 
             Section("Friends") {
-                if friends.isEmpty {
+                if !environment.isSignedIn {
+                    // Signed out this list is empty for a reason that has
+                    // nothing to do with how many friends you have. Saying
+                    // "no friends yet" would be both wrong and unkind.
+                    SignInPrompt(
+                        icon: "person.2.fill",
+                        title: "Rivals make you smoother",
+                        message: "Sign in to add friends, send challenges and race their ghosts."
+                    ) { await load() }
+                } else if friends.isEmpty {
                     ContentUnavailableView(
                         "No friends yet",
                         systemImage: "person.2",
