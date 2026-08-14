@@ -29,6 +29,32 @@ syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
 
+### 2026-08-14 — Course creation, and the moat
+The catalog was a fixed asset: 397 curated courses and no way to add one.
+`validate-course` had existed and been tested since L8 with nothing able to
+reach it — the largest built-but-unreachable feature in the project.
+
+**You make a course by driving it.** The only route, deliberately: nobody
+publishes a road they have never been down, the geometry is real rather than
+sketched, and an unsafe or impossible course cannot be made by someone who
+has not tried it.
+
+- `CourseBuilder` (Kit, Linux-tested): Douglas–Peucker simplification,
+  re-splitting of long segments, five gates snapped to real vertices, turn
+  counting that feeds the derived benchmark.
+- The app proposes, the server decides — clients stay read-only on the
+  catalog and `validate-course` re-runs every rule.
+- **The contract is tested across both languages.** `sogen course-proposal`
+  emits what the app actually sends and the Deno suite validates that, not a
+  hand-written fixture. If the halves disagree, a driver is told a road they
+  just drove is invalid.
+- Validator failures are shown in a driver's words, all at once.
+
+Caught while wiring it: `createCourse` decoded `id` from a response that
+returns `courseId` — visible only against a real server.
+
+**317 Kit · 253 pgTAP · 81 Deno · e2e · xval · parse · a11y.**
+
 ### 2026-08-14 — Re-auditing the day's own fixes
 The recurring lesson here is that **fixes need their own adversarial pass**.
 Swept everything written this week; found nine defects, five of them in code

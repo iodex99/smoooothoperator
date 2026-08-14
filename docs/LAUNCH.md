@@ -192,19 +192,20 @@ unknowns are not code:
   limitation, not an engine defect — but it means the behaviour is unproven.
 - **Gate radius asymmetry and multi-crossing gates** remain open in
   `docs/FAIRNESS.md`, both small next to what has been fixed.
-- **Creating a custom course has no screen.** The server accepts and
-  validates them; a driver cannot make one. Decide whether that ships in v1
-  or waits — it is a feature, not a defect, but it is the gap between what
-  the backend can do and what a driver can reach.
+- **Course creation has never met a real GPS chip either.** The builder is
+  tested against simulated drives with noise, but the shape of a real trace
+  — tunnels, urban canyons, a phone in a cupholder — is unknown. Create one
+  course on the real drive in step 17 and check what comes out.
 
 ## What is already done
 
 - Engine, scoring, anti-cheat, ghosts, leaderboards, friends — 305 Kit
   tests, deterministic, Swift ≡ TypeScript on 12 golden vectors.
-- **Custom courses: server only.** `validate-course` is written, tested and
-  deployed-ready, and there is **no UI in the app to create one**. Nothing
-  promises it — the paywall was corrected in an earlier audit and sells only
-  what exists — but it is the largest built-and-unreachable feature here.
+- **Custom courses — a driver can now make one.** You create a course by
+  driving it: record the road once, gates are placed at 0/25/50/75/100%, and
+  the server re-validates every rule before it enters the catalog. Pro-gated
+  in the app and re-checked on the server. The Swift→TypeScript contract is
+  tested against output the Swift builder actually generates.
 - Database: 19 migrations, RLS on every table, **223 pgTAP tests**.
 - Server: 5 edge functions, 66 Deno tests, fail-closed App Store webhook.
 - iOS: builds, boots and completes a scored ghost race on the CI Mac.
