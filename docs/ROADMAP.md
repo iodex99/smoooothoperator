@@ -29,6 +29,31 @@ syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
 
+### 2026-08-13 — The share card, and the reason nobody saw it
+The result screen showed the score one way and hid a completely different
+card behind a button. A driver who had never tapped it had no reason to
+believe anything was there — the screen above already looked finished —
+so most would hit Done and the growth loop never fired.
+
+- **The result screen now IS the card.** One `RunShareCard` definition
+  feeds both the on-screen hero and `ImageRenderer`, so the preview and
+  the export cannot drift. Sharing is the primary button; leaving is the
+  ghost button under it.
+- **The card is rebuilt around the road.** The route was a 30%-opacity
+  watermark; it is now the hero. A score is a number anyone could type —
+  the shape of the road you drove is the one thing on the card nobody
+  else has. Elapsed time joins the score on a shared baseline, and the
+  four disciplines became a strip instead of four stacked bars.
+- **Honesty fix:** the verdict badge only rendered when a run was
+  VERIFIED, so an unranked run produced a card with no badge — which
+  reads as verified to anyone who sees it. It now renders NOT RANKED and
+  NOT ELIGIBLE too.
+- Two layout defects were caught only by CI screenshots (route through
+  the digits, dead space above the footer) — the same class as the "100"
+  that wrapped to two lines. Without a Mac, rendered output is the only
+  place these are visible; the demo tour now also photographs the garage
+  and the flying-start verdict, which had never been captured at all.
+
 ### 2026-08-13 — The garage, and the start line
 Two user directives, both of which turned out to be real gaps.
 
