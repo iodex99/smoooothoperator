@@ -29,6 +29,30 @@ syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
 
+### 2026-08-13 — The garage, and the start line
+Two user directives, both of which turned out to be real gaps.
+
+- **Multiple cars (migration 0017).** There was no vehicle concept anywhere
+  — the "vehicle" hits in the codebase were all vehicle-FRAME orientation
+  math. The free tier now includes one car, Pro adds a garage, and the
+  vehicle is recorded on the RUN so selling a car never deletes the drives
+  you did in it. Enforced by database triggers, not just the app, and a run
+  cannot claim a car belonging to someone else. 11 pgTAP tests.
+- **The flying start.** Entry speed at the start gate was completely
+  unbounded, so arriving at 100 km/h with a run-up was free pace against a
+  driver launching from the line — on a score that is 35% pace. Now flagged
+  `flyingStart` at warning severity: scored, shown, never ranked. Landed in
+  the Swift reference AND the TypeScript port in one commit because golden
+  vectors compare integrity flags; xval still reproduces all 12 byte-exactly
+  (the check is inert on them — the simulator integrates from rest, which
+  is the standing start the rule now asks of everyone).
+- The rule is stated on the READY screen BEFORE the clock exists and
+  explained on the result screen after. DriveRunOutcome now carries
+  integrityFlags so the UI can say WHY a run wasn't ranked.
+- **docs/FAIRNESS.md** catalogues the whole family: what is handled, and the
+  seven cases that are not — led by traffic/stopped time, which on urban
+  courses dwarfs everything else here.
+
 ### 2026-08-13 — Third audit: payments, permissions, logins
 A dedicated review of the three areas the user named. Both definitive
 questions came back badly, and both are fixed:

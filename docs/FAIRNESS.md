@@ -1,0 +1,129 @@
+# Are two drivers on the same road running the same race?
+
+> Living document. Pace is 35% of the score and is measured between two
+> gates on a public road, which is a much weaker guarantee of fairness than
+> it looks. This is the catalogue of ways it can be unequal, what the app
+> does about each, and what it deliberately does not.
+
+The governing principle: **when a run cannot be compared fairly, it is kept,
+scored and shown to the driver — and ranked nowhere.** That is the same
+treatment a questionable run gets, and it accuses nobody. Refusing to record
+a drive someone actually did is never the answer.
+
+---
+
+## Handled
+
+### 1. The flying start — **fixed 2026-08-13**
+A driver arriving at the start gate at 100 km/h with a mile of run-up banks
+seconds no amount of skill can answer; a driver launching from the line pays
+for every one of them. Entry speed was completely unbounded.
+
+**Now:** entry speed at the start gate is measured and compared against
+`maxStartEntrySpeedMps` (8 m/s ≈ 29 km/h — a slow roll-up, achievable where
+stopping is not). Above it, the run is flagged `flyingStart` at *warning*
+severity: scored, shown, never ranked. The rule is stated on the READY
+screen **before** the clock exists, and explained on the result screen after
+— a fairness rule a driver only discovers afterwards is a trap.
+
+Implemented in the Swift reference *and* the TypeScript port in one commit,
+because golden vectors compare integrity flags: a check on one side only
+breaks the determinism contract. 14 tests, 7 per side, asserting the same
+boundaries and the same evidence string.
+
+### 2. Staging on the line
+Sitting inside the start gate before launching must not burn clock. The
+ghost clock and the live clock both start at the first *moving* fix after
+the gate is hit, not at the gate hit itself.
+
+### 3. Starting mid-course
+A driver who opens the app already past the start gate never triggers gate 0,
+so the run never starts rather than recording a partial course as a whole
+one. The gate tracker only ever looks for the *next* gate in sequence, so a
+road that loops back through an earlier gate cannot re-trigger it either.
+
+### 4. Gates too close together
+`CourseValidator.checkpointsTooClose` refuses a course whose gates overlap,
+which would otherwise make "which gate did I just cross" ambiguous.
+
+---
+
+## Identified, NOT yet handled — ranked by how much unfairness they cause
+
+### A. Traffic, and stopping mid-run — **the biggest one**
+A driver who catches three red lights is compared against a driver who
+caught none, on a pace score, as though they drove the same road. On urban
+courses this dwarfs every other effect in this document.
+
+Nothing currently measures stopped time. The honest options, in order of
+preference:
+
+1. **Measure and report it** — record `stoppedSeconds` on the run and show
+   it. Cheap, honest, immediately useful, and a prerequisite for anything
+   else.
+2. **Flag heavily-interrupted runs** as not-ranked, the same way a flying
+   start is flagged. Needs a threshold that does not punish a single
+   junction.
+3. **Excluding stopped time from the clock** is tempting and probably wrong:
+   it rewards stopping (a driver could stop to reset a bad segment) and it
+   stops measuring the thing the score claims to measure.
+
+This should be done the same way the flying start was: both implementations,
+one commit, goldens re-proved.
+
+### B. The known ghost clock defect
+Racing your own identical run currently shows you **~2.6 s ahead of
+yourself** (measured: mean −2.58 s, worst −2.71 s over a 194 s ghost). The
+live clock anchors on the first *raw* sample whose device-reported speed
+clears the threshold; the ghost clock anchors on the first *processed*
+trajectory point whose derived speed clears it, and the processor drops
+samples in between. Both halves are individually correct, which is why only
+an end-to-end race exposed it.
+
+Covered by a disabled test carrying the measurements and the `file:line` of
+each anchor (`GhostRaceTests.racingYourselfIsNeutral`). The fix must make
+both anchors the same signal and touches the ghost timing contract and its
+TypeScript port.
+
+### C. Gate radius asymmetry
+Gates are circles (40–45 m). Clipping the near edge and clipping the far
+edge are not the same distance, so two identical drives can differ by the
+gate diameter at each end. Small on a 5 km course, not small on a 1 km one.
+
+### D. Gates a road passes through more than once
+The catalog audit found 53 gates where the road re-enters the circle
+(hairpins — Lysevegen's gate 1 is crossed **nine times**). Sequential
+matching means the *first* crossing wins, which is usually right and
+occasionally isn't.
+
+### E. The slow-driver start condition
+The `slowSmooth` simulator profile never triggers the live start condition
+at all ("sensor stream ended before the run started"). If that reflects real
+device behaviour rather than a simulator artefact, genuinely slow drivers
+cannot record runs. Needs one real slow drive to settle before the threshold
+is touched. Covered by a disabled test.
+
+### F. Vehicle differences — deliberately NOT equalised
+A driver in a fast car will out-pace the same driver in a slow one, and the
+garage now records which car drove each run. That is *not* treated as
+unfairness: the score rewards smoothness, control and legality alongside
+pace, and the product's answer to "my car is slower" is to compare your own
+cars to each other (`my_vehicle_bests`) and to drive better. Per-class
+leaderboards are a plausible future feature, not a correctness fix.
+
+### G. Conditions we cannot observe
+Weather, time of day, road surface, passengers, tyre choice. A public-road
+competition cannot control these. The honest position is that the benchmark
+is a *reference*, not a level playing field, and that smoothness and control
+— which dominate the score — are far less condition-sensitive than pace.
+
+---
+
+## Why not just require a full standing stop?
+
+Because on many real roads you cannot legally or safely stop at the start
+line, and a rule drivers must break to comply with is worse than a slightly
+loose one. 8 m/s bounds the advantage to something small relative to a
+multi-kilometre course while staying achievable. It is a config value, and
+if real-device data shows it is wrong, it moves — on both sides, in one
+commit.
