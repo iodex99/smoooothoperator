@@ -71,19 +71,36 @@ preference:
 This should be done the same way the flying start was: both implementations,
 one commit, goldens re-proved.
 
-### B. The known ghost clock defect
-Racing your own identical run currently shows you **~2.6 s ahead of
-yourself** (measured: mean −2.58 s, worst −2.71 s over a 194 s ghost). The
-live clock anchors on the first *raw* sample whose device-reported speed
-clears the threshold; the ghost clock anchors on the first *processed*
-trajectory point whose derived speed clears it, and the processor drops
-samples in between. Both halves are individually correct, which is why only
-an end-to-end race exposed it.
+### B. ~~The ghost clock defect~~ — **fixed 2026-08-14**
+Racing your own identical run used to show you **~2.6 s ahead of yourself**
+(measured: mean −2.58 s, worst −2.71 s over a 194 s ghost). Worst is now
+**0.31 s**, and across the middle 80% of a run it is **under 0.06 s**.
 
-Covered by a disabled test carrying the measurements and the `file:line` of
-each anchor (`GhostRaceTests.racingYourselfIsNeutral`). The fix must make
-both anchors the same signal and touches the ghost timing contract and its
-TypeScript port.
+It turned out to be three bugs wearing one costume, and each had to be found
+by measuring rather than reasoning:
+
+1. **The anchors were different signals.** The live clock started on the
+   first *raw* sample whose device-reported speed cleared a threshold; the
+   ghost clock started on the first *processed* point whose *derived* speed
+   cleared it. Filtered derivatives lag. Both sides now use
+   `GhostEngine.startTime`, which anchors on **displacement** from the start
+   gate — five metres, a quantity smoothing does not systematically delay.
+   Gate hit, start, finish and duration now agree to **0.0 s**.
+2. **The live origin was captured late.** A car can cross the start gate
+   while the orientation estimator is still converging, so the session was
+   still `.calibrating` and took its origin wherever it happened to be when
+   `.ready` arrived — 13.5 m down the road. The origin is now looked up at
+   the gate crossing itself.
+3. **Both ends of the ghost were fictional.** The first point was pinned to
+   `(progress: 0, elapsed: 0)` and the last to `progress: 1`. Neither is
+   true: the clock starts once the car has moved five metres, and a run ends
+   on *entering* the finish-gate circle at ~0.986. Those two lies stretched
+   the ghost's first and last segments across ground the driver never
+   covers, which is where the remaining seconds lived — the final tenth of
+   the course alone was 1.83 s.
+
+`GhostRaceTests.racingYourselfIsNeutral` is enabled and asserts < 0.5 s. Do
+not relax that bound; it means the clocks have drifted apart again.
 
 ### C. Gate radius asymmetry
 Gates are circles (40–45 m). Clipping the near edge and clipping the far

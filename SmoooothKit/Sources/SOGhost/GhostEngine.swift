@@ -73,21 +73,33 @@ public struct GhostConfig: Codable, Sendable, Equatable {
     public var progressResolution: Double
     /// Ghosts only come from finished runs; generation fails otherwise.
     public var requireFinished: Bool
-    /// The ghost clock starts at the first fix after the start-gate hit
-    /// moving faster than this (m/s) — drivers stage INSIDE the start gate
-    /// (spec §16 calibration), and parked time must never count.
-    public var startMovingSpeedMps: Double
+    /// The ghost clock starts once the car has moved this far from where it
+    /// crossed the start gate. Drivers stage INSIDE the start gate (spec §16
+    /// calibration) and parked time must never count — but the anchor is
+    /// DISPLACEMENT, not a speed threshold.
+    ///
+    /// This is the fix for a real defect. The rule used to be "first sample
+    /// faster than 1.5 m/s", and the live clock applied it to the device's
+    /// reported speed while the ghost clock applied it to the smoothed,
+    /// derived speed of a processed trajectory. Any threshold on a filtered
+    /// derivative lags the raw signal, so the two clocks started at
+    /// different instants and a driver racing their own best run was shown
+    /// permanently ~2.6 s ahead of themselves.
+    ///
+    /// Displacement has no such lag: smoothing moves a point slightly, it
+    /// does not systematically delay when the car has covered five metres.
+    public var startMovingMeters: Double
 
-    public init(progressResolution: Double, requireFinished: Bool, startMovingSpeedMps: Double) {
+    public init(progressResolution: Double, requireFinished: Bool, startMovingMeters: Double) {
         self.progressResolution = progressResolution
         self.requireFinished = requireFinished
-        self.startMovingSpeedMps = startMovingSpeedMps
+        self.startMovingMeters = startMovingMeters
     }
 
     public static let `default` = GhostConfig(
         progressResolution: 0.005,
         requireFinished: true,
-        startMovingSpeedMps: 1.5
+        startMovingMeters: 5
     )
 }
 
@@ -112,11 +124,13 @@ public enum GhostEngine {
             throw GhostGenerationError.degenerateCourse
         }
 
-        // Replay the trajectory, sampling (elapsed, progress, speed) as it grows.
-        var raw: [(timestamp: Double, progress: Double, speedMps: Double)] = []
+        // Replay the trajectory, sampling (elapsed, progress, position) as
+        // it grows. Position rather than speed: the clock anchor is a
+        // displacement, which does not lag the way a filtered speed does.
+        var raw: [(timestamp: Double, progress: Double, coordinate: GeoCoordinate)] = []
         for point in trajectory.points {
             tracker.ingest(point)
-            raw.append((point.timestamp, tracker.progressFraction, point.speedMps))
+            raw.append((point.timestamp, tracker.progressFraction, point.coordinate))
         }
 
         if config.requireFinished && !tracker.hasFinished {
@@ -126,18 +140,34 @@ public enum GhostEngine {
             throw GhostGenerationError.noStartCrossing
         }
 
-        // Start crossing: the first moving fix at/after the start-gate hit —
-        // staging inside the gate never counts on the clock.
-        let startTime = raw.first(where: {
-            $0.timestamp >= startHit.timestamp && $0.speedMps > config.startMovingSpeedMps
-        })?.timestamp ?? startHit.timestamp
+        // Start crossing: the first fix at/after the start-gate hit that is
+        // `startMovingMeters` away from where the gate was crossed. Staging
+        // inside the gate never counts on the clock, and the SAME rule runs
+        // on the live side so the two clocks cannot disagree (ADR-0002).
+        let startTime = GhostEngine.startTime(
+            samples: raw.map { ($0.timestamp, $0.coordinate) },
+            gateHitTimestamp: startHit.timestamp,
+            movedMeters: config.startMovingMeters
+        )
 
         let finishTime = tracker.checkpointHits.last.map(\.timestamp) ?? raw.last?.timestamp ?? startTime
 
         // Downsample to the progress resolution, keeping monotonicity in
         // both axes. Points before the start crossing are staging noise.
-        var points: [GhostPoint] = [GhostPoint(progress: 0, elapsedSeconds: 0)]
-        var lastStoredProgress = 0.0
+        //
+        // The first point is the progress the car had AT the start instant,
+        // not a forced zero. Pinning (0, 0) claimed the car was at the very
+        // beginning of the course when the clock started — but the clock
+        // starts once it has moved `startMovingMeters`, so it is already a
+        // little way along. Everything between 0 and that progress was then
+        // interpolated from a fictional origin, which showed a driver racing
+        // their own run as ~1.8 s ahead of themselves for the first half.
+        let startProgress = min(
+            1,
+            raw.last(where: { $0.timestamp <= startTime })?.progress ?? 0
+        )
+        var points: [GhostPoint] = [GhostPoint(progress: startProgress, elapsedSeconds: 0)]
+        var lastStoredProgress = startProgress
         for sample in raw where sample.timestamp > startTime && sample.timestamp <= finishTime {
             let progress = min(1, sample.progress)
             guard progress >= lastStoredProgress + config.progressResolution else { continue }
@@ -148,11 +178,52 @@ public enum GhostEngine {
             lastStoredProgress = progress
         }
         let totalSeconds = finishTime - startTime
-        if points.last?.progress ?? 0 < 1 {
-            points.append(GhostPoint(progress: 1, elapsedSeconds: totalSeconds))
+        // The final point is the progress the car ACTUALLY had when it
+        // crossed the finish gate — not a forced 1.0.
+        //
+        // A run ends on entering the finish gate, which is a circle tens of
+        // metres wide, so the car is typically at ~0.986 rather than 1.0.
+        // Pinning the last point to 1.0 stretched the ghost's final segment
+        // across progress the driver never covers, and a live run whose
+        // progress plateaus just short of 1.0 was compared against a ghost
+        // that claimed to still be moving. That showed a driver racing their
+        // own run as ~1.8 s off over the final tenth of the course — the
+        // mirror image of the same mistake at the start.
+        let finishProgress = min(
+            1,
+            max(
+                points.last?.progress ?? 0,
+                raw.last(where: { $0.timestamp <= finishTime })?.progress ?? 1
+            )
+        )
+        if (points.last?.progress ?? 0) < finishProgress {
+            points.append(GhostPoint(progress: finishProgress, elapsedSeconds: totalSeconds))
         }
 
         return GhostTrajectory(points: points, totalSeconds: totalSeconds)
+    }
+
+    /// When the clock starts, given samples and the instant the start gate
+    /// was crossed.
+    ///
+    /// Shared deliberately: the live session and ghost generation call this
+    /// same function so the two clocks anchor on one rule rather than two
+    /// that happen to look alike. They previously did not, and the result
+    /// was a driver beating themselves by 2.6 seconds.
+    public static func startTime(
+        samples: [(timestamp: Double, coordinate: GeoCoordinate)],
+        gateHitTimestamp: Double,
+        movedMeters: Double
+    ) -> Double {
+        guard let origin = samples.first(where: { $0.timestamp >= gateHitTimestamp })?.coordinate
+        else { return gateHitTimestamp }
+        for sample in samples where sample.timestamp >= gateHitTimestamp {
+            if origin.distance(to: sample.coordinate) >= movedMeters {
+                return sample.timestamp
+            }
+        }
+        // Never moved far enough — the gate hit is the only honest answer.
+        return gateHitTimestamp
     }
 
     /// Live gap vs a ghost: positive = you are BEHIND the ghost by that many

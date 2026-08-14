@@ -114,28 +114,26 @@ struct GhostRaceTests {
             #expect(b.progress >= a.progress)
             #expect(b.elapsedSeconds >= a.elapsedSeconds)
         }
-        #expect(trace.points.first?.progress == 0)
+        // The ghost starts at the progress the car actually had when its
+        // clock started (it has moved `startMovingMeters` past the gate) and
+        // ends at the progress it actually had at the finish gate. Both used
+        // to be pinned to 0 and 1, and both lies showed a driver racing their
+        // own run as seconds away from themselves.
+        let firstProgress = trace.points.first?.progress ?? -1
+        #expect(firstProgress >= 0 && firstProgress < 0.01, "start progress \(firstProgress)")
         #expect((trace.points.last?.progress ?? 0) > 0.9, "the ghost reaches the finish")
     }
 
-    // KNOWN DEFECT — do not "fix" by relaxing this bound.
-    //
-    // Racing your own identical run shows a systematic ~2.6s advantage
-    // (measured: mean -2.58s, worst -2.71s over a 194s ghost). The two
-    // clocks anchor on different signals:
-    //   live  (DriveSession:186) first RAW sample after the start gate whose
-    //         DEVICE-REPORTED speed exceeds startMovingSpeedMps
-    //   ghost (GhostEngine:139)  first PROCESSED trajectory point whose
-    //         DERIVED speed exceeds it — and TrajectoryProcessor drops
-    //         samples, so it lands on a different instant
-    // Consequence: a driver racing their own PB is shown permanently ahead
-    // and "beats" themselves. The fix must make both anchors the same
-    // signal, which touches the scoring/ghost timing contract and its TS
-    // port, so it is deliberately not being rushed.
-    @Test(
-        "racing your own ghost gives a gap near zero throughout",
-        .disabled("known defect: live and ghost clocks anchor on different signals")
-    )
+    // This test measured a real defect for two days before it was fixed:
+    // racing your own identical run showed a systematic ~2.6 s advantage
+    // (mean -2.58 s, worst -2.71 s over a 194 s ghost), because the live
+    // clock anchored on the first RAW sample whose device-reported speed
+    // cleared a threshold while the ghost clock anchored on the first
+    // PROCESSED point whose derived speed cleared it — and filtered
+    // derivatives lag. Both now anchor on displacement from the start gate,
+    // through one shared function. Do not "fix" a failure here by relaxing
+    // the bound; it means the two clocks have drifted apart again.
+    @Test("racing your own ghost gives a gap near zero throughout")
     func racingYourselfIsNeutral() async throws {
         // Identical seed and profile: the rival IS you. Any systematic gap
         // means the ghost clock and the live clock disagree.
@@ -145,18 +143,19 @@ struct GhostRaceTests {
 
         #expect(!gaps.isEmpty, "the drive screen must receive gaps to display")
         let worst = gaps.map(abs).max() ?? 0
-        #expect(worst < 2.0, "racing yourself drifted by \(worst)s")
+        #expect(worst < 0.5, "racing yourself drifted by \(worst)s")
     }
 
-    // KNOWN GAP — the slowSmooth profile never starts a run at all:
-    // "sensor stream ended before the run started". The live start
-    // condition requires a raw sample with reported speed above
-    // startMovingSpeedMps after the start gate, and this profile's
-    // reported speeds apparently never satisfy it. Worth confirming
-    // against a real slow drive before changing the threshold.
+    // CORRECTION: I assumed this was another casualty of the speed-threshold
+    // start rule. It is not. With the displacement anchor the slow run now
+    // STARTS correctly, and then fails with `runDidNotFinish` — the
+    // slowSmooth simulator profile does not cover the whole demo route in
+    // the samples it generates, so there is no finish-gate hit to build a
+    // ghost from. That is a fixture limitation, not an engine defect, and it
+    // needs a longer slow-profile fixture rather than a threshold change.
     @Test(
         "a slower driver is shown as behind, and it grows",
-        .disabled("known gap: the slow profile never triggers the live start condition")
+        .disabled("fixture: the slowSmooth profile never reaches the finish gate")
     )
     func slowerDriverFallsBehind() async throws {
         let (fast, _) = try await Self.drive(profile: .fastSmooth, seed: 31)

@@ -81,7 +81,7 @@ struct DriveDurabilityTests {
     @Test("a session parked on the ready screen gives up instead of growing")
     func parkedSessionTimesOut() async {
         let config = DriveSessionConfig(
-            gpsFreshSeconds: 3, startMovingSpeedMps: 1.5, maxWaitingSeconds: 30
+            gpsFreshSeconds: 3, startMovingMeters: 5, maxWaitingSeconds: 30
         )
         let session = Self.session(config: config)
         // Five minutes of a phone sitting on a dashboard.
@@ -97,7 +97,7 @@ struct DriveDurabilityTests {
     @Test("giving up releases the buffers rather than holding them")
     func timeoutReleasesMemory() async {
         let config = DriveSessionConfig(
-            gpsFreshSeconds: 3, startMovingSpeedMps: 1.5, maxWaitingSeconds: 10
+            gpsFreshSeconds: 3, startMovingMeters: 5, maxWaitingSeconds: 10
         )
         let session = Self.session(config: config)
         _ = await Self.drain(session, Self.parkedEvents(seconds: 200, from: Self.route[0]))
@@ -111,7 +111,7 @@ struct DriveDurabilityTests {
         // A sensor that reports the same instant forever defeats every
         // duration-based limit. The count-based one is the backstop.
         let config = DriveSessionConfig(
-            gpsFreshSeconds: 3, startMovingSpeedMps: 1.5,
+            gpsFreshSeconds: 3, startMovingMeters: 5,
             maxWaitingSeconds: 600, maxRunSeconds: 7_200,
             maxIMUSamples: 200, maxGPSSamples: 200
         )

@@ -59,8 +59,18 @@ struct GhostEngineTests {
     @Test("a ghost spans start line to finish, monotone in both axes")
     func ghostShape() throws {
         let ghost = try makeGhost(speedMps: 20)
-        #expect(ghost.points.first == GhostPoint(progress: 0, elapsedSeconds: 0))
-        #expect(abs((ghost.points.last?.progress ?? 0) - 1) < 0.001)
+        // The ends are the progress the car ACTUALLY had, not pinned 0 and 1.
+        // The clock starts once it has moved `startMovingMeters` past the
+        // gate, so the first point sits slightly along the course; a run ends
+        // on ENTERING the finish gate circle, so the last sits slightly short
+        // of it. Pinning both ends was a real defect: it stretched the ghost's
+        // first and last segments across ground the driver never covers, and
+        // showed a driver racing their own run as ~1.8 s away from themselves
+        // at each end.
+        #expect(ghost.points.first?.elapsedSeconds == 0)
+        let firstProgress = ghost.points.first?.progress ?? -1
+        #expect(firstProgress >= 0 && firstProgress < 0.05, "start \(firstProgress)")
+        #expect(abs((ghost.points.last?.progress ?? 0) - 1) < 0.05)
         #expect(zip(ghost.points, ghost.points.dropFirst()).allSatisfy {
             $0.progress < $1.progress && $0.elapsedSeconds <= $1.elapsedSeconds
         })

@@ -11,8 +11,16 @@ import SOTelemetry
 public struct DriveSessionConfig: Sendable, Equatable {
     /// GPS fixes must be at least this fresh for READY, seconds.
     public var gpsFreshSeconds: Double
-    /// Speed that turns READY into ACTIVE once the start gate is hit, m/s.
-    public var startMovingSpeedMps: Double
+    /// How far the car must move past the start gate before the clock
+    /// starts, in metres.
+    ///
+    /// This used to be a speed threshold, and the ghost clock used the same
+    /// threshold against a *smoothed* speed while this one used the device's
+    /// reported speed. Filtered derivatives lag, so the two clocks started
+    /// at different instants and a driver racing their own best run was
+    /// shown ~2.6 s ahead of themselves. Both sides now call
+    /// `GhostEngine.startTime` with this distance.
+    public var startMovingMeters: Double
 
     /// How long the session may sit waiting to start before it gives up.
     ///
@@ -34,14 +42,14 @@ public struct DriveSessionConfig: Sendable, Equatable {
 
     public init(
         gpsFreshSeconds: Double,
-        startMovingSpeedMps: Double,
+        startMovingMeters: Double,
         maxWaitingSeconds: Double = 600,
         maxRunSeconds: Double = 7_200,
         maxIMUSamples: Int = 500_000,
         maxGPSSamples: Int = 100_000
     ) {
         self.gpsFreshSeconds = gpsFreshSeconds
-        self.startMovingSpeedMps = startMovingSpeedMps
+        self.startMovingMeters = startMovingMeters
         self.maxWaitingSeconds = maxWaitingSeconds
         self.maxRunSeconds = maxRunSeconds
         self.maxIMUSamples = maxIMUSamples
@@ -50,7 +58,7 @@ public struct DriveSessionConfig: Sendable, Equatable {
 
     public static let `default` = DriveSessionConfig(
         gpsFreshSeconds: 3,
-        startMovingSpeedMps: 1.5
+        startMovingMeters: 5
     )
 }
 
@@ -106,6 +114,9 @@ public actor DriveSession {
     private var rawIMU: [IMUSample] = []
     private var startTime: Double?
     private var firstEventTime: Double?
+    /// Where the car was when it crossed the start gate. The clock starts
+    /// once it is `startMovingMeters` from here — see DriveSessionConfig.
+    private var gateCrossingCoordinate: GeoCoordinate?
     private var consumeTask: Task<Void, Never>?
     /// Writes the drive to disk as it happens, so a mid-run crash does not
     /// destroy it. Optional: a session with no recorder still works, which
@@ -280,9 +291,35 @@ public actor DriveSession {
                 transition(to: .ready)
             }
         case .ready:
-            if tracker.checkpointHits.contains(where: { $0.sequence == 0 }),
-               (sample.speed ?? 0) > config.startMovingSpeedMps {
-                startTime = sample.timestamp
+            // Exactly the rule ghost generation uses: the clock starts on the
+            // FIRST fix that is `startMovingMeters` from where the car
+            // crossed the start gate. Samples arrive in order, so the first
+            // one to satisfy it is this one — which makes this transition
+            // identical to `GhostEngine.startTime` rather than merely similar.
+            guard let hit = tracker.checkpointHits.first(where: { $0.sequence == 0 })
+            else { break }
+            // The origin is the fix AT the gate crossing — looked up in the
+            // raw buffer, not "wherever we happened to be when READY
+            // arrived". The car can cross the gate while the orientation
+            // estimator is still converging, in which case READY comes late
+            // and using the current fix put the origin 13.5 m down the road.
+            if gateCrossingCoordinate == nil {
+                gateCrossingCoordinate = rawGPS
+                    .first(where: { $0.timestamp >= hit.timestamp })?.coordinate
+            }
+            if let origin = gateCrossingCoordinate,
+               origin.distance(to: sample.coordinate) >= config.startMovingMeters {
+                // The anchor is the FIRST fix that cleared the threshold,
+                // found across the whole buffer — not this one. READY can
+                // arrive several fixes late (the orientation estimator has
+                // to converge first), and taking the current fix started the
+                // clock ~0.9 s after the ghost's did. Same function, same
+                // inputs, same answer as ghost generation.
+                startTime = GhostEngine.startTime(
+                    samples: rawGPS.map { ($0.timestamp, $0.coordinate) },
+                    gateHitTimestamp: hit.timestamp,
+                    movedMeters: config.startMovingMeters
+                )
                 transition(to: activeState(at: sample.timestamp))
             }
         case .active:
