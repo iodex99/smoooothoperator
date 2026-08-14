@@ -3,7 +3,7 @@
 -- is a "read the whole user base" endpoint with a friendly name.
 
 begin;
-select plan(20);
+select plan(27);
 
 insert into auth.users (id, email) values
     ('ad000001-a000-4000-8000-000000000001', 'owner@test.local'),
@@ -144,6 +144,40 @@ select is(
     (select arr_minor from public.admin_overview()),
     (999 * 12)::bigint,
     'ARR is twelve months of MRR'
+);
+
+-- Every function must actually RUN for an admin. The first version of these
+-- tests only proved that non-admins were refused, so a plain SQL error in
+-- admin_growth_daily (timestamptz + integer) survived the whole suite and was
+-- only caught by calling the API by hand. Refusing correctly is half the job.
+
+select lives_ok(
+    'select * from public.admin_overview()',
+    'overview runs for an admin'
+);
+select lives_ok(
+    'select * from public.admin_courses_by_region()',
+    'courses-by-region runs for an admin'
+);
+select lives_ok(
+    'select * from public.admin_top_courses(5)',
+    'top-courses runs for an admin'
+);
+select lives_ok(
+    'select * from public.admin_regions_by_activity(30)',
+    'regions-by-activity runs for an admin'
+);
+select lives_ok(
+    'select * from public.admin_revenue_by_product()',
+    'revenue-by-product runs for an admin'
+);
+select lives_ok(
+    'select * from public.admin_growth_daily(30)',
+    'growth runs for an admin'
+);
+select lives_ok(
+    'select * from public.admin_retention()',
+    'retention runs for an admin'
 );
 
 select * from finish();

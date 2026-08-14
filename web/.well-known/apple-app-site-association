@@ -1,13 +1,12 @@
 {
   "applinks": {
+    "apps": [],
     "details": [
       {
         "appIDs": ["TEAMID.app.smooooth.operator"],
         "components": [
-          {
-            "/": "/challenge/*",
-            "comment": "Challenge share links open in the app (spec §79)."
-          }
+          { "/": "/challenge/*", "comment": "Shared challenge codes open the app" },
+          { "/": "/course/*", "comment": "Shared course links open the app" }
         ]
       }
     ]

@@ -1,0 +1,108 @@
+/* Smooooth Operator — the app's heat system, on the web.
+   Single stylesheet shared by every page so the site and the app cannot
+   drift apart. Tokens mirror App/Sources/DesignSystem/Theme.swift. */
+:root {
+  --ground: #0A0B0D;
+  --surface: #15171C;
+  --elevated: #1B1E25;
+  --hairline: rgba(255, 255, 255, 0.08);
+  --blaze: #FF5F1F;
+  --amber: #FFB01F;
+  --ink: #F2F3F5;
+  --muted: #8B93A1;
+  --dim: #5C626C;
+  /* Green is verification semantics only — never decoration. */
+  --verified: #34D368;
+  --caution: #FFB01F;
+  --danger: #FF4D45;
+  --display: ui-rounded, "SF Pro Rounded", system-ui, sans-serif;
+  --body: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--amber); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+
+.wrap { max-width: 780px; margin: 0 auto; padding: 34px 20px 90px; }
+.wrap.wide { max-width: 1180px; }
+
+/* ── masthead ─────────────────────────────────────────────────────── */
+.mast { display: flex; align-items: center; gap: 14px; margin-bottom: 40px; }
+.mast img { width: 46px; height: 46px; border-radius: 11px; }
+.wordmark { font-family: var(--display); line-height: 0.95; }
+.wordmark b {
+  display: block; font-size: 21px; font-weight: 900; letter-spacing: -0.01em;
+}
+.wordmark span {
+  display: block; font-size: 10px; font-weight: 900;
+  letter-spacing: 0.34em; color: var(--blaze);
+}
+.mast nav { margin-left: auto; display: flex; gap: 18px; font-size: 14px; }
+.mast nav a { color: var(--muted); text-decoration: none; }
+.mast nav a:hover { color: var(--ink); }
+
+h1 {
+  font-family: var(--display); font-weight: 900;
+  font-size: clamp(30px, 6vw, 50px); line-height: 1.05;
+  letter-spacing: -0.025em; margin: 0 0 16px; text-wrap: balance;
+}
+h2 {
+  font-family: var(--display); font-weight: 800;
+  font-size: clamp(19px, 3vw, 24px); letter-spacing: -0.01em;
+  margin: 40px 0 12px;
+}
+h3 { font-family: var(--display); font-weight: 800; font-size: 17px; margin: 26px 0 8px; }
+p, li { color: var(--muted); }
+p { margin: 0 0 14px; }
+strong { color: var(--ink); font-weight: 600; }
+.lede { font-size: clamp(16px, 2.4vw, 19px); color: var(--ink); }
+.updated {
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--dim);
+}
+
+.card {
+  background: var(--surface); border: 1px solid var(--hairline);
+  border-radius: 18px; padding: 22px; margin: 18px 0;
+}
+
+.cta {
+  display: inline-block; font-family: var(--display); font-weight: 900;
+  font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: #000; text-decoration: none;
+  background: linear-gradient(100deg, var(--blaze), var(--amber));
+  border-radius: 999px; padding: 14px 26px;
+  box-shadow: 0 10px 30px -12px rgba(255, 95, 31, 0.8);
+}
+
+footer {
+  margin-top: 70px; padding-top: 22px; border-top: 1px solid var(--hairline);
+  font-size: 13px; color: var(--dim);
+  display: flex; gap: 18px; flex-wrap: wrap;
+}
+footer a { color: var(--muted); text-decoration: none; }
+
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--hairline); }
+th { color: var(--dim); font-family: var(--mono); font-size: 11px;
+     text-transform: uppercase; letter-spacing: 0.07em; font-weight: 500; }
+td { color: var(--ink); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.scroll { overflow-x: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

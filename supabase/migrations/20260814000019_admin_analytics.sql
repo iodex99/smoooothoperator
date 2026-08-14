@@ -350,13 +350,13 @@ begin
     return query
     select d.day::date,
            (select count(*) from public.profiles p
-             where p.created_at >= d.day and p.created_at < d.day + 1),
+             where p.created_at >= d.day and p.created_at < d.day + interval '1 day'),
            (select count(*) from public.runs r
-             where r.created_at >= d.day and r.created_at < d.day + 1),
+             where r.created_at >= d.day and r.created_at < d.day + interval '1 day'),
            (select count(distinct r.user_id) from public.runs r
-             where r.created_at >= d.day and r.created_at < d.day + 1),
+             where r.created_at >= d.day and r.created_at < d.day + interval '1 day'),
            (select count(*) from public.subscriptions s
-             where s.created_at >= d.day and s.created_at < d.day + 1
+             where s.created_at >= d.day and s.created_at < d.day + interval '1 day'
                and s.environment = 'production')
       from generate_series(
           date_trunc('day', now()) - make_interval(days => span - 1),

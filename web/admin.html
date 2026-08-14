@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Operations · Smooooth Operator</title>
+<link rel="stylesheet" href="/styles.css">
+<link rel="icon" href="/logo.png">
+<style>
+  /* Dark-only by design: this page is one operator's console, not a public
+     document, and every value below is stepped for the near-black surface. */
+  .viz-root {
+    --surface-1: #15171C;
+    --grid: rgba(255,255,255,0.07);
+    --series-1: #FF5F1F;          /* brand blaze — contrast 4.6:1 on surface */
+    --series-1-soft: rgba(255,95,31,0.16);
+    --text-primary: #F2F3F5;
+    --text-secondary: #8B93A1;
+    --text-muted: #5C626C;
+  }
+
+  .signin { max-width: 380px; margin: 12vh auto; }
+  .signin input {
+    width: 100%; padding: 12px 14px; margin-bottom: 10px;
+    background: var(--elevated); color: var(--ink);
+    border: 1px solid var(--hairline); border-radius: 11px;
+    font: inherit; font-size: 15px;
+  }
+  .signin button {
+    width: 100%; padding: 13px; border: 0; border-radius: 999px; cursor: pointer;
+    font-family: var(--display); font-weight: 900; font-size: 14px;
+    letter-spacing: 0.06em; text-transform: uppercase; color: #000;
+    background: linear-gradient(100deg, var(--blaze), var(--amber));
+  }
+  .msg { font-size: 13.5px; margin-top: 12px; }
+  .msg.bad { color: var(--danger); }
+  .msg.warn { color: var(--caution); }
+
+  .bar-row { display: flex; align-items: center; justify-content: space-between;
+             gap: 12px; margin-bottom: 18px; }
+  .bar-row h1 { margin: 0; font-size: clamp(22px, 4vw, 30px); }
+  .ghost-btn {
+    background: var(--elevated); color: var(--ink); border: 1px solid var(--hairline);
+    border-radius: 999px; padding: 8px 16px; font: inherit; font-size: 13px; cursor: pointer;
+  }
+
+  /* ── KPI tiles: a number is the form when there is one number ────────── */
+  .kpis { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(168px, 1fr)); }
+  .kpi {
+    background: var(--surface); border: 1px solid var(--hairline);
+    border-radius: 16px; padding: 16px 18px;
+  }
+  .kpi dt {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.09em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 7px;
+  }
+  .kpi dd {
+    margin: 0; font-family: var(--display); font-weight: 900;
+    font-size: 30px; line-height: 1; letter-spacing: -0.02em;
+    color: var(--text-primary); font-variant-numeric: tabular-nums;
+  }
+  .kpi .sub { display: block; margin-top: 6px; font-family: var(--body);
+              font-size: 12px; font-weight: 400; color: var(--text-secondary); }
+  .kpi.accent dd { color: var(--amber); }
+  /* Green here is a verification share, which is the one thing green means. */
+  .kpi.verified dd { color: var(--verified); }
+
+  /* ── small multiples: one series each, so no dual axis and no legend ─── */
+  .panels { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .panel {
+    background: var(--surface); border: 1px solid var(--hairline);
+    border-radius: 16px; padding: 14px 16px 10px;
+  }
+  .panel h3 {
+    margin: 0 0 2px; font-size: 13px; font-family: var(--mono); font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary);
+  }
+  .panel .total {
+    font-family: var(--display); font-weight: 900; font-size: 21px;
+    color: var(--text-primary); font-variant-numeric: tabular-nums;
+  }
+  .panel svg { display: block; width: 100%; height: 96px; overflow: visible; }
+  .panel figcaption { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+  .dot { r: 4; fill: var(--series-1); stroke: var(--surface-1); stroke-width: 2; }
+
+  /* Inline magnitude in a table is a sequential job: one hue, no rainbow. */
+  .inbar { display: block; height: 6px; border-radius: 3px; background: var(--elevated); }
+  .inbar i { display: block; height: 100%; border-radius: 3px; background: var(--series-1); }
+
+  .empty { color: var(--text-muted); font-size: 14px; padding: 14px 0; }
+  .hint { font-size: 12.5px; color: var(--text-muted); margin-top: 6px; }
+  section { margin-top: 34px; }
+</style>
+</head>
+<body class="viz-root">
+
+<!-- Sign in ------------------------------------------------------------- -->
+<div class="wrap signin" id="gate">
+  <header class="mast" style="justify-content:center;margin-bottom:26px">
+    <img src="/logo.png" alt="" width="46" height="46">
+    <div class="wordmark"><b>SMOOOOTH</b><span>OPERATIONS</span></div>
+  </header>
+  <div class="card">
+    <form id="signin-form" autocomplete="on">
+      <input type="email" id="email" placeholder="Email" autocomplete="username" required>
+      <input type="password" id="password" placeholder="Password" autocomplete="current-password" required>
+      <button type="submit">Sign in</button>
+    </form>
+    <p class="msg" id="gate-msg"></p>
+    <p class="hint">Signing in proves who you are. Whether you can read
+    anything is decided by the database — operator access is granted in SQL
+    and cannot be requested from here.</p>
+  </div>
+</div>
+
+<!-- Dashboard ----------------------------------------------------------- -->
+<div class="wrap wide" id="dash" hidden>
+  <div class="bar-row">
+    <h1>Operations</h1>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span class="hint" id="stamp"></span>
+      <button class="ghost-btn" id="refresh">Refresh</button>
+      <button class="ghost-btn" id="signout">Sign out</button>
+    </div>
+  </div>
+
+  <p class="msg" id="dash-msg"></p>
+
+  <section>
+    <dl class="kpis" id="kpis"></dl>
+    <p class="hint" id="price-hint"></p>
+  </section>
+
+  <section>
+    <h2>Last 30 days</h2>
+    <div class="panels" id="growth"></div>
+  </section>
+
+  <section>
+    <h2>Revenue by product</h2>
+    <div class="scroll"><table id="revenue"></table></div>
+  </section>
+
+  <section>
+    <h2>Where the driving happens</h2>
+    <p class="hint">By the country of the course actually driven — profile
+    country is self-reported and usually empty, so it would be a guess.</p>
+    <div class="scroll"><table id="regions"></table></div>
+  </section>
+
+  <section>
+    <h2>Catalog coverage</h2>
+    <p class="hint">Courses beside the runs on them. Forty courses with no runs
+    and two courses with nine hundred are different problems.</p>
+    <div class="scroll"><table id="catalog"></table></div>
+  </section>
+
+  <section>
+    <h2>Most driven courses</h2>
+    <div class="scroll"><table id="courses"></table></div>
+  </section>
+
+  <footer><span>Operator console · not indexed · not public</span></footer>
+</div>
+
+<script src="/config.js"></script>
+<script>
+(() => {
+  "use strict";
+  const URL_BASE = window.SUPABASE_URL, ANON = window.SUPABASE_ANON_KEY;
+  const gate = document.getElementById("gate");
+  const dash = document.getElementById("dash");
+  const gateMsg = document.getElementById("gate-msg");
+  const dashMsg = document.getElementById("dash-msg");
+  let token = sessionStorage.getItem("so_token");
+
+  const configured = URL_BASE && !URL_BASE.includes("YOUR-PROJECT-REF");
+
+  // ── plumbing ──────────────────────────────────────────────────────────
+  async function rpc(name, args = {}) {
+    const res = await fetch(`${URL_BASE}/rest/v1/rpc/${name}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: ANON,
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(args),
+    });
+    if (res.status === 401) throw new Error("SESSION");
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      // The database raises 42501 for a non-operator. Say so plainly rather
+      // than rendering an empty dashboard that looks like "no users yet".
+      if (body && (body.code === "42501" || /not authorised/i.test(body.message || "")))
+        throw new Error("FORBIDDEN");
+      throw new Error(body.message || `Request failed (${res.status})`);
+    }
+    return body;
+  }
+
+  const fmt = (n) => (n == null ? "—" : Number(n).toLocaleString());
+  const pct = (a, b) => (b ? Math.round((a / b) * 100) + "%" : "—");
+  function money(minor, currency) {
+    if (minor == null) return "—";
+    try {
+      return new Intl.NumberFormat(undefined, {
+        style: "currency", currency: currency || "USD",
+        maximumFractionDigits: 0,
+      }).format(minor / 100);
+    } catch { return (minor / 100).toFixed(0); }
+  }
+
+  // ── charts: one series per panel, so there is never a second y-axis ────
+  function sparkline(points, valueKey) {
+    const w = 260, h = 96, padY = 10;
+    const values = points.map((p) => Number(p[valueKey]) || 0);
+    const max = Math.max(1, ...values);
+    const step = points.length > 1 ? w / (points.length - 1) : 0;
+    const y = (v) => h - padY - (v / max) * (h - padY * 2);
+    const d = values.map((v, i) => `${i ? "L" : "M"}${(i * step).toFixed(1)},${y(v).toFixed(1)}`).join("");
+    const area = `${d}L${w},${h}L0,${h}Z`;
+    const lastX = (values.length - 1) * step, lastY = y(values.at(-1) ?? 0);
+    // A recessive baseline, a 2px line, one emphasized endpoint — not a
+    // marker on every point.
+    return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img"
+      aria-label="${points.length} day series, peak ${max}">
+      <line x1="0" y1="${h - padY}" x2="${w}" y2="${h - padY}" stroke="var(--grid)" stroke-width="1"/>
+      <path d="${area}" fill="var(--series-1-soft)"/>
+      <path d="${d}" fill="none" stroke="var(--series-1)" stroke-width="2"
+            stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+      <circle class="dot" cx="${lastX.toFixed(1)}" cy="${lastY.toFixed(1)}"/>
+    </svg>`;
+  }
+
+  function panel(title, points, key, note) {
+    const total = points.reduce((s, p) => s + (Number(p[key]) || 0), 0);
+    return `<figure class="panel" style="margin:0">
+      <h3>${title}</h3>
+      <div class="total">${fmt(total)}</div>
+      ${sparkline(points, key)}
+      <figcaption>${note}</figcaption>
+    </figure>`;
+  }
+
+  function table(el, columns, rows, emptyText) {
+    if (!rows.length) { el.outerHTML = `<p class="empty">${emptyText}</p>`; return; }
+    const head = columns.map((c) => `<th class="${c.num ? "num" : ""}">${c.label}</th>`).join("");
+    const body = rows.map((r) =>
+      "<tr>" + columns.map((c) => `<td class="${c.num ? "num" : ""}">${c.cell(r)}</td>`).join("") + "</tr>"
+    ).join("");
+    el.innerHTML = `<thead><tr>${head}</tr></thead><tbody>${body}</tbody>`;
+  }
+
+  // ── render ────────────────────────────────────────────────────────────
+  async function load() {
+    dashMsg.textContent = "";
+    const [overview, growth, revenue, regions, catalog, courses, retention] =
+      await Promise.all([
+        rpc("admin_overview"),
+        rpc("admin_growth_daily", { p_days: 30 }),
+        rpc("admin_revenue_by_product"),
+        rpc("admin_regions_by_activity", { p_days: 30 }),
+        rpc("admin_courses_by_region"),
+        rpc("admin_top_courses", { p_limit: 15 }),
+        rpc("admin_retention"),
+      ]);
+
+    const o = overview[0] || {}, r = retention[0] || {};
+    const priced = o.prices_configured;
+
+    document.getElementById("kpis").innerHTML = [
+      ["Total drivers", fmt(o.total_users), `${fmt(o.new_users_30d)} in the last 30 days`, ""],
+      ["Paying", fmt(o.paying_users), `${pct(o.paying_users, o.total_users)} of drivers`, "accent"],
+      ["MRR", priced ? money(o.mrr_minor, o.currency) : "—",
+        priced ? "active + grace, production only" : "prices not set yet", "accent"],
+      ["ARR", priced ? money(o.arr_minor, o.currency) : "—",
+        priced ? "12 × MRR" : "prices not set yet", "accent"],
+      ["Runs", fmt(o.total_runs), `${fmt(o.runs_7d)} in the last 7 days`, ""],
+      ["Verified", pct(o.verified_runs, o.total_runs), `${fmt(o.unranked_runs)} not ranked`, "verified"],
+      ["Courses", fmt(o.total_courses), `${fmt(o.countries_covered)} countries`, ""],
+      ["Active drivers", fmt(o.drivers_7d), "drove in the last 7 days", ""],
+      ["Came back", fmt(r.drivers_returned), `of ${fmt(r.drivers_ever)} who ever drove`, ""],
+      ["Cars in garages", fmt(o.total_vehicles), "", ""],
+    ].map(([label, value, sub, cls]) =>
+      `<div class="kpi ${cls}"><dt>${label}</dt><dd>${value}${sub ? `<span class="sub">${sub}</span>` : ""}</dd></div>`
+    ).join("");
+
+    document.getElementById("price-hint").textContent = priced ? "" :
+      "MRR and ARR read “—” because product prices have not been entered yet. " +
+      "Set them in public.product_prices to match App Store Connect — a guessed price " +
+      "would be worse than no number.";
+
+    document.getElementById("growth").innerHTML =
+      panel("Signups", growth, "signups", "new accounts per day") +
+      panel("Runs", growth, "runs", "recorded drives per day") +
+      panel("Active drivers", growth, "active_drivers", "drivers who drove that day") +
+      panel("New subscriptions", growth, "new_subscriptions", "production only");
+
+    table(document.getElementById("revenue"), [
+      { label: "Product", cell: (x) => x.product_id.replace("smooooth.pro.", "") },
+      { label: "Subscribers", num: true, cell: (x) => fmt(x.subscribers) },
+      { label: "Price", num: true, cell: (x) => x.price_minor ? money(x.price_minor, x.currency) : "not set" },
+      { label: "MRR", num: true, cell: (x) => x.price_minor ? money(x.mrr_minor, x.currency) : "—" },
+    ], revenue, "No products configured.");
+
+    const maxRuns = Math.max(1, ...regions.map((x) => Number(x.run_count)));
+    table(document.getElementById("regions"), [
+      { label: "Country", cell: (x) => x.country || "—" },
+      { label: "Region", cell: (x) => x.region || "—" },
+      { label: "Drivers", num: true, cell: (x) => fmt(x.driver_count) },
+      { label: "Paying", num: true, cell: (x) => fmt(x.paying_driver_count) },
+      { label: "Runs", num: true, cell: (x) => fmt(x.run_count) },
+      { label: "", cell: (x) => `<span class="inbar"><i style="width:${(x.run_count / maxRuns) * 100}%"></i></span>` },
+    ], regions, "Nobody has recorded a run in the last 30 days.");
+
+    table(document.getElementById("catalog"), [
+      { label: "Country", cell: (x) => x.country || "—" },
+      { label: "Region", cell: (x) => x.region || "—" },
+      { label: "City", cell: (x) => x.city || "—" },
+      { label: "Courses", num: true, cell: (x) => fmt(x.course_count) },
+      { label: "Runs", num: true, cell: (x) => fmt(x.run_count) },
+      { label: "Drivers", num: true, cell: (x) => fmt(x.driver_count) },
+    ], catalog, "The catalog is empty.");
+
+    table(document.getElementById("courses"), [
+      { label: "Course", cell: (x) => x.name },
+      { label: "Where", cell: (x) => [x.city, x.country].filter(Boolean).join(", ") || "—" },
+      { label: "Runs", num: true, cell: (x) => fmt(x.run_count) },
+      { label: "Drivers", num: true, cell: (x) => fmt(x.driver_count) },
+      { label: "Verified", num: true, cell: (x) => pct(x.verified_count, x.run_count) },
+      { label: "Best", num: true, cell: (x) => fmt(x.best_score) },
+    ], courses, "No course has been driven yet.");
+
+    document.getElementById("stamp").textContent =
+      "as of " + new Date().toLocaleTimeString();
+  }
+
+  function show(which) {
+    gate.hidden = which !== "gate";
+    dash.hidden = which !== "dash";
+  }
+
+  async function boot() {
+    if (!configured) {
+      gateMsg.className = "msg warn";
+      gateMsg.textContent = "config.js still has placeholder values — add your Supabase project URL and publishable key.";
+      return;
+    }
+    if (!token) { show("gate"); return; }
+    show("dash");
+    try {
+      await load();
+    } catch (err) {
+      if (err.message === "SESSION") {
+        sessionStorage.removeItem("so_token"); token = null; show("gate");
+        gateMsg.className = "msg"; gateMsg.textContent = "Session expired — sign in again.";
+      } else if (err.message === "FORBIDDEN") {
+        dashMsg.className = "msg bad";
+        dashMsg.textContent = "This account is not an operator account. Add it to public.admins in SQL — there is deliberately no way to grant it from here.";
+      } else {
+        dashMsg.className = "msg bad";
+        dashMsg.textContent = err.message;
+      }
+    }
+  }
+
+  document.getElementById("signin-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    gateMsg.className = "msg"; gateMsg.textContent = "Signing in…";
+    try {
+      const res = await fetch(`${URL_BASE}/auth/v1/token?grant_type=password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: ANON },
+        body: JSON.stringify({
+          email: document.getElementById("email").value,
+          password: document.getElementById("password").value,
+        }),
+      });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.error_description || body.msg || "Sign-in failed.");
+      token = body.access_token;
+      sessionStorage.setItem("so_token", token);
+      gateMsg.textContent = "";
+      boot();
+    } catch (err) {
+      gateMsg.className = "msg bad";
+      gateMsg.textContent = err.message;
+    }
+  });
+
+  document.getElementById("refresh").addEventListener("click", boot);
+  document.getElementById("signout").addEventListener("click", () => {
+    sessionStorage.removeItem("so_token"); token = null;
+    dashMsg.textContent = ""; show("gate");
+  });
+
+  boot();
+})();
+</script>
+</body></html>
