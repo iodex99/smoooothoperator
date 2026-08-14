@@ -10,7 +10,8 @@ struct OnboardingView: View {
     var demoAutoAdvance = false
 
     @State private var page = 0
-    private static let pageCount = 5
+    private static let pageCount = 6
+    private static let locationPage = 5
 
     var body: some View {
         ZStack {
@@ -30,6 +31,7 @@ struct OnboardingView: View {
                     ScorePage().tag(2)
                     VerifiedPage().tag(3)
                     SafetyPage().tag(4)
+                    LocationPage().tag(5)
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .animation(.easeInOut, value: page)
@@ -43,14 +45,20 @@ struct OnboardingView: View {
                 }
                 .padding(.bottom, 18)
 
-                Button(page == Self.pageCount - 1 ? "I UNDERSTAND" : "CONTINUE") {
-                    if page < Self.pageCount - 1 {
-                        page += 1
-                    } else {
-                        environment.completeOnboarding()
+                VStack(spacing: 10) {
+                    Button(primaryTitle) {
+                        advance()
+                    }
+                    .buttonStyle(HeatButtonStyle())
+
+                    // Location is genuinely optional: the app still drives,
+                    // scores and queues without it. Never trap a driver on
+                    // a permission screen.
+                    if page == Self.locationPage {
+                        Button("Not now") { environment.completeOnboarding() }
+                            .buttonStyle(GhostButtonStyle())
                     }
                 }
-                .buttonStyle(HeatButtonStyle())
                 .padding(.horizontal, 24)
                 .padding(.bottom, 20)
             }
@@ -59,11 +67,58 @@ struct OnboardingView: View {
         .task {
             guard demoAutoAdvance else { return }
             // CI capture: walk the pages, never complete (screenshots stop
-            // at the safety gate).
+            // at the last page).
             for next in 1..<Self.pageCount {
                 try? await Task.sleep(for: .seconds(4))
                 page = next
             }
+        }
+    }
+
+    private var locationDenied: Bool {
+        environment.sensors.authorizationStatus == .denied
+            || environment.sensors.authorizationStatus == .restricted
+    }
+
+    private var locationGranted: Bool {
+        environment.sensors.authorizationStatus == .authorizedWhenInUse
+            || environment.sensors.authorizationStatus == .authorizedAlways
+    }
+
+    private var primaryTitle: String {
+        switch page {
+        case Self.pageCount - 2: "I UNDERSTAND"
+        case Self.locationPage:
+            locationGranted ? "START DRIVING" : (locationDenied ? "OPEN SETTINGS" : "TURN ON LOCATION")
+        default: "CONTINUE"
+        }
+    }
+
+    private func advance() {
+        guard page == Self.locationPage else {
+            page += 1
+            return
+        }
+        if locationGranted {
+            environment.completeOnboarding()
+            return
+        }
+        if locationDenied {
+            // Once denied, the system prompt never appears again — Settings
+            // is the only route, so say so instead of showing a dead button.
+            #if canImport(UIKit)
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url)
+            }
+            #endif
+            return
+        }
+        environment.sensors.requestPermissions()
+        // The system prompt is asynchronous. Give it a beat, then let the
+        // driver into the app either way — the answer is theirs to make.
+        Task {
+            try? await Task.sleep(for: .seconds(2))
+            environment.completeOnboarding()
         }
     }
 }
@@ -222,6 +277,70 @@ private struct SafetyPage: View {
     }
 }
 
+/// Asked last, once the driver knows what the app is for. A run cannot
+/// start without location anyway, and Explore has nothing to show until it
+/// knows where "near you" is — so asking here saves a dead-end first launch.
+private struct LocationPage: View {
+    @Environment(AppEnvironment.self) private var environment
+
+    private var granted: Bool {
+        environment.sensors.authorizationStatus == .authorizedWhenInUse
+            || environment.sensors.authorizationStatus == .authorizedAlways
+    }
+
+    private var denied: Bool {
+        environment.sensors.authorizationStatus == .denied
+            || environment.sensors.authorizationStatus == .restricted
+    }
+
+    var body: some View {
+        VStack(spacing: 24) {
+            Spacer()
+            ZStack {
+                GlowRing(progress: 1, lineWidth: 5)
+                    .frame(width: 84, height: 84)
+                Image(systemName: granted ? "location.fill" : "location")
+                    .font(.system(size: 30))
+                    .foregroundStyle(granted ? AnyShapeStyle(SOTheme.verified) : AnyShapeStyle(SOTheme.heat))
+            }
+            VStack(spacing: 6) {
+                Text(granted ? "You're set" : "Find the roads near you")
+                    .font(.system(size: 30, weight: .black, design: .rounded))
+                    .foregroundStyle(.white)
+                    .multilineTextAlignment(.center)
+                Text(granted
+                     ? "Courses around you are loading."
+                     : "Smooooth Operator measures a drive on a real road, so it needs your location to find courses near you — and to time the run at all.")
+                    .font(.subheadline)
+                    .foregroundStyle(SOTheme.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 30)
+            }
+            // Deliberately NOT OnboardRule: those carry a green verified
+            // shield because each line is a commitment being acknowledged.
+            // These are statements of fact about how location is used, and
+            // green in this app means verification, never emphasis.
+            VStack(alignment: .leading, spacing: 13) {
+                LocationFact(icon: "location.circle", text: "Used while you drive, and to list courses near you.")
+                LocationFact(icon: "moon.circle", text: "Tracked in the background only during an active run.")
+                LocationFact(icon: "eye.slash.circle", text: "Your precise route is never shown to other drivers.")
+            }
+            .soCard(padding: 18)
+            .padding(.horizontal, 24)
+
+            if denied {
+                Text("Location is off. Turn it on in Settings whenever you want courses near you.")
+                    .font(.footnote)
+                    .foregroundStyle(SOTheme.caution)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 30)
+            }
+            Spacer()
+        }
+    }
+}
+
 // MARK: - Shared page scaffolding
 
 private struct OnboardPage: View {
@@ -260,6 +379,22 @@ private struct OnboardPage: View {
             }
             .padding(.horizontal, 34)
             Spacer()
+        }
+    }
+}
+
+private struct LocationFact: View {
+    let icon: String
+    let text: String
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: icon)
+                .foregroundStyle(SOTheme.heatStart)
+            Text(text)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.white)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }
