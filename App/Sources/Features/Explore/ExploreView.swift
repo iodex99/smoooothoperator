@@ -16,10 +16,14 @@ struct ExploreView: View {
     @State private var state: LoadState = .loading
     @State private var origin: CLLocationCoordinate2D?
 
+    /// No "New" filter. It existed and was a lie: it reversed the
+    /// distance ordering, so it showed the FURTHEST courses and called them
+    /// new. The browse RPCs do not return a creation date, so there is
+    /// nothing honest to sort by — better one filter fewer than one that
+    /// misleads.
     enum Filter: String, CaseIterable, Identifiable {
         case nearby = "Nearby"
         case popular = "Popular"
-        case new = "New"
 
         var id: String { rawValue }
     }
@@ -189,7 +193,6 @@ struct ExploreView: View {
         switch filter {
         case .nearby: rows
         case .popular: rows.sorted { $0.driver_count > $1.driver_count }
-        case .new: rows.reversed()
         }
     }
 }

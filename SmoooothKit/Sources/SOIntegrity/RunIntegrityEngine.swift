@@ -202,12 +202,16 @@ public struct RunIntegrityEngine: Sendable {
         /// Speed as the driver crossed the START gate, m/s. nil when the
         /// crossing is unknown (no gate hit), which is not a finding —
         /// a run that never started is caught elsewhere.
-        startEntrySpeedMps: Double? = nil
+        startEntrySpeedMps: Double? = nil,
+        /// The scored window, start gate to finish gate. Without it, staging
+        /// time is counted as traffic.
+        scoredFrom: Double? = nil,
+        scoredUntil: Double? = nil
     ) -> IntegrityReport {
         var findings: [IntegrityFinding] = []
 
         findings += startLineFindings(entrySpeedMps: startEntrySpeedMps)
-        findings += interruptionFindings(trajectory: trajectory)
+        findings += interruptionFindings(trajectory: trajectory, from: scoredFrom, until: scoredUntil)
 
         findings += timestampFindings(rawGPS: rawGPS)
         findings += impossiblePhysicsFindings(rawGPS: rawGPS)
@@ -346,10 +350,19 @@ public struct RunIntegrityEngine: Sendable {
     public static func stoppedSeconds(
         trajectory: ProcessedTrajectory,
         stoppedSpeedMps: Double,
+        /// The scored window — start gate to finish gate. Time outside it is
+        /// STAGING, not traffic: a driver waiting at the line for a gap in
+        /// the traffic is stationary for a minute and has done nothing
+        /// wrong. Counting that flagged clean runs as "held up in traffic",
+        /// which is exactly the accusation this rule promises never to make.
+        from: Double? = nil,
+        until: Double? = nil,
         maxGapSeconds: Double = 3
     ) -> Double {
         var total = 0.0
         for (a, b) in zip(trajectory.points, trajectory.points.dropFirst()) {
+            if let from, a.timestamp < from { continue }
+            if let until, b.timestamp > until { continue }
             let dt = b.timestamp - a.timestamp
             guard dt > 0, dt <= maxGapSeconds else { continue }
             // Both ends slow: a car braking to a stop is not yet stopped.
@@ -360,12 +373,23 @@ public struct RunIntegrityEngine: Sendable {
         return total
     }
 
-    private func interruptionFindings(trajectory: ProcessedTrajectory) -> [IntegrityFinding] {
-        let duration = trajectory.duration
+    private func interruptionFindings(
+        trajectory: ProcessedTrajectory,
+        from: Double?,
+        until: Double?
+    ) -> [IntegrityFinding] {
+        // The denominator is the SCORED duration, not the whole recording.
+        // Staging is neither stopped time nor run time.
+        let first = from ?? trajectory.points.first?.timestamp
+        let last = until ?? trajectory.points.last?.timestamp
+        guard let first, let last else { return [] }
+        let duration = last - first
         guard duration > 0 else { return [] }
         let stopped = Self.stoppedSeconds(
             trajectory: trajectory,
-            stoppedSpeedMps: config.stoppedSpeedMps
+            stoppedSpeedMps: config.stoppedSpeedMps,
+            from: from,
+            until: until
         )
         guard stopped >= config.minStoppedSecondsToFlag else { return [] }
         let fraction = stopped / duration

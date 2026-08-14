@@ -103,6 +103,76 @@ final class AppEnvironment {
         hasOnboarded = true
     }
 
+    /// The scoring config shipped in the bundle, for when the server's has
+    /// not loaded yet. Shared with DriveView so a recovered drive and a live
+    /// one are scored against the same rules.
+    static func bundledScoringConfig() -> SOScoring.ScoringConfig? {
+        guard let url = Bundle.main.url(forResource: "scoring-v1", withExtension: "json"),
+              let data = try? Data(contentsOf: url)
+        else { return nil }
+        return try? SOScoring.ScoringConfig.load(from: data)
+    }
+
+    /// Picks up drives that were journalled but never made it to the upload
+    /// queue — the app was killed mid-run, or crashed between finishing and
+    /// enqueueing.
+    ///
+    /// Without this the recorder writes files nobody ever reads: the drive
+    /// is preserved on disk and then orphaned forever, which is the feature
+    /// doing nothing at all while looking like it works.
+    func recoverInterruptedDrives() async {
+        guard let directory = inFlightDirectory else { return }
+        let recovered = InFlightRecorder.recover(in: directory)
+        guard !recovered.isEmpty else { return }
+        for drive in recovered {
+            // A recovered drive is not special — it goes through the same
+            // evaluation pipeline as any other, and the server rescores it
+            // afterwards like any other. The only difference is that it took
+            // a longer route to the queue.
+            //
+            // Discarded either way: a journal that fails to become a run is
+            // rubbish, and leaving it would re-offer the same failure on
+            // every launch forever.
+            defer { InFlightRecorder.discard(drive, in: directory) }
+
+            guard let api,
+                  let route = try? await api.courseRoute(courseId: drive.courseId),
+                  let config = scoringConfig ?? Self.bundledScoringConfig()
+            else { continue }
+
+            // An interrupted drive often never reached the finish gate, in
+            // which case there is genuinely no run to recover and the
+            // pipeline says so by returning nil.
+            guard let outcome = RunEvaluationPipeline.evaluate(
+                gps: drive.gps,
+                imu: drive.imu,
+                route: route.polyline,
+                gates: route.gates,
+                benchmarkSeconds: 300,
+                scoringConfig: config
+            ) else { continue }
+
+            _ = try? await uploadQueue.enqueue(
+                courseId: drive.courseId,
+                outcome: DriveRunOutcome(
+                    provisionalScore: outcome.score.finalScore,
+                    provisionalVerdict: outcome.integrity.verdict,
+                    breakdown: outcome.score.breakdown,
+                    confidenceScore: outcome.confidence.score,
+                    durationSeconds: outcome.trajectory.duration,
+                    distanceMeters: outcome.trajectory.totalDistanceMeters,
+                    gatesHit: outcome.gatesHit,
+                    deviationDetected: outcome.deviationDetected,
+                    integrityFlags: Set(outcome.integrity.findings.map(\.flag.rawValue)).sorted(),
+                    rawGPS: drive.gps,
+                    rawIMU: drive.imu
+                ),
+                userId: await api.userId
+            )
+        }
+        await refreshPendingCount()
+    }
+
     /// Loads the active scoring config from the server (clients score
     /// provisionally with the same config the server scores with).
     func loadScoringConfig() async {

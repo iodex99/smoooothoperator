@@ -128,12 +128,19 @@ function startLineFindings(
 export function stoppedSeconds(
   trajectory: ProcessedTrajectory,
   stoppedSpeedMps: number,
+  /** The scored window — start gate to finish gate. Time outside it is
+   * STAGING, not traffic: a driver waiting at the line for a gap in the
+   * traffic is stationary for a minute and has done nothing wrong. */
+  from: number | null = null,
+  until: number | null = null,
   maxGapSeconds = 3,
 ): number {
   let total = 0;
   for (let i = 0; i + 1 < trajectory.points.length; i++) {
     const a = trajectory.points[i];
     const b = trajectory.points[i + 1];
+    if (from !== null && a.timestamp < from) continue;
+    if (until !== null && b.timestamp > until) continue;
     const dt = b.timestamp - a.timestamp;
     if (!(dt > 0) || dt > maxGapSeconds) continue;
     // Both ends slow: a car braking to a stop is not yet stopped.
@@ -152,10 +159,18 @@ export function stoppedSeconds(
 function interruptionFindings(
   trajectory: ProcessedTrajectory,
   config: IntegrityConfig,
+  from: number | null,
+  until: number | null,
 ): IntegrityFinding[] {
-  const duration = trajectoryDuration(trajectory);
+  // The denominator is the SCORED duration, not the whole recording.
+  // Staging is neither stopped time nor run time.
+  const points = trajectory.points;
+  const first = from ?? points[0]?.timestamp;
+  const last = until ?? points[points.length - 1]?.timestamp;
+  if (first === undefined || last === undefined) return [];
+  const duration = last - first;
   if (!(duration > 0)) return [];
-  const stopped = stoppedSeconds(trajectory, config.stoppedSpeedMps);
+  const stopped = stoppedSeconds(trajectory, config.stoppedSpeedMps, from, until);
   if (stopped < config.minStoppedSecondsToFlag) return [];
   const fraction = stopped / duration;
   if (!(fraction > config.maxStoppedFraction)) return [];
@@ -177,11 +192,17 @@ export function evaluateRunIntegrity(
   config: IntegrityConfig = DEFAULT_INTEGRITY_CONFIG,
   /** Speed as the driver crossed the START gate, m/s; null when unknown. */
   startEntrySpeedMps: number | null = null,
+  /** The scored window, start gate to finish gate. Without it, staging time
+   * is counted as traffic. */
+  scoredFrom: number | null = null,
+  scoredUntil: number | null = null,
 ): IntegrityReport {
   let findings: IntegrityFinding[] = [];
 
   findings = findings.concat(startLineFindings(startEntrySpeedMps, config));
-  findings = findings.concat(interruptionFindings(trajectory, config));
+  findings = findings.concat(
+    interruptionFindings(trajectory, config, scoredFrom, scoredUntil),
+  );
   findings = findings.concat(timestampFindings(rawGPS));
   findings = findings.concat(impossiblePhysicsFindings(rawGPS, config));
   findings = findings.concat(speedRatioFindings(rawGPS, config));

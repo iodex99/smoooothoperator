@@ -40,6 +40,10 @@ struct SmoooothOperatorApp: App {
                 await environment.refreshSignInState()
                 await environment.refreshEntitlement()
                 await environment.loadScoringConfig()
+                // A drive the app died in the middle of. Must run BEFORE the
+                // flush, so a recovered run goes out in the same pass rather
+                // than waiting for the next launch.
+                await environment.recoverInterruptedDrives()
                 // Anything a previous session couldn't deliver goes now.
                 await environment.flushPendingRuns()
             }

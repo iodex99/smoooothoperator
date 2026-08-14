@@ -77,7 +77,11 @@ public enum RunEvaluationPipeline {
                 gatesHit: tracker.checkpointHits.count,
                 deviationDetected: tracker.deviationDetected
             ),
-            startEntrySpeedMps: startEntrySpeed
+            startEntrySpeedMps: startEntrySpeed,
+            // The window the run is actually scored over. Outside it the car
+            // is staging, and staging is not traffic.
+            scoredFrom: tracker.checkpointHits.first(where: { $0.sequence == 0 })?.timestamp,
+            scoredUntil: tracker.checkpointHits.last?.timestamp
         )
 
         let score = ScoringEngine(config: scoringConfig).score(

@@ -171,6 +171,94 @@ struct InterruptionTests {
         #expect(stopped == 1, "only the stopped second counts, got \(stopped)")
     }
 
+    @Test("staging at the line is not traffic")
+    func stagingIsNotTraffic() {
+        // A driver waits 70 s at the start line for a gap in the traffic —
+        // completely normal, and the calibration step asks them to — then
+        // drives a clean 180 s run without stopping once.
+        //
+        // The first version of this rule measured stopped time across the
+        // WHOLE recording, so that 70 s counted as "held up in traffic" and
+        // a flawless run was refused a rank. That is precisely the false
+        // accusation the warning severity exists to avoid.
+        var points: [TrajectoryPoint] = []
+        var t = 0.0
+        var lat = 34.0
+        while t < 70 {
+            points.append(TrajectoryPoint(
+                timestamp: t, coordinate: GeoCoordinate(latitude: lat, longitude: -118),
+                speedMps: 0, headingDegrees: 90,
+                distanceAlongPathMeters: 0, horizontalAccuracy: 5))
+            t += 0.1
+        }
+        let startedAt = t
+        while t < startedAt + 180 {
+            points.append(TrajectoryPoint(
+                timestamp: t, coordinate: GeoCoordinate(latitude: lat, longitude: -118),
+                speedMps: 20, headingDegrees: 90,
+                distanceAlongPathMeters: 0, horizontalAccuracy: 5))
+            lat += 0.000018
+            t += 0.1
+        }
+        let trajectory = ProcessedTrajectory(points: points, gaps: [], rejectedSampleCount: 0)
+
+        // Unscoped, the staging is counted — this is the bug, kept visible.
+        let unscoped = RunIntegrityEngine.stoppedSeconds(
+            trajectory: trajectory, stoppedSpeedMps: Self.config.stoppedSpeedMps)
+        #expect(unscoped > 60, "sanity: the staging really is in the recording")
+
+        // Scoped to the run window, there is no stopped time at all.
+        let scoped = RunIntegrityEngine.stoppedSeconds(
+            trajectory: trajectory,
+            stoppedSpeedMps: Self.config.stoppedSpeedMps,
+            from: startedAt,
+            until: t)
+        #expect(scoped < 1, "staging leaked into the run window: \(scoped)s")
+
+        let report = Self.engine().evaluate(
+            rawGPS: [], rawIMU: [], trajectory: trajectory,
+            locationConfidence: nil, routeAdherence: nil,
+            startEntrySpeedMps: nil, scoredFrom: startedAt, scoredUntil: t)
+        #expect(
+            !report.findings.contains { $0.flag == .heavilyInterrupted },
+            "a clean run was accused of being stuck in traffic"
+        )
+    }
+
+    @Test("the denominator is the run, not the whole recording")
+    func denominatorIsTheRun() {
+        // 60 s staging + a 100 s run with 40 s of real stopping. Against the
+        // whole recording that is 100/200 = 50%; against the run it is
+        // 40/100 = 40%. Both flag — but only one of them is the truth, and
+        // the evidence string has to say the true one.
+        var points: [TrajectoryPoint] = []
+        var t = 0.0
+        while t < 60 { points.append(Self.still(t)); t += 0.1 }
+        let startedAt = t
+        while t < startedAt + 60 { points.append(Self.moving(t)); t += 0.1 }
+        while t < startedAt + 100 { points.append(Self.still(t)); t += 0.1 }
+        let trajectory = ProcessedTrajectory(points: points, gaps: [], rejectedSampleCount: 0)
+
+        let report = Self.engine().evaluate(
+            rawGPS: [], rawIMU: [], trajectory: trajectory,
+            locationConfidence: nil, routeAdherence: nil,
+            startEntrySpeedMps: nil, scoredFrom: startedAt, scoredUntil: t)
+        let detail = report.findings.first { $0.flag == .heavilyInterrupted }?.detail
+        #expect(detail == "stopped for 40 s of 100 s (40% of the run)", "got \(detail ?? "nil")")
+    }
+
+    static func still(_ t: Double) -> TrajectoryPoint {
+        TrajectoryPoint(timestamp: t, coordinate: GeoCoordinate(latitude: 34, longitude: -118),
+                        speedMps: 0, headingDegrees: 90,
+                        distanceAlongPathMeters: 0, horizontalAccuracy: 5)
+    }
+
+    static func moving(_ t: Double) -> TrajectoryPoint {
+        TrajectoryPoint(timestamp: t, coordinate: GeoCoordinate(latitude: 34 + t * 1e-5, longitude: -118),
+                        speedMps: 20, headingDegrees: 90,
+                        distanceAlongPathMeters: 0, horizontalAccuracy: 5)
+    }
+
     @Test("the thresholds are configuration, not magic numbers")
     func configurable() {
         #expect(Self.config.stoppedSpeedMps == 0.5)

@@ -129,6 +129,75 @@ Deno.test("a car braking to a stop is not counted as stopped yet", () => {
   );
 });
 
+Deno.test("staging at the line is not traffic", () => {
+  // A driver waits 70 s at the line for a gap in the traffic, then drives a
+  // clean 180 s run. Measured across the whole recording that staging counts
+  // as being "held up", and a flawless run is refused a rank — the exact
+  // false accusation this rule's warning severity exists to avoid.
+  const points: TrajectoryPoint[] = [];
+  let t = 0;
+  const lat = 34.0;
+  while (t < 70) {
+    points.push({
+      timestamp: t, coordinate: { latitude: lat, longitude: -118 }, speedMps: 0,
+      headingDegrees: 90, distanceAlongPathMeters: 0, horizontalAccuracy: 5,
+    });
+    t += 0.1;
+  }
+  const startedAt = t;
+  while (t < startedAt + 180) {
+    points.push({
+      timestamp: t, coordinate: { latitude: lat + t * 1e-5, longitude: -118 },
+      speedMps: 20, headingDegrees: 90,
+      distanceAlongPathMeters: 0, horizontalAccuracy: 5,
+    });
+    t += 0.1;
+  }
+  const trajectory: ProcessedTrajectory = { points, gaps: [], rejectedSampleCount: 0 };
+
+  const unscoped = stoppedSeconds(trajectory, DEFAULT_INTEGRITY_CONFIG.stoppedSpeedMps);
+  assert(unscoped > 60, "sanity: the staging really is in the recording");
+
+  const scoped = stoppedSeconds(
+    trajectory, DEFAULT_INTEGRITY_CONFIG.stoppedSpeedMps, startedAt, t,
+  );
+  assert(scoped < 1, `staging leaked into the run window: ${scoped}s`);
+
+  const result = evaluateRunIntegrity(
+    [], [], trajectory, null, null, undefined, null, startedAt, t,
+  );
+  assert(
+    !result.findings.some((f) => f.flag === "heavilyInterrupted"),
+    "a clean run was accused of being stuck in traffic",
+  );
+});
+
+Deno.test("the denominator is the run, not the whole recording", () => {
+  const still = (t: number): TrajectoryPoint => ({
+    timestamp: t, coordinate: { latitude: 34, longitude: -118 }, speedMps: 0,
+    headingDegrees: 90, distanceAlongPathMeters: 0, horizontalAccuracy: 5,
+  });
+  const moving = (t: number): TrajectoryPoint => ({
+    timestamp: t, coordinate: { latitude: 34 + t * 1e-5, longitude: -118 },
+    speedMps: 20, headingDegrees: 90,
+    distanceAlongPathMeters: 0, horizontalAccuracy: 5,
+  });
+  const points: TrajectoryPoint[] = [];
+  let t = 0;
+  while (t < 60) { points.push(still(t)); t += 0.1; }
+  const startedAt = t;
+  while (t < startedAt + 60) { points.push(moving(t)); t += 0.1; }
+  while (t < startedAt + 100) { points.push(still(t)); t += 0.1; }
+
+  const result = evaluateRunIntegrity(
+    [], [], { points, gaps: [], rejectedSampleCount: 0 },
+    null, null, undefined, null, startedAt, t,
+  );
+  const finding = result.findings.find((f) => f.flag === "heavilyInterrupted");
+  // Byte-identical to the Swift reference.
+  assertEquals(finding?.detail, "stopped for 40 s of 100 s (40% of the run)");
+});
+
 Deno.test("the thresholds match the Swift defaults exactly", () => {
   assertEquals(DEFAULT_INTEGRITY_CONFIG.stoppedSpeedMps, 0.5);
   assertEquals(DEFAULT_INTEGRITY_CONFIG.maxStoppedFraction, 0.25);

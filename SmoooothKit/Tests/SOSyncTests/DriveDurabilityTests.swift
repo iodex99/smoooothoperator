@@ -240,6 +240,86 @@ struct DriveDurabilityTests {
         #expect(recovered.map(\.startedAt) == [1_000, 3_000, 5_000])
     }
 
+    @Test("journalled samples come back in the order they were recorded")
+    func journalPreservesOrder() async throws {
+        // The first version spawned a Task per sample. Independent tasks
+        // calling an actor have NO ordering guarantee, so at 50 Hz the file
+        // could hold samples shuffled — a recovered drive with a scrambled
+        // timeline is worse than no file at all.
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("order-in-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: dir) }
+
+        let recorder = try InFlightRecorder(
+            directory: dir, courseId: "order", startedAt: 7_000, flushEvery: 1
+        )
+        let run = TelemetrySimulator(profile: .fastSmooth, seed: 21).simulate(route: Self.route)
+        // Batches, exactly as the session hands them over.
+        for chunk in stride(from: 0, to: 300, by: 50) {
+            await recorder.record(
+                gps: Array(run.gps[chunk..<min(chunk + 50, run.gps.count)]),
+                imu: []
+            )
+        }
+        let recovered = try #require(InFlightRecorder.recover(in: dir).first)
+        let stamps = recovered.gps.map(\.timestamp)
+        #expect(stamps == stamps.sorted(), "the journal came back out of order")
+        #expect(stamps == Array(run.gps.prefix(stamps.count)).map(\.timestamp))
+    }
+
+    @Test("a finished run keeps its journal until the app has queued it")
+    func journalSurvivesFinish() async throws {
+        // The window between "the pipeline produced a result" and "the app
+        // put it in the upload queue" is exactly the window this file
+        // exists to protect. Deleting it at finish reopened it.
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("handoff-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: dir) }
+
+        let session = Self.session(config: .default)
+        let recorder = try InFlightRecorder(
+            directory: dir, courseId: "demo", startedAt: 8_000, flushEvery: 1
+        )
+        await session.attach(recorder: recorder)
+        let run = TelemetrySimulator(profile: .fastSmooth, seed: 22).simulate(route: Self.route)
+        let state = await Self.drain(session, SensorEvent.merge(gps: run.gps, imu: run.imu))
+        guard case .finished = state else {
+            Issue.record("expected a finished run, got \(state)")
+            return
+        }
+        try await Task.sleep(for: .milliseconds(200))
+        #expect(
+            !InFlightRecorder.recover(in: dir).isEmpty,
+            "the journal was deleted before anyone could queue the run"
+        )
+    }
+
+    @Test("an aborted run leaves nothing to recover")
+    func abortDiscardsTheJournal() async throws {
+        // A driver who ends a run has decided it does not count. Offering it
+        // back on next launch would be the app arguing with them.
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("abort-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: dir) }
+
+        let session = Self.session(config: .default)
+        let recorder = try InFlightRecorder(
+            directory: dir, courseId: "demo", startedAt: 9_500, flushEvery: 1
+        )
+        await session.attach(recorder: recorder)
+        let run = TelemetrySimulator(profile: .fastSmooth, seed: 24).simulate(route: Self.route)
+        let events = Array(SensorEvent.merge(gps: run.gps, imu: run.imu).prefix(600))
+        let stream = AsyncStream<SensorEvent> { c in
+            for e in events { c.yield(e) }
+            c.finish()
+        }
+        await session.start(events: stream)
+        try await Task.sleep(for: .milliseconds(150))
+        await session.abort()
+        try await Task.sleep(for: .milliseconds(150))
+        #expect(InFlightRecorder.recover(in: dir).isEmpty, "an aborted run was left on disk")
+    }
+
     @Test("a session writes to its recorder as the drive happens")
     func sessionFeedsTheRecorder() async throws {
         let dir = FileManager.default.temporaryDirectory

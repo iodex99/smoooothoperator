@@ -79,6 +79,16 @@ public actor InFlightRecorder {
         append(Line(kind: "i", imu: sample))
     }
 
+    /// One batch, in order. The session buffers and calls this rather than
+    /// spawning a task per sample: independent tasks calling an actor have
+    /// no ordering guarantee, and a recovered file with shuffled samples is
+    /// worse than no file.
+    public func record(gps: [GPSSample], imu: [IMUSample]) {
+        for sample in gps { append(Line(kind: "g", gps: sample)) }
+        for sample in imu { append(Line(kind: "i", imu: sample)) }
+        flush()
+    }
+
     /// Call once the run is safely in the upload queue. Keeping the file
     /// after that would mean recovering a run that already exists.
     public func finish() {

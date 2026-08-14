@@ -122,6 +122,17 @@ public actor DriveSession {
     /// destroy it. Optional: a session with no recorder still works, which
     /// is what every existing test relies on.
     private var recorder: InFlightRecorder?
+    /// Samples waiting to be journalled.
+    ///
+    /// The first version spawned `Task { await recorder.record(…) }` per
+    /// sample. Actor calls made from independent Tasks have NO ordering
+    /// guarantee, so at 50 Hz that was thousands of concurrent tasks racing
+    /// to append — a recovered file could hold samples in the wrong order,
+    /// which is worse than no file at all. The session is already an actor,
+    /// so buffering here is serialised for free.
+    private var journalGPS: [GPSSample] = []
+    private var journalIMU: [IMUSample] = []
+    private var journalTask: Task<Void, Never>?
 
     private var stateValue: DriveSessionState = .idle
     private var continuations: [UUID: AsyncStream<DriveSessionState>.Continuation] = [:]
@@ -199,8 +210,14 @@ public actor DriveSession {
     }
 
     /// Abandons the run (user stop, phone call bailout, …).
-    public func abort() {
+    public func abort() async {
         consumeTask?.cancel()
+        // An aborted run is not recoverable — leaving the journal behind
+        // would offer it back on next launch as a drive worth keeping.
+        journalGPS.removeAll()
+        journalIMU.removeAll()
+        journalTask?.cancel()
+        if let recorder { await recorder.discard() }
         if !isTerminal {
             transition(to: .failed(reason: "aborted"))
         }
@@ -221,11 +238,12 @@ public actor DriveSession {
         case .imu(let sample):
             estimator.ingest(imu: sample)
             rawIMU.append(sample)
-            if let recorder { Task { await recorder.record(imu: sample) } }
+            journalIMU.append(sample)
         case .gps(let sample):
             estimator.ingest(gps: sample)
             rawGPS.append(sample)
-            if let recorder { Task { await recorder.record(gps: sample) } }
+            journalGPS.append(sample)
+            flushJournalIfNeeded()
             handleFix(sample)
         }
     }
@@ -262,6 +280,30 @@ public actor DriveSession {
         return false
     }
 
+    /// Hands whatever has accumulated to the recorder, in order, as one
+    /// batch. Chained off the previous write so two flushes can never
+    /// interleave.
+    private func flushJournalIfNeeded(force: Bool = false) {
+        guard let recorder else { return }
+        guard force || journalGPS.count + journalIMU.count >= 50 else { return }
+        let gps = journalGPS, imu = journalIMU
+        journalGPS.removeAll(keepingCapacity: true)
+        journalIMU.removeAll(keepingCapacity: true)
+        guard !gps.isEmpty || !imu.isEmpty else { return }
+        let previous = journalTask
+        journalTask = Task {
+            await previous?.value
+            await recorder.record(gps: gps, imu: imu)
+        }
+    }
+
+    /// Waits for every queued write to land. Used before the journal is
+    /// handed over or thrown away, so nothing is still in flight.
+    private func drainJournal() async {
+        flushJournalIfNeeded(force: true)
+        await journalTask?.value
+    }
+
     /// Ends the session and releases the buffers. Nothing is recoverable
     /// from a session that hit a limit, and holding tens of megabytes after
     /// giving up is the bug this exists to prevent.
@@ -269,7 +311,12 @@ public actor DriveSession {
         consumeTask?.cancel()
         rawGPS.removeAll(keepingCapacity: false)
         rawIMU.removeAll(keepingCapacity: false)
-        if let recorder { Task { await recorder.discard() } }
+        journalGPS.removeAll()
+        journalIMU.removeAll()
+        journalTask?.cancel()
+        if let recorder {
+            Task { await recorder.discard() }
+        }
         transition(to: .failed(reason: reason))
     }
 
@@ -359,7 +406,11 @@ public actor DriveSession {
             transition(to: .failed(reason: "processing failed"))
             return
         }
-        if let recorder { Task { await recorder.finish() } }
+        // NOT recorder.finish() — the run is not safe yet. It is safe once
+        // the app has put it in the upload queue, and only the app knows
+        // when that happened. Flushing what is buffered is right; deleting
+        // the file here would reopen the crash window this exists to close.
+        Task { await self.drainJournal() }
         transition(to: .finished(DriveRunOutcome(
             provisionalScore: outcome.score.finalScore,
             provisionalVerdict: outcome.integrity.verdict,

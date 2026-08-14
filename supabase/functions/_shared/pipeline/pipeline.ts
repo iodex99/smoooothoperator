@@ -107,6 +107,10 @@ export function evaluate(input: PipelineInput): PipelineOutcome | null {
     },
     undefined,
     startEntrySpeedMps,
+    // The window the run is actually scored over. Outside it the car is
+    // staging, and staging is not traffic.
+    tracker.checkpointHits.find((h) => h.sequence === 0)?.timestamp ?? null,
+    tracker.checkpointHits[tracker.checkpointHits.length - 1]?.timestamp ?? null,
   );
 
   const score = scoreRun(
