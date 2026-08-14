@@ -14,9 +14,38 @@ public struct DriveSessionConfig: Sendable, Equatable {
     /// Speed that turns READY into ACTIVE once the start gate is hit, m/s.
     public var startMovingSpeedMps: Double
 
-    public init(gpsFreshSeconds: Double, startMovingSpeedMps: Double) {
+    /// How long the session may sit waiting to start before it gives up.
+    ///
+    /// Without this the app is a memory leak with a countdown: parked on the
+    /// ready screen it buffers IMU at 50 Hz — roughly 150 MB an hour — until
+    /// iOS jetsams it. A driver who opens the app and then takes a phone
+    /// call hits exactly that.
+    public var maxWaitingSeconds: Double
+
+    /// Hard ceiling on one run's duration. A run left running because the
+    /// driver never reached the finish gate must end by itself.
+    public var maxRunSeconds: Double
+
+    /// Absolute ceiling on buffered samples, as a last line of defence for
+    /// a sensor stream that misreports its own timestamps. Sized from the
+    /// duration ceilings with generous headroom, not from a guess at memory.
+    public var maxIMUSamples: Int
+    public var maxGPSSamples: Int
+
+    public init(
+        gpsFreshSeconds: Double,
+        startMovingSpeedMps: Double,
+        maxWaitingSeconds: Double = 600,
+        maxRunSeconds: Double = 7_200,
+        maxIMUSamples: Int = 500_000,
+        maxGPSSamples: Int = 100_000
+    ) {
         self.gpsFreshSeconds = gpsFreshSeconds
         self.startMovingSpeedMps = startMovingSpeedMps
+        self.maxWaitingSeconds = maxWaitingSeconds
+        self.maxRunSeconds = maxRunSeconds
+        self.maxIMUSamples = maxIMUSamples
+        self.maxGPSSamples = maxGPSSamples
     }
 
     public static let `default` = DriveSessionConfig(
@@ -76,7 +105,12 @@ public actor DriveSession {
     private var rawGPS: [GPSSample] = []
     private var rawIMU: [IMUSample] = []
     private var startTime: Double?
+    private var firstEventTime: Double?
     private var consumeTask: Task<Void, Never>?
+    /// Writes the drive to disk as it happens, so a mid-run crash does not
+    /// destroy it. Optional: a session with no recorder still works, which
+    /// is what every existing test relies on.
+    private var recorder: InFlightRecorder?
 
     private var stateValue: DriveSessionState = .idle
     private var continuations: [UUID: AsyncStream<DriveSessionState>.Continuation] = [:]
@@ -102,6 +136,19 @@ public actor DriveSession {
     }
 
     public var state: DriveSessionState { stateValue }
+
+    /// How many raw samples the session is currently holding. Exists so a
+    /// test can prove the buffers are actually released when a ceiling is
+    /// hit — the leak this guards against is invisible from the state alone.
+    public var bufferedSampleCount: Int { rawGPS.count + rawIMU.count }
+
+    /// Attach a crash-safe recorder. Separate from `init` so the recorder
+    /// can be created asynchronously and so a failure to open the file never
+    /// prevents a drive — a run recorded only in memory is far better than
+    /// no run at all.
+    public func attach(recorder: InFlightRecorder) {
+        self.recorder = recorder
+    }
 
     /// Every state change, including the current state immediately.
     public func states() -> AsyncStream<DriveSessionState> {
@@ -158,15 +205,61 @@ public actor DriveSession {
     // MARK: - Event handling
 
     private func handle(_ event: SensorEvent) async {
+        if enforceLimits(at: event.timestamp) { return }
         switch event {
         case .imu(let sample):
             estimator.ingest(imu: sample)
             rawIMU.append(sample)
+            if let recorder { Task { await recorder.record(imu: sample) } }
         case .gps(let sample):
             estimator.ingest(gps: sample)
             rawGPS.append(sample)
+            if let recorder { Task { await recorder.record(gps: sample) } }
             handleFix(sample)
         }
+    }
+
+    /// Ends the session rather than growing without bound. Returns true when
+    /// the session has stopped and the event should be dropped.
+    ///
+    /// Three separate ceilings because they fail differently: waiting too
+    /// long is a driver who wandered off, running too long is a run that
+    /// never reached its finish gate, and the sample caps catch a stream
+    /// whose timestamps lie about how much time has passed.
+    private func enforceLimits(at timestamp: Double) -> Bool {
+        if firstEventTime == nil { firstEventTime = timestamp }
+
+        switch stateValue {
+        case .calibrating, .ready:
+            if let first = firstEventTime, timestamp - first > config.maxWaitingSeconds {
+                stop(reason: "no run started — the session timed out waiting")
+                return true
+            }
+        case .active:
+            if let start = startTime, timestamp - start > config.maxRunSeconds {
+                stop(reason: "run exceeded the maximum length")
+                return true
+            }
+        default:
+            break
+        }
+
+        if rawIMU.count >= config.maxIMUSamples || rawGPS.count >= config.maxGPSSamples {
+            stop(reason: "sensor buffer limit reached")
+            return true
+        }
+        return false
+    }
+
+    /// Ends the session and releases the buffers. Nothing is recoverable
+    /// from a session that hit a limit, and holding tens of megabytes after
+    /// giving up is the bug this exists to prevent.
+    private func stop(reason: String) {
+        consumeTask?.cancel()
+        rawGPS.removeAll(keepingCapacity: false)
+        rawIMU.removeAll(keepingCapacity: false)
+        if let recorder { Task { await recorder.discard() } }
+        transition(to: .failed(reason: reason))
     }
 
     private func handleFix(_ sample: GPSSample) {
@@ -229,6 +322,7 @@ public actor DriveSession {
             transition(to: .failed(reason: "processing failed"))
             return
         }
+        if let recorder { Task { await recorder.finish() } }
         transition(to: .finished(DriveRunOutcome(
             provisionalScore: outcome.score.finalScore,
             provisionalVerdict: outcome.integrity.verdict,

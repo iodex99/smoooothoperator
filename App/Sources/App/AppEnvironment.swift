@@ -15,6 +15,9 @@ final class AppEnvironment {
     let subscriptions = StoreKitSubscriptionService()
     /// Finished runs live here until the server acknowledges them (spec §60).
     let uploadQueue: UploadQueue
+    /// Where a drive is journalled while it is being driven. Nil only if the
+    /// system gave us no Application Support directory at all.
+    let inFlightDirectory: URL?
     var scoringConfig: ScoringConfig?
     /// Runs still owed to the server — surfaced honestly in the UI.
     var pendingRunCount = 0
@@ -49,6 +52,12 @@ final class AppEnvironment {
         let store: RunStore = directory
             .flatMap { try? FileRunStore(directory: $0) } ?? InMemoryRunStore()
         uploadQueue = UploadQueue(store: store, uploader: QueuedRunUploader(api: api))
+        // Sibling of the pending-run store: drives being written *as they
+        // happen*, so a crash mid-run does not destroy one.
+        inFlightDirectory = FileManager.default
+            .urls(for: .applicationSupportDirectory, in: .userDomainMask)
+            .first?
+            .appendingPathComponent("InFlightDrives", isDirectory: true)
 
         hasAcknowledgedSafety = UserDefaults.standard.bool(forKey: "safetyAcknowledged")
         hasOnboarded = UserDefaults.standard.bool(forKey: "hasOnboarded")

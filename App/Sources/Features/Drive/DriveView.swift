@@ -225,6 +225,17 @@ struct DriveView: View {
             return
         }
         self.session = session
+        // Journal the drive to disk as it happens. Best-effort on purpose:
+        // if the file cannot be opened the drive still runs, because a run
+        // recorded only in memory beats refusing to drive at all.
+        if debugEvents == nil, let directory = environment.inFlightDirectory,
+           let recorder = try? InFlightRecorder(
+               directory: directory,
+               courseId: courseId,
+               startedAt: Date().timeIntervalSince1970
+           ) {
+            await session.attach(recorder: recorder)
+        }
         let states = await session.states()
         await session.start(events: debugEvents ?? environment.sensors.start())
         // A first GPS fix is what turns "waiting" into "calibrating" on the
