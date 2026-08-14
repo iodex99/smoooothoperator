@@ -40,22 +40,19 @@ struct RunResultView: View {
                     .padding(.vertical, 7)
                     .background(verdictColor.opacity(0.13), in: Capsule())
 
-                ZStack {
-                    GlowRing(progress: Double(score) / 10_000)
-                        .frame(width: 216, height: 216)
-                    VStack(spacing: 2) {
-                        Text("\(score)")
-                            .font(.system(size: 58, weight: .black, design: .rounded))
-                            .monospacedDigit()
-                            .foregroundStyle(.white)
-                        Text(authoritative == nil ? "PROVISIONAL" : "SERVER VERIFIED")
-                            .font(.caption2.weight(.bold))
-                            .tracking(1.4)
-                            .foregroundStyle(
-                                authoritative == nil ? SOTheme.textSecondary : SOTheme.verified
-                            )
-                    }
-                }
+                // The card IS the result. Showing the score in one design
+                // here and a different one behind a "share" button meant
+                // most drivers never discovered the card at all.
+                ScaledShareCard(card: shareCard)
+                    .padding(.horizontal, 2)
+
+                Text(authoritative == nil ? "PROVISIONAL — THE SERVER RESCORES EVERY RUN" : "SERVER VERIFIED")
+                    .font(.caption2.weight(.bold))
+                    .tracking(1.4)
+                    .foregroundStyle(
+                        authoritative == nil ? SOTheme.textSecondary : SOTheme.verified
+                    )
+                    .multilineTextAlignment(.center)
 
                 if authoritative == nil && uploadError == nil {
                     Label("Verifying with the server…", systemImage: "icloud.and.arrow.up")
@@ -80,42 +77,30 @@ struct RunResultView: View {
                         .multilineTextAlignment(.center)
                 }
 
-                VStack(spacing: 14) {
-                    ScoreBarRow(label: "Pace", bps: outcome.breakdown.paceBps)
-                    ScoreBarRow(label: "Smoothness", bps: outcome.breakdown.smoothnessBps)
-                    ScoreBarRow(label: "Control", bps: outcome.breakdown.controlBps)
-                    ScoreBarRow(label: "Legal", bps: outcome.breakdown.complianceBps)
-                }
-                .soCard(padding: 18)
-
-                HStack(spacing: 10) {
-                    SOChip(icon: "timer", text: durationText)
-                    SOChip(icon: "point.topleft.down.curvedto.point.bottomright.up", text: courseName)
-                    Spacer()
-                }
-
+                // Sharing is the growth loop and the card is already on
+                // screen, so it leads. Leaving is one tap away underneath.
                 VStack(spacing: 12) {
-                    Button(onRetry == nil ? "DONE" : "TRY AGAIN") {
-                        if let onRetry { onRetry() } else { onDismiss() }
-                    }
-                    .buttonStyle(HeatButtonStyle())
-
                     if let shareImage {
                         ShareLink(
                             item: shareImage,
                             preview: SharePreview("My Smooooth run", image: shareImage)
                         ) {
-                            Label("Share run card", systemImage: "square.and.arrow.up")
+                            Label("SHARE THIS CARD", systemImage: "square.and.arrow.up")
                                 .frame(maxWidth: .infinity)
                         }
-                        .buttonStyle(GhostButtonStyle())
+                        .buttonStyle(HeatButtonStyle())
                     } else {
                         ShareLink(item: shareText) {
-                            Label("Share", systemImage: "square.and.arrow.up")
+                            Label("SHARE", systemImage: "square.and.arrow.up")
                                 .frame(maxWidth: .infinity)
                         }
-                        .buttonStyle(GhostButtonStyle())
+                        .buttonStyle(HeatButtonStyle())
                     }
+
+                    Button(onRetry == nil ? "Done" : "Try again") {
+                        if let onRetry { onRetry() } else { onDismiss() }
+                    }
+                    .buttonStyle(GhostButtonStyle())
                 }
             }
             .padding(24)
@@ -198,10 +183,10 @@ struct RunResultView: View {
         rankText = rank.rank == 1 ? "#1 on this course" : "#\(rank.rank) on this course"
     }
 
-    /// Renders the share card off-screen (spec §51: the share IS the growth
-    /// loop — a real card, not a text blurb).
-    private func renderShareCard() {
-        let renderer = ImageRenderer(content: RunShareCard(
+    /// The single definition of the card, used both for what is shown on
+    /// this screen and for what is exported — they cannot drift apart.
+    private var shareCard: RunShareCard {
+        RunShareCard(
             score: score,
             breakdown: outcome.breakdown,
             durationText: durationText,
@@ -211,7 +196,13 @@ struct RunResultView: View {
                 ? outcome.provisionalVerdict
                 : (authoritative?.verdict == "verified" ? .verified : .questionable),
             rankText: rankText
-        ))
+        )
+    }
+
+    /// Renders the card off-screen for the share sheet (spec §51: the share
+    /// IS the growth loop — a real image, not a text blurb).
+    private func renderShareCard() {
+        let renderer = ImageRenderer(content: shareCard)
         renderer.scale = 3
         if let image = renderer.uiImage {
             shareImage = Image(uiImage: image)
@@ -254,34 +245,13 @@ struct RunResultView: View {
     }
 }
 
-struct ScoreBarRow: View {
-    let label: String
-    let bps: Int
-
-    var body: some View {
-        HStack(spacing: 12) {
-            Text(label.uppercased())
-                .font(.caption.weight(.bold))
-                .tracking(0.8)
-                .foregroundStyle(SOTheme.textSecondary)
-                .frame(width: 104, alignment: .leading)
-            HeatBar(progress: Double(bps) / 10_000)
-            Text("\(bps / 100).\(bps % 100 / 10)")
-                .font(.system(.subheadline, design: .rounded).weight(.heavy))
-                .monospacedDigit()
-                .lineLimit(1)
-                .foregroundStyle(.white)
-                .frame(width: 52, alignment: .trailing)
-        }
-    }
-}
-
-/// The image people post (spec §51).
+/// The artifact that leaves the app (spec §51). Shown full-size on the
+/// result screen and exported byte-for-byte identical by ImageRenderer —
+/// a driver must never have to tap "share" to discover what they'd be
+/// sharing.
 ///
-/// This is the whole growth loop, so it has to survive being seen at
-/// thumbnail size in a group chat: one enormous number, the course shape
-/// behind it, and a verdict badge that says the score is real. It carries
-/// the course name and the app's handle so a stranger can find both.
+/// The road is the hero. A score is a number anyone could type; the shape
+/// of the road you drove is the one thing on this card nobody else has.
 struct RunShareCard: View {
     let score: Int
     let breakdown: ScoreBreakdown
@@ -291,90 +261,113 @@ struct RunShareCard: View {
     var verdict: RunVerificationStatus = .verified
     var rankText: String? = nil
 
+    /// Fixed so the on-screen card and the exported image are the same
+    /// composition at different scales, never two different layouts.
+    static let size = CGSize(width: 420, height: 560)
+
     var body: some View {
-        ZStack {
-            // Ground + the course itself as the backdrop, not a small inset.
+        ZStack(alignment: .topLeading) {
             SOTheme.ground
-            RoutePreview(route: route, lineWidth: 7, showsGates: false)
-                .opacity(0.30)
-                .blur(radius: 0.4)
-                .padding(.horizontal, -30)
-                .padding(.vertical, 40)
+
+            // Heat bloom from the top-right, as if the road were lit.
             RadialGradient(
-                colors: [SOTheme.heatStart.opacity(0.30), .clear],
-                center: .topTrailing, startRadius: 0, endRadius: 420
+                colors: [SOTheme.heatStart.opacity(0.22), .clear],
+                center: .init(x: 0.85, y: 0.12), startRadius: 0, endRadius: 340
             )
+
+            // The route, at full strength and full bleed — this is the
+            // subject of the card, not a watermark behind it.
+            RoutePreview(route: route, lineWidth: 6, showsGates: true)
+                .padding(.horizontal, 34)
+                .padding(.top, 74)
+                .padding(.bottom, 236)
+                .shadow(color: SOTheme.heatStart.opacity(0.45), radius: 26)
+
+            // Scrim so the numbers stay legible wherever the road wanders.
             LinearGradient(
-                colors: [.clear, SOTheme.ground.opacity(0.92)],
-                startPoint: .center, endPoint: .bottom
+                stops: [
+                    .init(color: .clear, location: 0.34),
+                    .init(color: SOTheme.ground.opacity(0.86), location: 0.56),
+                    .init(color: SOTheme.ground, location: 0.68),
+                ],
+                startPoint: .top, endPoint: .bottom
             )
 
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .top) {
                     Wordmark(compact: true)
                     Spacer()
-                    if verdict == .verified {
-                        Label("VERIFIED", systemImage: "checkmark.seal.fill")
-                            .font(.system(size: 10, weight: .black))
-                            .tracking(1.2)
-                            .foregroundStyle(SOTheme.verified)
-                            .padding(.horizontal, 9)
-                            .padding(.vertical, 5)
-                            .background(SOTheme.verified.opacity(0.15), in: Capsule())
-                    }
+                    verdictBadge
                 }
 
-                Spacer(minLength: 18)
+                Spacer(minLength: 0)
 
-                // The number is the message.
-                Text("\(score)")
-                    .font(.system(size: 104, weight: .black, design: .rounded))
-                    .monospacedDigit()
-                    .foregroundStyle(
-                        LinearGradient(
-                            colors: [.white, SOTheme.heatEnd],
-                            startPoint: .top, endPoint: .bottom
-                        )
-                    )
-                    .shadow(color: SOTheme.heatStart.opacity(0.55), radius: 22)
-                    .minimumScaleFactor(0.5)
-                    .lineLimit(1)
-                Text("SMOOOOTH SCORE")
-                    .font(.system(size: 11, weight: .black))
-                    .tracking(3.4)
-                    .foregroundStyle(SOTheme.heatStart)
+                // Score and elapsed time share a baseline: the two numbers
+                // a driver is actually judged on.
+                HStack(alignment: .lastTextBaseline, spacing: 18) {
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text("\(score)")
+                            .font(.system(size: 88, weight: .black, design: .rounded))
+                            .monospacedDigit()
+                            .foregroundStyle(
+                                LinearGradient(
+                                    colors: [.white, SOTheme.heatEnd],
+                                    startPoint: .top, endPoint: .bottom
+                                )
+                            )
+                            .shadow(color: SOTheme.heatStart.opacity(0.6), radius: 24)
+                            .minimumScaleFactor(0.5)
+                            .lineLimit(1)
+                        Text("SMOOOOTH SCORE")
+                            .font(.system(size: 10, weight: .black))
+                            .tracking(3.2)
+                            .foregroundStyle(SOTheme.heatStart)
+                    }
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text(durationText)
+                            .font(.system(size: 34, weight: .black, design: .rounded))
+                            .monospacedDigit()
+                            .foregroundStyle(.white)
+                            .lineLimit(1)
+                            .fixedSize()
+                        Text("ELAPSED")
+                            .font(.system(size: 10, weight: .black))
+                            .tracking(3.2)
+                            .foregroundStyle(SOTheme.textSecondary)
+                    }
+                    Spacer(minLength: 0)
+                }
 
                 if let rankText {
                     Text(rankText)
-                        .font(.system(.subheadline, design: .rounded).weight(.heavy))
+                        .font(.system(size: 15, weight: .heavy, design: .rounded))
                         .foregroundStyle(.white)
-                        .padding(.top, 8)
+                        .padding(.top, 12)
                 }
 
-                Spacer(minLength: 16)
-
-                // Sub-scores as bars: readable at a glance, and they show
-                // WHY the number is what it is.
-                VStack(spacing: 7) {
+                // The four disciplines, as a strip rather than four stacked
+                // bars — same information, far less of the card spent on it.
+                HStack(alignment: .top, spacing: 12) {
                     ShareStat(label: "PACE", bps: breakdown.paceBps)
                     ShareStat(label: "SMOOTH", bps: breakdown.smoothnessBps)
                     ShareStat(label: "CONTROL", bps: breakdown.controlBps)
                     ShareStat(label: "LEGAL", bps: breakdown.complianceBps)
                 }
+                .padding(.top, 20)
 
-                Spacer(minLength: 16)
+                Spacer(minLength: 18)
 
                 HStack(alignment: .bottom) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(courseName)
-                            .font(.system(.headline, design: .rounded).weight(.heavy))
+                            .font(.system(size: 17, weight: .heavy, design: .rounded))
                             .foregroundStyle(.white)
                             .lineLimit(1)
-                        Text("\(durationText)  ·  smooooth.app")
+                        Text("smooooth.app")
                             .font(.system(size: 11, weight: .semibold))
                             .foregroundStyle(SOTheme.textSecondary)
                     }
-                    Spacer()
+                    Spacer(minLength: 8)
                     Text("BEAT IT")
                         .font(.system(size: 12, weight: .black, design: .rounded))
                         .tracking(1.4)
@@ -382,34 +375,91 @@ struct RunShareCard: View {
                         .padding(.horizontal, 14)
                         .padding(.vertical, 8)
                         .background(SOTheme.heat, in: Capsule())
+                        .shadow(color: SOTheme.heatStart.opacity(0.5), radius: 12, y: 4)
                 }
             }
             .padding(26)
         }
-        .frame(width: 420, height: 560)
+        .frame(width: Self.size.width, height: Self.size.height)
+    }
+
+    /// Honest either way. A card that simply omitted the badge on an
+    /// unranked run would read as a verified one to anyone who saw it.
+    @ViewBuilder
+    private var verdictBadge: some View {
+        switch verdict {
+        case .verified:
+            badge("VERIFIED", icon: "checkmark.seal.fill", tint: SOTheme.verified)
+        case .questionable:
+            badge("NOT RANKED", icon: "exclamationmark.circle.fill", tint: SOTheme.caution)
+        case .invalid:
+            badge("NOT ELIGIBLE", icon: "xmark.circle.fill", tint: SOTheme.danger)
+        }
+    }
+
+    private func badge(_ text: String, icon: String, tint: Color) -> some View {
+        Label(text, systemImage: icon)
+            .font(.system(size: 10, weight: .black))
+            .tracking(1.2)
+            .foregroundStyle(tint)
+            .lineLimit(1)
+            .fixedSize()
+            .padding(.horizontal, 9)
+            .padding(.vertical, 5)
+            .background(tint.opacity(0.15), in: Capsule())
     }
 }
 
+/// One discipline, as a column. `fixedSize` is load-bearing: at 26pt wide
+/// "100" wrapped to two lines on the rendered card, which CI caught.
 private struct ShareStat: View {
     let label: String
     let bps: Int
 
     var body: some View {
-        HStack(spacing: 10) {
+        VStack(alignment: .leading, spacing: 4) {
             Text(label)
-                .font(.system(size: 10, weight: .black))
-                .tracking(1.2)
+                .font(.system(size: 9, weight: .black))
+                .tracking(1.1)
                 .foregroundStyle(SOTheme.textSecondary)
-                .frame(width: 64, alignment: .leading)
-            HeatBar(progress: Double(bps) / 10_000, height: 6)
-            Text("\(bps / 100)")
-                .font(.system(size: 13, weight: .heavy, design: .rounded))
-                .monospacedDigit()
-                // 26pt was too narrow for "100" and wrapped it to "10 / 0"
-                // on the rendered card — caught in the CI screenshots.
                 .lineLimit(1)
                 .fixedSize()
-                .frame(width: 34, alignment: .trailing)
+            Text("\(bps / 100)")
+                .font(.system(size: 22, weight: .black, design: .rounded))
+                .monospacedDigit()
+                .foregroundStyle(.white)
+                .lineLimit(1)
+                .fixedSize()
+            HeatBar(progress: Double(bps) / 10_000, height: 3)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+/// The share card at whatever width it is given, scaled as one piece so the
+/// on-screen preview and the exported PNG are the same composition.
+struct ScaledShareCard: View {
+    let card: RunShareCard
+
+    var body: some View {
+        Color.clear
+            .aspectRatio(
+                RunShareCard.size.width / RunShareCard.size.height,
+                contentMode: .fit
+            )
+            .overlay(alignment: .topLeading) {
+                GeometryReader { proxy in
+                    card.scaleEffect(
+                        proxy.size.width / RunShareCard.size.width,
+                        anchor: .topLeading
+                    )
+                }
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 24))
+            .overlay(
+                RoundedRectangle(cornerRadius: 24)
+                    .strokeBorder(SOTheme.hairline, lineWidth: 1)
+            )
+            .shadow(color: .black.opacity(0.55), radius: 26, y: 12)
     }
 }
