@@ -1,4 +1,5 @@
 #if DEBUG
+import Foundation
 import SOGhost
 import SOModels
 import SOScoring
@@ -60,7 +61,21 @@ private struct DemoDriveFlow: View {
     @Environment(AppEnvironment.self) private var environment
     @State private var stage = Stage.course
 
-    enum Stage { case course, driving, shareCard }
+    enum Stage { case course, driving, shareCard, garage, flyingStart }
+
+    /// A run that crossed the start line at speed. Built by decoding rather
+    /// than by a memberwise init so the demo needs no widened Kit API.
+    static let flyingStartOutcome: DriveRunOutcome = {
+        let json = """
+        {"provisionalScore":8102,"provisionalVerdict":"questionable",
+         "breakdown":{"paceBps":10000,"smoothnessBps":6700,
+                      "controlBps":9400,"complianceBps":10000},
+         "confidenceScore":88,"durationSeconds":181,"distanceMeters":5120,
+         "gatesHit":5,"deviationDetected":false,
+         "integrityFlags":["flyingStart"],"rawGPS":[],"rawIMU":[]}
+        """
+        return try! JSONDecoder().decode(DriveRunOutcome.self, from: Data(json.utf8))
+    }()
 
     var body: some View {
         Group {
@@ -102,6 +117,25 @@ private struct DemoDriveFlow: View {
                     .clipShape(RoundedRectangle(cornerRadius: 22))
                     .shadow(color: .black.opacity(0.6), radius: 30, y: 12)
                 }
+            case .garage:
+                NavigationStack {
+                    GarageView(demoVehicles: [
+                        .init(id: "1", name: "The Golf", make: "Volkswagen",
+                              model: "GTI", year: 2019, is_default: true),
+                        .init(id: "2", name: "Sunday car", make: "Mazda",
+                              model: "MX-5", year: 2015, is_default: false),
+                        .init(id: "3", name: "The van", make: "Ford",
+                              model: "Transit", year: 2021, is_default: false),
+                    ])
+                }
+            case .flyingStart:
+                // The fairness rule made visible: scored, shown, ranked nowhere.
+                RunResultView(
+                    outcome: Self.flyingStartOutcome,
+                    courseId: "demo",
+                    route: DemoCourse.route,
+                    onDismiss: {}
+                )
             }
         }
         .environment(environment)
@@ -111,6 +145,11 @@ private struct DemoDriveFlow: View {
             // Long enough for the 30x mock drive to finish and be scored.
             try? await Task.sleep(for: .seconds(50))
             stage = .shareCard
+            try? await Task.sleep(for: .seconds(8))
+            stage = .garage
+            try? await Task.sleep(for: .seconds(8))
+            stage = .flyingStart
+            try? await Task.sleep(for: .seconds(10))
         }
     }
 }

@@ -13,6 +13,14 @@ struct GarageView: View {
     @State private var showPaywall = false
     @State private var notice: String?
 
+    #if DEBUG
+    /// Demo-tour seed. The signed-out garage is empty, and CI simulator
+    /// screenshots are the only window onto this screen for a developer with
+    /// no Apple hardware — so the tour needs cars to photograph.
+    private let demoVehicles: [Vehicle]?
+    init(demoVehicles: [Vehicle]? = nil) { self.demoVehicles = demoVehicles }
+    #endif
+
     struct Vehicle: Identifiable, Decodable, Hashable {
         var id: String
         var name: String
@@ -124,6 +132,12 @@ struct GarageView: View {
 
     private func load() async {
         defer { loading = false }
+        #if DEBUG
+        if let demoVehicles {
+            vehicles = demoVehicles
+            return
+        }
+        #endif
         guard let api = environment.api, await api.userId != nil else {
             vehicles = []
             return
