@@ -285,6 +285,30 @@ actor SupabaseAPI {
         )
     }
 
+    /// Resolves a shared challenge code to the course it points at.
+    ///
+    /// Deliberately callable signed out — a shared link has to open for
+    /// someone who has not installed the app yet, which is the entire point
+    /// of sharing one. The edge function returns only safe public fields and
+    /// never course geometry.
+    func resolveChallenge(code: String) async throws -> (courseId: String, name: String) {
+        // Mirrors the edge function's response, which nests the course.
+        struct Payload: Decodable {
+            struct Course: Decodable {
+                var id: String
+                var name: String
+            }
+            var course: Course
+        }
+        let data = try await send(
+            path: "functions/v1/resolve-challenge",
+            method: "POST",
+            body: try JSONSerialization.data(withJSONObject: ["code": code])
+        )
+        let payload = try JSONDecoder().decode(Payload.self, from: data)
+        return (payload.course.id, payload.course.name)
+    }
+
     /// Drive-ready geometry for one course (migration 0013 `course_route`):
     /// GeoJSON polyline + ordered gates, with the server enforcing the same
     /// visibility rules as RLS. Clients never parse WKB.
