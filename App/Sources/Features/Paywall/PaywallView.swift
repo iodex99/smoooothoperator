@@ -43,6 +43,14 @@ struct PaywallView: View {
                         icon: "figure.wave",
                         text: "Race any rival's ghost, on any course"
                     )
+                    // The garage is gated in the database and was missing
+                    // from the one screen where someone decides whether to
+                    // pay for it. Gating a feature without naming it at the
+                    // point of purchase is the wrong half of a paywall.
+                    Benefit(
+                        icon: "car.2",
+                        text: "A garage — add every car you drive, and see which of them is fastest on a road"
+                    )
                     Benefit(
                         icon: "square.and.arrow.up",
                         text: "Support an independent app built by one driver"

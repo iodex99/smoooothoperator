@@ -192,11 +192,19 @@ unknowns are not code:
   limitation, not an engine defect — but it means the behaviour is unproven.
 - **Gate radius asymmetry and multi-crossing gates** remain open in
   `docs/FAIRNESS.md`, both small next to what has been fixed.
+- **Creating a custom course has no screen.** The server accepts and
+  validates them; a driver cannot make one. Decide whether that ships in v1
+  or waits — it is a feature, not a defect, but it is the gap between what
+  the backend can do and what a driver can reach.
 
 ## What is already done
 
-- Engine, scoring, anti-cheat, ghosts, leaderboards, friends, custom courses —
-  272 Kit tests, deterministic, Swift ≡ TypeScript on 12 golden vectors.
+- Engine, scoring, anti-cheat, ghosts, leaderboards, friends — 305 Kit
+  tests, deterministic, Swift ≡ TypeScript on 12 golden vectors.
+- **Custom courses: server only.** `validate-course` is written, tested and
+  deployed-ready, and there is **no UI in the app to create one**. Nothing
+  promises it — the paywall was corrected in an earlier audit and sells only
+  what exists — but it is the largest built-and-unreachable feature here.
 - Database: 19 migrations, RLS on every table, **223 pgTAP tests**.
 - Server: 5 edge functions, 66 Deno tests, fail-closed App Store webhook.
 - iOS: builds, boots and completes a scored ghost race on the CI Mac.
