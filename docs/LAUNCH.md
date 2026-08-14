@@ -167,26 +167,31 @@ does not exist there yet. All 19 migrations are still local-only.
 
 ---
 
-## Before you submit: what is still genuinely broken
+## Before you submit: what was still broken — all eight now fixed
 
-Ordered by how likely each is to bite a real user. The first two are the ones I
-would fix before letting anyone else drive with this.
+Every item from the audit list, closed on 2026-08-14.
 
-| # | Issue | Why it matters |
+| # | Was | Now |
 |---|---|---|
-| 1 | **`DriveSession` has no timeout or sample cap.** | Left parked on the ready screen it accumulates IMU at 50 Hz — roughly **150 MB/hour** — until iOS kills the app. A driver who opens the app and then takes a phone call hits this. |
-| 2 | **No crash-safe in-flight recorder.** | The upload queue protects a *finished* run. A crash mid-drive still loses the whole thing. |
-| 3 | **Ghost clock anchor, ~2.6 s.** | Racing your own best run shows you permanently ~2.6 s ahead of yourself. The live clock and the ghost clock start on different signals. Measured, documented, and covered by a disabled test — see `docs/FAIRNESS.md`. |
-| 4 | **Traffic and stopped time.** | The largest *fairness* gap. A driver who catches three red lights is compared against one who caught none, on a pace score. Nothing measures stopped time yet. |
-| 5 | **Universal links declared but not handled.** | A shared challenge link opens the app and drops the code. |
-| 6 | **Degenerate runs show flattering provisional scores.** | A run with no GPS shows ~6,500 before the server marks it invalid. It cannot rank, but the number shown is misleading. |
-| 7 | **Zero accessibility modifiers.** | 23 fixed font sizes ignore Dynamic Type; some tap targets are under 44 pt, including **End run**, which is used in a car. |
-| 8 | **Stale scoring jobs are never re-driven.** | The sweeper flips `processing → pending` but nothing re-invokes `score-run`. |
+| 1 | `DriveSession` buffered motion data at 50 Hz until iOS killed the app | Three ceilings — idle, run length, sample count — and hitting one releases the buffers instead of holding them |
+| 2 | A crash mid-drive destroyed the whole run | `InFlightRecorder` journals the drive to disk as it happens; a file torn mid-write still recovers everything before the tear |
+| 3 | Racing your own run showed you ~2.6 s ahead of yourself | **0.31 s worst, under 0.06 s across the middle 80%.** It was three bugs, not one — see `docs/FAIRNESS.md` |
+| 4 | Nothing measured stopped time | Measured, and a run stopped for >25% of its duration is flagged and not ranked — with a 20 s floor so one red light never counts |
+| 5 | A shared challenge link opened the app and dropped the code | Parsed in the Kit, hostile input refused, wrong hosts refused |
+| 6 | A run with no GPS showed ~6,500 and said "provisional" | An ineligible run shows a dash and says it cannot be scored |
+| 7 | Zero accessibility modifiers; "End run" was a 34 pt target | Scaling text, 44 pt targets, VoiceOver labels, and `tools/a11y-check.sh` in `make test` so it cannot rot |
+| 8 | Stale scoring jobs were reset forever and never re-driven | Attempts counted, exponential backoff, a loud failure after five, and the scorer actually re-invoked |
 
-None of these block a TestFlight build. **1, 2 and 7 should be fixed before the
-App Store**, and 7 is the kind of thing App Review sometimes rejects on.
+**What that leaves.** Nothing on this list blocks submission. The remaining
+unknowns are not code:
 
----
+- **The one real drive (step 17).** Still the largest. No sensor path here
+  has ever seen a real GPS chip.
+- **The `slowSmooth` test fixture** never reaches the finish gate, so the
+  "slower driver falls behind" test stays disabled. That is a fixture
+  limitation, not an engine defect — but it means the behaviour is unproven.
+- **Gate radius asymmetry and multi-crossing gates** remain open in
+  `docs/FAIRNESS.md`, both small next to what has been fixed.
 
 ## What is already done
 
