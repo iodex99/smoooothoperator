@@ -275,24 +275,6 @@ struct RunShareCard: View {
                 center: .init(x: 0.85, y: 0.12), startRadius: 0, endRadius: 340
             )
 
-            // The route, at full strength and full bleed — this is the
-            // subject of the card, not a watermark behind it.
-            RoutePreview(route: route, lineWidth: 6, showsGates: true)
-                .padding(.horizontal, 34)
-                .padding(.top, 74)
-                .padding(.bottom, 236)
-                .shadow(color: SOTheme.heatStart.opacity(0.45), radius: 26)
-
-            // Scrim so the numbers stay legible wherever the road wanders.
-            LinearGradient(
-                stops: [
-                    .init(color: .clear, location: 0.34),
-                    .init(color: SOTheme.ground.opacity(0.86), location: 0.56),
-                    .init(color: SOTheme.ground, location: 0.68),
-                ],
-                startPoint: .top, endPoint: .bottom
-            )
-
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .top) {
                     Wordmark(compact: true)
@@ -300,14 +282,23 @@ struct RunShareCard: View {
                     verdictBadge
                 }
 
-                Spacer(minLength: 0)
+                // The road, given its own band. It was floating behind the
+                // text before, and the trace ran straight through the score
+                // digits — the overlap read as a bug, not as depth.
+                RoutePreview(route: route, lineWidth: 6, showsGates: true)
+                    .frame(height: 178)
+                    .padding(.horizontal, -10)
+                    .padding(.top, 12)
+                    .shadow(color: SOTheme.heatStart.opacity(0.45), radius: 26)
+
+                Spacer(minLength: 8)
 
                 // Score and elapsed time share a baseline: the two numbers
                 // a driver is actually judged on.
                 HStack(alignment: .lastTextBaseline, spacing: 18) {
                     VStack(alignment: .leading, spacing: 1) {
                         Text("\(score)")
-                            .font(.system(size: 88, weight: .black, design: .rounded))
+                            .font(.system(size: 80, weight: .black, design: .rounded))
                             .monospacedDigit()
                             .foregroundStyle(
                                 LinearGradient(
@@ -342,7 +333,7 @@ struct RunShareCard: View {
                     Text(rankText)
                         .font(.system(size: 15, weight: .heavy, design: .rounded))
                         .foregroundStyle(.white)
-                        .padding(.top, 12)
+                        .padding(.top, 10)
                 }
 
                 // The four disciplines, as a strip rather than four stacked
@@ -353,9 +344,9 @@ struct RunShareCard: View {
                     ShareStat(label: "CONTROL", bps: breakdown.controlBps)
                     ShareStat(label: "LEGAL", bps: breakdown.complianceBps)
                 }
-                .padding(.top, 20)
+                .padding(.top, 18)
 
-                Spacer(minLength: 18)
+                Spacer(minLength: 10)
 
                 HStack(alignment: .bottom) {
                     VStack(alignment: .leading, spacing: 2) {
