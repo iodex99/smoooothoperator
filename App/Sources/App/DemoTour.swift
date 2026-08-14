@@ -63,8 +63,12 @@ private struct DemoDriveFlow: View {
 
     enum Stage { case course, driving, shareCard, garage, flyingStart }
 
-    /// A run that crossed the start line at speed. Built by decoding rather
-    /// than by a memberwise init so the demo needs no widened Kit API.
+    /// A run that crossed the start line at speed.
+    ///
+    /// Decoded rather than constructed: the public initialiser takes a
+    /// PipelineOutcome, and this fixture needs specific numbers rather than
+    /// a real evaluation. Codable is the honest way to spell that, and it
+    /// keeps the demo from being a reason to widen the Kit's API further.
     static let flyingStartOutcome: DriveRunOutcome = {
         let json = """
         {"provisionalScore":8102,"provisionalVerdict":"questionable",

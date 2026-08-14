@@ -94,6 +94,56 @@ public struct DriveRunOutcome: Codable, Sendable, Equatable {
     /// Raw samples for the telemetry upload — never mutated by processing.
     public var rawGPS: [GPSSample]
     public var rawIMU: [IMUSample]
+
+    /// The memberwise initialiser, spelled out. Declaring the one below
+    /// suppresses the synthesised version, and fixtures need to build an
+    /// outcome from specific numbers rather than a real evaluation.
+    public init(
+        provisionalScore: Int,
+        provisionalVerdict: RunVerificationStatus,
+        breakdown: ScoreBreakdown,
+        confidenceScore: Int,
+        durationSeconds: Double,
+        distanceMeters: Double,
+        gatesHit: Int,
+        deviationDetected: Bool,
+        integrityFlags: [String] = [],
+        rawGPS: [GPSSample],
+        rawIMU: [IMUSample]
+    ) {
+        self.provisionalScore = provisionalScore
+        self.provisionalVerdict = provisionalVerdict
+        self.breakdown = breakdown
+        self.confidenceScore = confidenceScore
+        self.durationSeconds = durationSeconds
+        self.distanceMeters = distanceMeters
+        self.gatesHit = gatesHit
+        self.deviationDetected = deviationDetected
+        self.integrityFlags = integrityFlags
+        self.rawGPS = rawGPS
+        self.rawIMU = rawIMU
+    }
+
+    /// Builds the outcome from a pipeline result.
+    ///
+    /// Public and shared on purpose. A finished live drive and a drive
+    /// recovered from a crash journal produce the same thing, and the App
+    /// layer needs to build one too. When that mapping was copied by hand
+    /// in a second place, the two drifted immediately — and a field added
+    /// here would have gone silently missing from recovered runs.
+    public init(evaluation: PipelineOutcome, rawGPS: [GPSSample], rawIMU: [IMUSample]) {
+        self.provisionalScore = evaluation.score.finalScore
+        self.provisionalVerdict = evaluation.integrity.verdict
+        self.breakdown = evaluation.score.breakdown
+        self.confidenceScore = evaluation.confidence.score
+        self.durationSeconds = evaluation.trajectory.duration
+        self.distanceMeters = evaluation.trajectory.totalDistanceMeters
+        self.gatesHit = evaluation.gatesHit
+        self.deviationDetected = evaluation.deviationDetected
+        self.integrityFlags = Set(evaluation.integrity.findings.map(\.flag.rawValue)).sorted()
+        self.rawGPS = rawGPS
+        self.rawIMU = rawIMU
+    }
 }
 
 /// Orchestrates one drive: consumes the unified sensor stream, calibrates
@@ -412,17 +462,7 @@ public actor DriveSession {
         // the file here would reopen the crash window this exists to close.
         Task { await self.drainJournal() }
         transition(to: .finished(DriveRunOutcome(
-            provisionalScore: outcome.score.finalScore,
-            provisionalVerdict: outcome.integrity.verdict,
-            breakdown: outcome.score.breakdown,
-            confidenceScore: outcome.confidence.score,
-            durationSeconds: outcome.trajectory.duration,
-            distanceMeters: outcome.trajectory.totalDistanceMeters,
-            gatesHit: outcome.gatesHit,
-            deviationDetected: outcome.deviationDetected,
-            integrityFlags: Set(outcome.integrity.findings.map(\.flag.rawValue)).sorted(),
-            rawGPS: rawGPS,
-            rawIMU: rawIMU
+            evaluation: outcome, rawGPS: rawGPS, rawIMU: rawIMU
         )))
     }
 

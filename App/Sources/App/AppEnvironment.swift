@@ -165,17 +165,7 @@ final class AppEnvironment {
             _ = try? await uploadQueue.enqueue(
                 courseId: drive.courseId,
                 outcome: DriveRunOutcome(
-                    provisionalScore: outcome.score.finalScore,
-                    provisionalVerdict: outcome.integrity.verdict,
-                    breakdown: outcome.score.breakdown,
-                    confidenceScore: outcome.confidence.score,
-                    durationSeconds: outcome.trajectory.duration,
-                    distanceMeters: outcome.trajectory.totalDistanceMeters,
-                    gatesHit: outcome.gatesHit,
-                    deviationDetected: outcome.deviationDetected,
-                    integrityFlags: Set(outcome.integrity.findings.map(\.flag.rawValue)).sorted(),
-                    rawGPS: drive.gps,
-                    rawIMU: drive.imu
+                    evaluation: outcome, rawGPS: drive.gps, rawIMU: drive.imu
                 ),
                 userId: await api.userId
             )
