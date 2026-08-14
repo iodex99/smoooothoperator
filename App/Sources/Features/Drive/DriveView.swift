@@ -100,13 +100,23 @@ struct DriveView: View {
         case .ready:
             stateOverlay {
                 VStack(spacing: 14) {
-                    VStack(spacing: 8) {
+                    VStack(spacing: 10) {
                         Text("READY")
                             .font(.system(size: 44, weight: .black, design: .rounded))
                             .foregroundStyle(SOTheme.heat)
                         Text("Cross the start line to begin.")
                             .font(.subheadline.weight(.medium))
                             .foregroundStyle(.white)
+                        // Said BEFORE the clock exists. A fairness rule the
+                        // driver only learns about afterwards is a trap.
+                        Label(
+                            "Roll up slowly — arriving at speed is free pace, so those runs can't rank.",
+                            systemImage: "figure.walk.motion"
+                        )
+                        .font(.caption)
+                        .foregroundStyle(SOTheme.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
                     }
                     .frame(maxWidth: .infinity)
                     .soCard(padding: 22)

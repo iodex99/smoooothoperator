@@ -1,4 +1,5 @@
 import SOCore
+import SOIntegrity
 import SOModels
 import SOScoring
 import SOSync
@@ -60,6 +61,16 @@ struct RunResultView: View {
                     Label("Verifying with the server…", systemImage: "icloud.and.arrow.up")
                         .font(.footnote)
                         .foregroundStyle(SOTheme.textSecondary)
+                }
+                if flyingStart {
+                    Label(
+                        "You crossed the start line already at speed. Roll up slowly next time and this run ranks.",
+                        systemImage: "figure.walk.motion"
+                    )
+                    .font(.footnote)
+                    .foregroundStyle(SOTheme.caution)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
                 if let uploadError {
                     // Spec §78: stored locally, never lost.
@@ -143,10 +154,15 @@ struct RunResultView: View {
         }
     }
 
+    /// The one "not ranked" reason a driver can actually act on next time.
+    private var flyingStart: Bool {
+        outcome.integrityFlags.contains(IntegrityFlag.flyingStart.rawValue)
+    }
+
     private var verdictTitle: String {
         switch outcome.provisionalVerdict {
         case .verified: "RUN COMPLETE"
-        case .questionable: "RUN COMPLETE — NOT RANKED"
+        case .questionable: flyingStart ? "FLYING START — NOT RANKED" : "RUN COMPLETE — NOT RANKED"
         case .invalid: outcome.deviationDetected
             ? "LEFT THE COURSE — NOT RANKED"
             : "RUN NOT ELIGIBLE"

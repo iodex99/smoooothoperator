@@ -50,6 +50,10 @@ public struct DriveRunOutcome: Codable, Sendable, Equatable {
     public var distanceMeters: Double
     public var gatesHit: Int
     public var deviationDetected: Bool
+    /// Why the verdict is what it is, as stable flag strings. The UI needs
+    /// this to tell a driver something they can act on ("roll up slowly")
+    /// rather than a bare "not ranked".
+    public var integrityFlags: [String] = []
     /// Raw samples for the telemetry upload — never mutated by processing.
     public var rawGPS: [GPSSample]
     public var rawIMU: [IMUSample]
@@ -234,6 +238,7 @@ public actor DriveSession {
             distanceMeters: outcome.trajectory.totalDistanceMeters,
             gatesHit: outcome.gatesHit,
             deviationDetected: outcome.deviationDetected,
+            integrityFlags: Set(outcome.integrity.findings.map(\.flag.rawValue)).sorted(),
             rawGPS: rawGPS,
             rawIMU: rawIMU
         )))

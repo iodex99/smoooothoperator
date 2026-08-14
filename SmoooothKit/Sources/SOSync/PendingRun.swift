@@ -17,6 +17,9 @@ public struct PendingRun: Codable, Sendable, Equatable, Identifiable {
     /// and signing in as someone else silently posts your drive to their
     /// account and their leaderboard.
     public let userId: String?
+    /// Which car drove this. Recorded at finish so an offline run still
+    /// remembers, and nil for drives recorded before the garage existed.
+    public let vehicleId: String?
     public let outcome: DriveRunOutcome
     public let createdAt: Date
     public var state: UploadState
@@ -29,6 +32,7 @@ public struct PendingRun: Codable, Sendable, Equatable, Identifiable {
         id: UUID = UUID(),
         courseId: String,
         userId: String? = nil,
+        vehicleId: String? = nil,
         outcome: DriveRunOutcome,
         createdAt: Date = Date(),
         state: UploadState = .pending,
@@ -39,6 +43,7 @@ public struct PendingRun: Codable, Sendable, Equatable, Identifiable {
         self.id = id
         self.courseId = courseId
         self.userId = userId
+        self.vehicleId = vehicleId
         self.outcome = outcome
         self.createdAt = createdAt
         self.state = state

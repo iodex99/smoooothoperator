@@ -19,7 +19,8 @@ struct QueuedRunUploader: RunUploading {
         }
         _ = try await RunUploader(api: api).upload(
             outcome: run.outcome,
-            courseId: run.courseId
+            courseId: run.courseId,
+            vehicleId: run.vehicleId
         )
     }
 }

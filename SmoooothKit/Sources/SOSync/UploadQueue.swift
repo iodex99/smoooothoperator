@@ -37,11 +37,13 @@ public actor UploadQueue {
     public func enqueue(
         courseId: String,
         outcome: DriveRunOutcome,
-        userId: String? = nil
+        userId: String? = nil,
+        vehicleId: String? = nil
     ) throws -> PendingRun {
         let run = PendingRun(
             courseId: courseId,
             userId: userId,
+            vehicleId: vehicleId,
             outcome: outcome,
             createdAt: now()
         )

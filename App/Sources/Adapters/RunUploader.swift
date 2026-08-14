@@ -39,7 +39,11 @@ struct RunUploader {
         return try JSONSerialization.data(withJSONObject: payload)
     }
 
-    func upload(outcome: DriveRunOutcome, courseId: String) async throws -> AuthoritativeResult {
+    func upload(
+        outcome: DriveRunOutcome,
+        courseId: String,
+        vehicleId: String? = nil
+    ) async throws -> AuthoritativeResult {
         guard let userId = await api.userId else { throw SupabaseAPI.APIError.notAuthenticated }
 
         let blob = try Self.telemetryPayload(outcome: outcome)
@@ -61,7 +65,7 @@ struct RunUploader {
             "duration_seconds": outcome.durationSeconds,
             "distance_meters": outcome.distanceMeters,
             "client_score": outcome.provisionalScore,
-        ])
+        ].merging(vehicleId.map { ["vehicle_id": $0] } ?? [:]) { current, _ in current })
         guard
             let rows = try JSONSerialization.jsonObject(with: runResponse) as? [[String: Any]],
             let runId = rows.first?["id"] as? String

@@ -166,6 +166,13 @@ struct ProfileView: View {
                         }
                         Divider().overlay(SOTheme.hairline)
                         NavigationLink {
+                            GarageView()
+                        } label: {
+                            AccountRow(icon: "car.2", title: "Garage", showsChevron: true)
+                        }
+                        .buttonStyle(.plain)
+                        Divider().overlay(SOTheme.hairline)
+                        NavigationLink {
                             EditProfileView()
                         } label: {
                             AccountRow(icon: "person.text.rectangle", title: "Your profile", showsChevron: true)
