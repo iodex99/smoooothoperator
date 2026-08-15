@@ -154,14 +154,16 @@ as $$
        and mine.user_id = (select auth.uid());
 $$;
 
--- ── the two numbers the profile actually wanted ───────────────────────────
+-- ── the profile's whole stats bundle, in one round trip ───────────────────
 --
--- The profile downloaded every rank it could see and counted the 1s and the
--- <=10s in Swift. It only ever needed two integers, and getting them this
--- way costs one round trip and no global sort.
+-- The profile made three sequential requests and counted two of the answers
+-- client-side: it downloaded every rank it could see to count the 1s and the
+-- <=10s, and downloaded one id per verified run to count those. It only ever
+-- needed five numbers.
 
 create or replace function public.my_rank_summary()
-returns table (wins bigint, top_ten bigint)
+returns table (wins bigint, top_ten bigint, verified_runs bigint,
+               rating integer, rating_tier text)
 language sql
 stable
 security invoker
@@ -169,7 +171,13 @@ set search_path = ''
 as $$
     select
         count(*) filter (where r = 1),
-        count(*) filter (where r <= 10)
+        count(*) filter (where r <= 10),
+        -- Counted here rather than by downloading one id per verified run
+        -- and calling .count on the array in Swift.
+        (select count(*) from public.runs
+          where user_id = (select auth.uid()) and verification = 'verified'),
+        (select p.rating from public.profiles p where p.id = (select auth.uid())),
+        (select p.rating_tier from public.profiles p where p.id = (select auth.uid()))
       from (
         select 1 + (
             select count(*)

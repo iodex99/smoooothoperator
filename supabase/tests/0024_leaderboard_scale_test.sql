@@ -5,7 +5,7 @@
 -- consistent with the ranks.
 
 begin;
-select plan(12);
+select plan(13);
 
 insert into auth.users (id, email) values
     ('1b000001-a000-4000-8000-000000000001', 'ace@test.local'),
@@ -155,6 +155,13 @@ select is(
     (select top_ten from public.my_rank_summary()),
     1::bigint,
     'fourth place still counts as a top ten'
+);
+
+select is(
+    (select verified_runs from public.my_rank_summary()),
+    1::bigint,
+    'the verified-run count comes back in the same bundle — it used to be a '
+    'second request that downloaded one id per run to count them'
 );
 
 select * from finish();

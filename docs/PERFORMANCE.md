@@ -159,6 +159,10 @@ Three fixes:
    question scanned the whole table for a handful of rows. This was the
    O(product) term that survived fixing the window function.
 
+The profile also made **three sequential requests** for five numbers, two of
+them downloading rows only to call `.count` on the array. `my_rank_summary()`
+returns all five in one round trip, counted where the rows are.
+
 ### The ranks were also wrong
 
 The national and friends boards filtered the view by country / user id

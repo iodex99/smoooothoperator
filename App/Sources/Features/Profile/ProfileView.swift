@@ -252,33 +252,29 @@ struct ProfileView: View {
 
     /// Real records, or honest zeros — never fabricated.
     private func loadStats() async {
-        guard let api = environment.api, let id = await api.userId else {
+        // Every figure below is the caller's own; the server reads auth.uid().
+        guard let api = environment.api, await api.userId != nil else {
             stats = ProfileStats()
             return
         }
-        struct Profile: Decodable {
-            var rating: Int
-            var rating_tier: String
+        // Five numbers, one round trip, all counted where the rows are. This
+        // was three sequential requests, two of which downloaded rows only to
+        // call .count on them — and the ranks one made the server rank EVERY
+        // entry on EVERY course to answer it.
+        struct Summary: Decodable {
+            var wins: Int
+            var top_ten: Int
+            var verified_runs: Int
+            var rating: Int?
+            var rating_tier: String?
         }
-        if let profiles = try? await api.get(
-            "profiles?id=eq.\(id)&select=rating,rating_tier", as: [Profile].self
-        ), let profile = profiles.first {
-            stats.rating = profile.rating
-            stats.ratingTier = profile.rating_tier
-        }
-        if let runs = try? await api.get(
-            "runs?user_id=eq.\(id)&verification=eq.verified&select=id", as: [IdRow].self
-        ) {
-            stats.verifiedRuns = runs.count
-        }
-        // Two integers, counted where the rows are. This used to download
-        // every rank the driver held and count them here — which made the
-        // server rank EVERY entry on EVERY course to answer it.
-        struct Summary: Decodable { var wins: Int; var top_ten: Int }
         if let data = try? await api.rpc("my_rank_summary", json: [:]),
            let summary = (try? JSONDecoder().decode([Summary].self, from: data))?.first {
             stats.wins = summary.wins
             stats.topTen = summary.top_ten
+            stats.verifiedRuns = summary.verified_runs
+            if let rating = summary.rating { stats.rating = rating }
+            if let tier = summary.rating_tier { stats.ratingTier = tier }
         }
     }
 
@@ -318,7 +314,6 @@ struct ProfileStats {
     var topTen = 0
 }
 
-struct IdRow: Decodable { var id: String }
 
 struct AccountRow: View {
     let icon: String
