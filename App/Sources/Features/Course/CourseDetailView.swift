@@ -473,7 +473,13 @@ final class CourseDetailModel {
             }
             // A course you made is a road you drove, and it very often starts
             // where you set off from. Whoever created it can take it down.
-            isMine = row.creator_id != nil && row.creator_id == (await api.userId)
+            //
+            // The id is read into a local first: `&&` takes an autoclosure,
+            // and an `await` inside one is not allowed. Parsing cannot see
+            // that — only the type checker can, which is what the CI Mac is
+            // for.
+            let me = await api.userId
+            isMine = row.creator_id != nil && row.creator_id == me
             vehicleBests = (await bestsTask)
                 .flatMap { try? JSONDecoder().decode([VehicleBest].self, from: $0) } ?? []
             let route = try await routeTask
