@@ -4,6 +4,7 @@ import SOCore
 import SOCourse
 import SOModels
 import SOScoring
+import SOTelemetry
 @testable import SOSimulator
 
 /// Every other test in this package drives a course of about four minutes.
@@ -15,10 +16,22 @@ import SOScoring
 /// minutes and freezes the phone at sixty. Nothing here measured that, so
 /// nothing here would have caught it.
 ///
-/// These tests do not assert a time in milliseconds — that would be a
-/// flaky test on shared CI hardware. They assert the SHAPE: quadruple the
-/// input and the work must not grow like the square. A quadratic step shows
-/// up as 16× and cannot hide inside the slack these allow.
+/// These tests assert the SHAPE rather than a wall-clock time: grow the
+/// input and the work must not grow like its square.
+///
+/// TWO THINGS LEARNED FROM GETTING THIS WRONG, both encoded below.
+///
+/// Measure where the work dominates. At a couple of thousand samples the
+/// numbers are single-digit milliseconds and mostly fixed cost, so the ratio
+/// between two small sizes says more about allocator warm-up than about the
+/// algorithm — course building measured 8-10x for 3.7x the input in a debug
+/// build while being 1.11 in a release one. The sizes below are the sizes a
+/// real drive produces.
+///
+/// Take the best of several runs. This is a shared two-core box; a
+/// scheduling hiccup inflates one sample and nothing detects it. The minimum
+/// of N is the standard estimator for "how fast can this actually go" and it
+/// is the only one of these that is stable.
 @Suite("Pipeline scaling on a long drive")
 struct PipelineScalingTests {
     /// A winding road of arbitrary length. Realism is not the point here;
@@ -61,6 +74,19 @@ struct PipelineScalingTests {
         }
     }
 
+    /// Best of `attempts` — see the note above on why a minimum, not a mean.
+    private static func fastest(
+        attempts: Int = 3,
+        _ body: () -> (seconds: Double, count: Int)
+    ) -> (seconds: Double, count: Int) {
+        var best = body()
+        for _ in 1..<attempts {
+            let next = body()
+            if next.seconds < best.seconds { best = next }
+        }
+        return best
+    }
+
     /// Seconds spent evaluating one simulated drive over `segments` of road.
     private static func evaluationSeconds(segments: Int) -> (seconds: Double, samples: Int) {
         let route = longRoute(segments: segments, seed: 77)
@@ -83,25 +109,28 @@ struct PipelineScalingTests {
 
     @Test("evaluating a drive grows with its length, not with its length squared")
     func evaluationIsNotQuadratic() {
-        // Warm the code paths so the first measurement is not paying for
-        // one-time work that has nothing to do with input size.
-        _ = Self.evaluationSeconds(segments: 20)
+        _ = Self.evaluationSeconds(segments: 40)   // warm the code paths
 
-        let small = Self.evaluationSeconds(segments: 40)
-        let large = Self.evaluationSeconds(segments: 160)
+        // Both sizes are real drive lengths — roughly 20 and 45 minutes.
+        // Comparing two LARGE sizes is the point: at a couple of thousand
+        // samples the measurement is mostly fixed cost.
+        let small = Self.fastest { let r = Self.evaluationSeconds(segments: 200)
+                                   return (r.seconds, r.samples) }
+        let large = Self.fastest { let r = Self.evaluationSeconds(segments: 400)
+                                   return (r.seconds, r.samples) }
 
-        let inputRatio = Double(large.samples) / Double(small.samples)
+        let inputRatio = Double(large.count) / Double(small.count)
         let timeRatio = large.seconds / max(small.seconds, 0.0001)
 
-        // 4× the input. Linear is ~4×, quadratic is ~16×. The bar is 8×:
-        // generous enough for cache effects and a loaded CI box, far below
-        // anything quadratic.
+        // ~2× the input. Linear is ~2×, quadratic is ~4×. The bar sits
+        // between them, closer to quadratic so ordinary noise cannot reach
+        // it, and far enough below 4× that a quadratic step cannot hide.
         #expect(
-            timeRatio < inputRatio * 2,
+            timeRatio < inputRatio * 1.6,
             """
             evaluation time grew \(String(format: "%.1f", timeRatio))× for \
             \(String(format: "%.1f", inputRatio))× the samples \
-            (\(small.samples) → \(large.samples) samples, \
+            (\(small.count) → \(large.count) samples, \
             \(String(format: "%.3f", small.seconds))s → \
             \(String(format: "%.3f", large.seconds))s). That is the signature \
             of a quadratic step in the pipeline.
@@ -124,6 +153,60 @@ struct PipelineScalingTests {
         )
     }
 
+    /// The whole-pipeline test above is necessary and NOT sufficient, and
+    /// finding that out is why this one exists.
+    ///
+    /// Course tracking was the quadratic stage. When the fix for it was
+    /// temporarily reverted to check that the pipeline test would notice, the
+    /// pipeline test PASSED: tracking is one stage among seven, the rest are
+    /// linear, and quadrupling a third of the total does not move the total
+    /// far enough to trip a threshold set loose enough to survive a noisy
+    /// box. A guard that cannot fail on the bug it was written for is not a
+    /// guard.
+    ///
+    /// So the stage is measured on its own, where the quadratic term is
+    /// 100% of what is being timed and has nowhere to hide.
+    @Test("course tracking grows with the drive, not with the drive squared")
+    func courseTrackingIsNotQuadratic() {
+        func trackingSeconds(segments: Int) -> (seconds: Double, count: Int) {
+            let route = Self.longRoute(segments: segments, seed: 77)
+            let run = TelemetrySimulator(profile: .fastSmooth, seed: 31).simulate(route: route)
+            let trajectory = TrajectoryProcessor().process(run.gps)
+            let gates = Self.gates(on: route)
+            let started = Date()
+            guard var tracker = CourseProgressTracker(polyline: route, checkpoints: gates) else {
+                return (0, 0)
+            }
+            tracker.ingest(trajectory)
+            return (Date().timeIntervalSince(started), trajectory.points.count)
+        }
+
+        _ = trackingSeconds(segments: 40)   // warm the code paths
+
+        let small = Self.fastest { trackingSeconds(segments: 200) }
+        let large = Self.fastest { trackingSeconds(segments: 400) }
+
+        let inputRatio = Double(large.count) / Double(small.count)
+        let timeRatio = large.seconds / max(small.seconds, 0.0001)
+
+        // Tracking cost is (trajectory points x polyline segments), and this
+        // route grows BOTH with `segments` — so an unwindowed match is
+        // quadratic in this ratio: ~2x the input, ~4x the time. Linear is
+        // ~2x. The bar sits between, and was checked against the real
+        // regression rather than assumed to catch it.
+        #expect(
+            timeRatio < inputRatio * 1.5,
+            """
+            course tracking grew \(String(format: "%.1f", timeRatio))× for \
+            \(String(format: "%.1f", inputRatio))× the points \
+            (\(small.count) → \(large.count) points, \
+            \(String(format: "%.4f", small.seconds))s → \
+            \(String(format: "%.4f", large.seconds))s). Something is scanning \
+            the whole course polyline for every fix again.
+            """
+        )
+    }
+
     /// Course creation is the newest path here and the one a driver waits
     /// on: they finish recording and the app has to hand back a proposal.
     /// The simplification step is Ramer–Douglas–Peucker, whose worst case is
@@ -142,19 +225,22 @@ struct PipelineScalingTests {
             return (Date().timeIntervalSince(started), recorded.count)
         }
 
-        _ = buildSeconds(segments: 20)
-        let small = buildSeconds(segments: 40)
-        let large = buildSeconds(segments: 160)
+        _ = buildSeconds(segments: 40)   // warm the code paths
 
-        let inputRatio = Double(large.points) / Double(small.points)
+        let small = Self.fastest { let r = buildSeconds(segments: 200)
+                                   return (r.seconds, r.points) }
+        let large = Self.fastest { let r = buildSeconds(segments: 400)
+                                   return (r.seconds, r.points) }
+
+        let inputRatio = Double(large.count) / Double(small.count)
         let timeRatio = large.seconds / max(small.seconds, 0.0001)
 
         #expect(
-            timeRatio < inputRatio * 2,
+            timeRatio < inputRatio * 1.6,
             """
             course building grew \(String(format: "%.1f", timeRatio))× for \
             \(String(format: "%.1f", inputRatio))× the points \
-            (\(small.points) → \(large.points)).
+            (\(small.count) → \(large.count)).
             """
         )
     }

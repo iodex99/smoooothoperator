@@ -18,6 +18,8 @@ struct CourseDetailView: View {
     @State private var model = CourseDetailModel()
     @State private var showPaywall = false
     @State private var raceGhost = true
+    @State private var confirmRemove = false
+    @State private var removalNotice: String?
 
     var body: some View {
         ScrollView {
@@ -178,6 +180,22 @@ struct CourseDetailView: View {
                         .soCard(padding: 18)
                         .padding(.top, 6)
                     }
+
+                    // A course you made is a road you drove, and it usually
+                    // starts where you set off from. Whoever made it can take
+                    // it down — a warning about permanence is not a substitute
+                    // for an undo when the undo is this cheap to give.
+                    if model.isMine {
+                        Button(role: .destructive) {
+                            confirmRemove = true
+                        } label: {
+                            Text("Remove this course")
+                                .font(.subheadline.weight(.semibold))
+                                .frame(maxWidth: .infinity, minHeight: 44)
+                        }
+                        .foregroundStyle(SOTheme.danger)
+                        .padding(.top, 10)
+                    }
                 case .loading:
                     ProgressView()
                         .tint(SOTheme.heatStart)
@@ -252,6 +270,36 @@ struct CourseDetailView: View {
             }
         }) {
             SignInView()
+        }
+        .confirmationDialog(
+            "Remove this course?",
+            isPresented: $confirmRemove,
+            titleVisibility: .visible
+        ) {
+            Button("Remove it", role: .destructive) {
+                Task {
+                    removalNotice = await model.remove(
+                        courseId: courseId, api: environment.api
+                    ) ?? "Couldn't remove it just now. Check your connection and try again."
+                }
+            }
+            Button("Keep it", role: .cancel) {}
+        } message: {
+            // Deliberately does not promise which outcome happens: that
+            // depends on whether anyone else has driven it, which the server
+            // knows and this device does not.
+            Text("If nobody has driven it, it's gone for good. If other "
+                + "drivers have, it leaves the catalog but their runs stay "
+                + "theirs.")
+        }
+        .alert(
+            removalNotice ?? "",
+            isPresented: Binding(
+                get: { removalNotice != nil },
+                set: { if !$0 { removalNotice = nil } }
+            )
+        ) {
+            Button("OK") { removalNotice = nil }
         }
     }
 }
@@ -337,6 +385,10 @@ final class CourseDetailModel {
     }
 
     var state: State = .loading
+    /// True when the signed-in driver created this course. A course is made
+    /// by recording a drive, so its line is a road they drove — whoever made
+    /// it can take it down.
+    var isMine = false
     /// The best ghost available to race here, if any.
     var rival: (ghost: GhostTrajectory, username: String, score: Int)?
 
@@ -397,6 +449,7 @@ final class CourseDetailModel {
                 var difficulty: Int
                 var turn_count: Int
                 var benchmark_seconds: Int?
+                var creator_id: String?
             }
             // CONCURRENTLY. These three requests do not depend on each
             // other, and they were awaited one after another — three round
@@ -404,7 +457,8 @@ final class CourseDetailModel {
             // third of a second of spinner for no reason, while the driver
             // stands at the side of a road.
             async let rowsTask = api.get(
-                "courses?id=eq.\(courseId)&select=name,distance_meters,difficulty,turn_count,benchmark_seconds",
+                "courses?id=eq.\(courseId)&select=name,distance_meters,difficulty,turn_count,"
+                    + "benchmark_seconds,creator_id",
                 as: [Row].self
             )
             async let routeTask = api.courseRoute(courseId: courseId)
@@ -417,6 +471,9 @@ final class CourseDetailModel {
                 state = .failed("This course is no longer available.")
                 return
             }
+            // A course you made is a road you drove, and it very often starts
+            // where you set off from. Whoever created it can take it down.
+            isMine = row.creator_id != nil && row.creator_id == (await api.userId)
             vehicleBests = (await bestsTask)
                 .flatMap { try? JSONDecoder().decode([VehicleBest].self, from: $0) } ?? []
             let route = try await routeTask
@@ -433,6 +490,21 @@ final class CourseDetailModel {
         } catch {
             state = .failed("Couldn't load this course. Check your connection and try again.")
         }
+    }
+
+    /// Takes down a course the driver created. The server decides which of
+    /// the two outcomes applies — deleted outright if nobody has driven it,
+    /// archived out of the catalog if they have — because that depends on
+    /// other people's runs, which this device cannot see and must not guess.
+    /// Returns the driver-facing sentence, or nil if it could not be done.
+    func remove(courseId: String, api: SupabaseAPI?) async -> String? {
+        guard let api else { return nil }
+        guard let data = try? await api.rpc("delete_my_course", json: ["p_course": courseId]),
+              let outcome = try? JSONDecoder().decode(String.self, from: data)
+        else { return nil }
+        return outcome == "archived"
+            ? "Taken out of the catalog. Runs other drivers already set on it stay theirs."
+            : "Deleted. Nobody had driven it, so it is gone completely."
     }
 }
 
