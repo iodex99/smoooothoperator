@@ -124,11 +124,34 @@ does not exist there yet. All 34 migrations are still local-only.
 
 ## Phase 3 — The build
 
-15. **ME — Team ID.** Send it and I will put it in `project.yml`, the
-    entitlements and the AASA file (currently the literal string `TEAMID`).
-16. **YOU or CI — archive and upload to TestFlight.** The CI Mac already builds
-    and boots the app; it is not currently signing or uploading. I can add that
-    once a Team ID and signing certificate exist.
+15. **ME — Team ID.** Send it and I will put it in the AASA file (currently
+    the literal string `TEAMID`). Nothing else in the repo needs it: the build
+    takes `DEVELOPMENT_TEAM` from a secret at build time.
+
+16. **YOU — get it onto your iPhone. No Mac required.**
+
+    **You do not need App Store publication to install on a phone**, and it is
+    not the fastest route either. TestFlight installs a real signed build on a
+    real device, and for **internal** testers Apple does not review it first —
+    it appears minutes after processing.
+
+    Archiving and signing need macOS, which is why this used to imply owning a
+    Mac. It no longer does: `.github/workflows/testflight.yml` does the whole
+    thing on the CI Mac. Add four secrets (the workflow header says where each
+    comes from), press **Run workflow**, then install TestFlight on the iPhone
+    and sign in with the same Apple ID.
+
+    ```
+    APPLE_TEAM_ID  APPSTORE_KEY_ID  APPSTORE_ISSUER_ID  APPSTORE_PRIVATE_KEY
+    ```
+
+    That workflow has never run and cannot be tested without a paid account.
+    Expect the first attempt to want a small correction; send me the log.
+
+    **Already proven, for free:** the nightly job now builds for a real device
+    as well as the simulator, so the app is known to compile for arm64 against
+    the device SDK. That was an entire class of failure sitting between us and
+    the first drive, and it is closed without spending anything.
 
 ---
 
