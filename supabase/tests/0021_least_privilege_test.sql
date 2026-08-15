@@ -3,7 +3,7 @@
 -- matter how carefully its rules are written.
 
 begin;
-select plan(9);
+select plan(11);
 
 -- ── the privilege is gone from every table ────────────────────────────────
 
@@ -75,6 +75,30 @@ select ok(
 select ok(
     has_table_privilege('authenticated', 'public.telemetry', 'insert'),
     'uploading a run''s telemetry still works'
+);
+
+-- ── the telemetry bucket has ceilings, not just doors ─────────────────────
+--
+-- Back to the owner role: the assertions above deliberately run as
+-- `authenticated`, which cannot read storage.buckets at all — so leaving the
+-- role set would make these two pass or fail for the wrong reason.
+reset role;
+
+--
+-- Who may write there was always right. How much they may write was
+-- unbounded: file_size_limit was NULL, so any account could upload objects
+-- of any size under a prefix it controls, and storage is billed by the
+-- gigabyte.
+
+select ok(
+    (select file_size_limit from storage.buckets where id = 'telemetry') is not null,
+    'the telemetry bucket caps object size — an unbounded write path on a '
+    'free-to-create account is a bill somebody else pays'
+);
+
+select ok(
+    (select not public from storage.buckets where id = 'telemetry'),
+    'and it is not a public bucket — these are raw GPS traces'
 );
 
 select * from finish();
