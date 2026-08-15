@@ -199,6 +199,20 @@
     return body;
   }
 
+  // Everything on this page is built with innerHTML, and some of what it
+  // renders is typed by drivers: a custom course carries a name, a city and
+  // a region straight from whoever created it. Unescaped, a course called
+  //
+  //   <img src=x onerror="...">
+  //
+  // runs its payload in the OPERATOR'S session — the one account that can
+  // read the whole business, holding a live admin token in this very page.
+  // The person who controls the string is not the person who pays for it
+  // being wrong, which is the whole of why this helper exists.
+  const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  })[c]);
+
   const fmt = (n) => (n == null ? "—" : Number(n).toLocaleString());
   const pct = (a, b) => (b ? Math.round((a / b) * 100) + "%" : "—");
   function money(minor, currency) {
@@ -244,10 +258,15 @@
   }
 
   function table(el, columns, rows, emptyText) {
-    if (!rows.length) { el.outerHTML = `<p class="empty">${emptyText}</p>`; return; }
-    const head = columns.map((c) => `<th class="${c.num ? "num" : ""}">${c.label}</th>`).join("");
+    if (!rows.length) { el.outerHTML = `<p class="empty">${esc(emptyText)}</p>`; return; }
+    const head = columns.map((c) => `<th class="${c.num ? "num" : ""}">${esc(c.label)}</th>`).join("");
+    // Cells are ESCAPED unless a column explicitly opts out with `raw`.
+    // Escaping is the default because forgetting it is silent — the page
+    // looks right until the day somebody names a course after a script tag.
     const body = rows.map((r) =>
-      "<tr>" + columns.map((c) => `<td class="${c.num ? "num" : ""}">${c.cell(r)}</td>`).join("") + "</tr>"
+      "<tr>" + columns.map((c) =>
+        `<td class="${c.num ? "num" : ""}">${c.raw ? c.cell(r) : esc(c.cell(r))}</td>`
+      ).join("") + "</tr>"
     ).join("");
     el.innerHTML = `<thead><tr>${head}</tr></thead><tbody>${body}</tbody>`;
   }
@@ -311,7 +330,10 @@
       { label: "Drivers", num: true, cell: (x) => fmt(x.driver_count) },
       { label: "Paying", num: true, cell: (x) => fmt(x.paying_driver_count) },
       { label: "Runs", num: true, cell: (x) => fmt(x.run_count) },
-      { label: "", cell: (x) => `<span class="inbar"><i style="width:${(x.run_count / maxRuns) * 100}%"></i></span>` },
+      // The one column that is deliberately markup. Its only interpolation
+      // is a number this code computes, never anything a driver typed.
+      { label: "", raw: true,
+        cell: (x) => `<span class="inbar"><i style="width:${Number(x.run_count) / maxRuns * 100}%"></i></span>` },
     ], regions, "Nobody has recorded a run in the last 30 days.");
 
     table(document.getElementById("catalog"), [

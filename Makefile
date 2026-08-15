@@ -42,6 +42,7 @@ regen-goldens:
 syntax-check:
 	tools/ios-syntax-check.sh
 	tools/a11y-check.sh
+	tools/web-escaping-check.sh
 
 ## Enforce Kit purity: no Apple-only framework imports in SmoooothKit.
 lint:
