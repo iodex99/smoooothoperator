@@ -96,17 +96,34 @@ public struct CourseMatcher: Sendable {
     ) -> CourseMatch {
         let lower = cursorMeters - backtrackMeters
         let upper = cursorMeters + lookaheadMeters
-        var first = segments.count - 1
-        var last = 0
-        for (index, segment) in segments.enumerated() {
-            let segmentEnd = segment.startDistance + segment.length
-            if segmentEnd >= lower && segment.startDistance <= upper {
-                first = min(first, index)
-                last = max(last, index)
-            }
-        }
+
+        // Both `startDistance` and `startDistance + length` are cumulative,
+        // so the segments inside the window are a contiguous run and its
+        // ends can be found in log time. Scanning every segment to locate a
+        // few hundred metres of them made the "windowed" match cost exactly
+        // as much as the global one it exists to avoid.
+        let first = lowerBound { $0.startDistance + $0.length >= lower }
+        let last = lowerBound { $0.startDistance > upper } - 1
         guard first <= last else { return nearestMatch(to: coordinate) }
         return match(coordinate, segmentRange: first...last)
+    }
+
+    /// First index whose segment satisfies `predicate`, given that the
+    /// predicate is false for a prefix and true for the rest — which holds
+    /// for both bounds above because the distances are cumulative. Returns
+    /// `segments.count` when nothing satisfies it.
+    private func lowerBound(_ predicate: (Segment) -> Bool) -> Int {
+        var low = 0
+        var high = segments.count
+        while low < high {
+            let mid = low + (high - low) / 2
+            if predicate(segments[mid]) {
+                high = mid
+            } else {
+                low = mid + 1
+            }
+        }
+        return low
     }
 
     private func match<Range: Sequence>(

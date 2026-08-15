@@ -130,7 +130,6 @@ public struct CourseProgressTracker: Sendable {
         // window and must still count as off-course when it isn't near any
         // of it); "where along the course am I?" — judged inside the cursor
         // window so self-crossing courses can't teleport progress.
-        let global = matcher.nearestMatch(to: point.coordinate)
         let windowed = matcher.match(
             point.coordinate,
             near: progressMeters,
@@ -138,7 +137,31 @@ public struct CourseProgressTracker: Sendable {
             lookaheadMeters: config.lookaheadMeters
         )
 
-        if global.lateralOffsetMeters <= config.corridorWidthMeters {
+        // The global match scans every segment of the course, and it was
+        // taken for every fix of every drive — which is what made tracking
+        // grow with the square of the drive length rather than with it.
+        //
+        // It is not needed on the common path. The global match is the
+        // minimum over ALL segments and the windowed match is a minimum over
+        // a SUBSET of them, so
+        //
+        //     windowed <= corridor   implies   global <= corridor
+        //
+        // and a driver who is on their local stretch of road — which is the
+        // whole of a clean run — has already answered the question. Only a
+        // fix that has left its window needs the whole course consulted, and
+        // then the exact offset is wanted anyway, to record how far off it
+        // went. Same answers, same branches, same recorded offsets.
+        let onCourse: Bool
+        var globalOffsetMeters = windowed.lateralOffsetMeters
+        if windowed.lateralOffsetMeters <= config.corridorWidthMeters {
+            onCourse = true
+        } else {
+            globalOffsetMeters = matcher.nearestMatch(to: point.coordinate).lateralOffsetMeters
+            onCourse = globalOffsetMeters <= config.corridorWidthMeters
+        }
+
+        if onCourse {
             if let start = openExcursionStart {
                 offCourseExcursions.append(OffCourseExcursion(
                     startTime: start,
@@ -159,7 +182,7 @@ public struct CourseProgressTracker: Sendable {
             if openExcursionStart == nil {
                 openExcursionStart = point.timestamp
             }
-            openExcursionMaxOffset = max(openExcursionMaxOffset, global.lateralOffsetMeters)
+            openExcursionMaxOffset = max(openExcursionMaxOffset, globalOffsetMeters)
             isOffCourse = true
         }
 

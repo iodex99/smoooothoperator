@@ -117,18 +117,36 @@ export class CourseMatcher {
   ): CourseMatch {
     const lower = cursorMeters - backtrackMeters;
     const upper = cursorMeters + lookaheadMeters;
-    let first = this.segments.length - 1;
-    let last = 0;
-    for (let index = 0; index < this.segments.length; index++) {
-      const segment = this.segments[index];
-      const segmentEnd = segment.startDistance + segment.length;
-      if (segmentEnd >= lower && segment.startDistance <= upper) {
-        first = Math.min(first, index);
-        last = Math.max(last, index);
-      }
-    }
+
+    // Both `startDistance` and `startDistance + length` are cumulative, so
+    // the segments inside the window are a contiguous run and its ends can
+    // be found in log time. Scanning every segment to locate a few hundred
+    // metres of them made the "windowed" match cost exactly as much as the
+    // global one it exists to avoid.
+    const first = this.lowerBound((s) => s.startDistance + s.length >= lower);
+    const last = this.lowerBound((s) => s.startDistance > upper) - 1;
     if (!(first <= last)) return this.nearestMatch(coordinate);
     return this.matchRange(coordinate, first, last);
+  }
+
+  /**
+   * First index whose segment satisfies `predicate`, given that the
+   * predicate is false for a prefix and true for the rest — which holds for
+   * both bounds above because the distances are cumulative. Returns
+   * `segments.length` when nothing satisfies it.
+   */
+  private lowerBound(predicate: (segment: Segment) => boolean): number {
+    let low = 0;
+    let high = this.segments.length;
+    while (low < high) {
+      const mid = low + Math.floor((high - low) / 2);
+      if (predicate(this.segments[mid])) {
+        high = mid;
+      } else {
+        low = mid + 1;
+      }
+    }
+    return low;
   }
 
   /** Match over segment indices first...last (inclusive). */
@@ -298,7 +316,6 @@ export class CourseProgressTracker {
 
     // "Am I on the course at all?" — judged against the WHOLE course.
     // "Where along the course am I?" — judged inside the cursor window.
-    const global = this.matcher.nearestMatch(point.coordinate);
     const windowed = this.matcher.matchNear(
       point.coordinate,
       this.progressMeters,
@@ -306,7 +323,31 @@ export class CourseProgressTracker {
       this.config.lookaheadMeters,
     );
 
-    if (global.lateralOffsetMeters <= this.config.corridorWidthMeters) {
+    // The global match scans every segment of the course, and it was taken
+    // for every fix of every drive — which is what made tracking grow with
+    // the square of the drive length rather than with it.
+    //
+    // It is not needed on the common path. The global match is the minimum
+    // over ALL segments and the windowed match is a minimum over a SUBSET of
+    // them, so
+    //
+    //     windowed <= corridor   implies   global <= corridor
+    //
+    // and a driver on their local stretch of road — which is the whole of a
+    // clean run — has already answered the question. Only a fix that has
+    // left its window needs the whole course consulted, and then the exact
+    // offset is wanted anyway, to record how far off it went.
+    let onCourse: boolean;
+    let globalOffsetMeters = windowed.lateralOffsetMeters;
+    if (windowed.lateralOffsetMeters <= this.config.corridorWidthMeters) {
+      onCourse = true;
+    } else {
+      globalOffsetMeters =
+        this.matcher.nearestMatch(point.coordinate).lateralOffsetMeters;
+      onCourse = globalOffsetMeters <= this.config.corridorWidthMeters;
+    }
+
+    if (onCourse) {
       if (this.openExcursionStart !== null) {
         this.offCourseExcursions.push({
           startTime: this.openExcursionStart,
@@ -330,7 +371,7 @@ export class CourseProgressTracker {
       }
       this.openExcursionMaxOffset = Math.max(
         this.openExcursionMaxOffset,
-        global.lateralOffsetMeters,
+        globalOffsetMeters,
       );
       this.isOffCourse = true;
     }

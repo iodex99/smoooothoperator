@@ -233,6 +233,64 @@ launch blocker.
 
 ---
 
+## Scoring a long drive — the only quadratic step in the engine
+
+Every other test in the Kit drives a course of about four minutes. A driver
+will not. At 10 Hz GPS plus 50 Hz IMU, an hour is 36,000 GPS samples and
+180,000 IMU samples, and the catalog already ships courses up to **79 km and
+661 polyline points**.
+
+Timing each pipeline stage at 4× the input showed seven stages growing 2–4×
+and one growing **10.07×**:
+
+```
+                     40 seg    160 seg   growth
+  orientation         0.6 ms     2.1 ms    3.21x
+  trajectory          0.4 ms     0.7 ms    1.94x
+  events              1.3 ms     5.1 ms    4.02x
+  integrity           1.7 ms     6.0 ms    3.46x
+  course tracking     0.9 ms     9.1 ms   10.07x   <--
+```
+
+`CourseProgressTracker` took two matches per GPS fix, and **both scanned the
+entire course polyline**:
+
+- the *global* match, by design — "am I on the course at all?" has to be
+  asked of the whole course, because a deviated path can wander near a later
+  bend and must still read as off-course;
+- the *windowed* match, by accident — it scanned all segments just to find
+  where its few-hundred-metre window started, so the match that exists to
+  avoid a full scan performed one anyway.
+
+Both are fixed without changing a single output:
+
+1. **The window bounds are found by binary search.** `startDistance` is
+   cumulative, so the segments in the window are a contiguous run.
+2. **The global match is skipped on the common path.** It is the minimum over
+   *all* segments and the windowed match is a minimum over a *subset*, so
+   `windowed ≤ corridor` implies `global ≤ corridor`. A driver on their local
+   stretch of road — the whole of a clean run — has already answered the
+   question. Only a fix that has left its window consults the whole course,
+   and there the exact offset is wanted anyway to record how far off it went.
+
+| | Before | After |
+|---|---|---|
+| tracking, 8,058 points | 9.1 ms | **1.07 ms** |
+| tracking, 20,091 points | ~57 ms (extrapolated) | **2.80 ms** |
+| growth for 4× the input | 10.07× | **3.96×** |
+
+This runs on the phone the moment a drive ends, with the driver watching —
+and the identical TypeScript port runs on the server for every scored run, so
+the same change was made in both.
+
+**What proves it is exact:** all 12 golden vectors still reproduce
+byte-for-byte across Swift and TypeScript, `routeDeviation_1` among them —
+that is the vector that exercises the off-course branch. `PipelineScalingTests`
+now asserts the shape rather than a time, so a quadratic step reintroduced
+later fails the build instead of waiting to be measured.
+
+---
+
 ## Measured and left alone
 
 Recorded so the next person does not re-derive them.
