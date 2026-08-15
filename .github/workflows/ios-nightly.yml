@@ -38,6 +38,27 @@ jobs:
           echo "udid=$UDID" >> "$GITHUB_OUTPUT"
           xcrun simctl boot "$UDID" || true
 
+      # A real iPhone is arm64 with the device SDK; the simulator is a
+      # different architecture and a different SDK. Code can compile for one
+      # and not the other — an availability guard, a simulator-only stub, a
+      # framework that ships no device slice. Everything here has only ever
+      # been built for the simulator, so that whole class of error is sitting
+      # unexamined between us and the first real drive.
+      #
+      # Signing is off, so this needs no Apple account, no certificate and no
+      # secret. It proves the app COMPILES for a phone, which is the part
+      # that can be proven for free.
+      - name: Build for a real device (unsigned)
+        run: |
+          cd App && xcodebuild build \
+            -project SmoooothOperator.xcodeproj \
+            -scheme SmoooothOperator \
+            -destination "generic/platform=iOS" \
+            -derivedDataPath build-device \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
+
       - name: Build for iOS Simulator
         run: |
           cd App && xcodebuild build \

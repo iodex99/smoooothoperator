@@ -1,0 +1,181 @@
+# Build the app on a Mac we rent by the minute, sign it, and hand it to
+# TestFlight — so getting Smooooth Operator onto a real iPhone needs no Mac.
+#
+# WHY THIS EXISTS: publishing to the App Store is NOT required to install on
+# a phone, and it is not even the fastest route. TestFlight installs a real,
+# signed build on a real device, and for INTERNAL testers (you, and up to 99
+# others on your App Store Connect team) Apple does not review it first — the
+# build appears minutes after processing finishes.
+#
+# Deliberately manual. A Mac runner costs about ten times a Linux one, and
+# every upload consumes a build number, so this runs when you press the
+# button and not on every push.
+#
+# ── WHAT YOU HAVE TO CREATE FIRST ────────────────────────────────────────
+#
+# 1. An Apple Developer Program membership, and an app record in App Store
+#    Connect whose bundle ID is exactly:  app.smooooth.operator
+#
+# 2. An App Store Connect API key: Users and Access → Integrations → App
+#    Store Connect API → generate a key with the "App Manager" role. Apple
+#    lets you download the .p8 file ONCE, so save it somewhere safe.
+#
+# 3. Four repository secrets — Settings → Secrets and variables → Actions:
+#
+#      APPLE_TEAM_ID          ten characters, e.g. A1B2C3D4E5
+#      APPSTORE_KEY_ID        ten characters, from the key you generated
+#      APPSTORE_ISSUER_ID     a UUID, shown above the key list
+#      APPSTORE_PRIVATE_KEY   the ENTIRE .p8 file, including the
+#                             -----BEGIN PRIVATE KEY----- lines
+#
+# The API key is what lets this sign without anyone hand-managing
+# certificates: `-allowProvisioningUpdates` asks Apple to create and fetch
+# whatever certificate and profile the build needs.
+#
+# ── HONEST CAVEAT ────────────────────────────────────────────────────────
+#
+# This workflow has never run. It cannot be tested without a paid Apple
+# account, and there is no way to fake one. The shape is standard and the
+# steps are ordinary, but expect the first run to need a small correction —
+# most likely the `method` value in the export options, which Apple renamed
+# from `app-store` to `app-store-connect` in Xcode 15.3. Both are noted
+# below. If it fails, send me the log and it will be a quick fix.
+
+name: TestFlight
+
+on:
+  workflow_dispatch:
+    inputs:
+      notes:
+        description: "What changed in this build (shown to testers)"
+        required: false
+        default: "Internal test build"
+
+jobs:
+  upload:
+    name: archive, sign, upload
+    runs-on: macos-15
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Fail with a sentence a person can act on, rather than a signing error
+      # forty lines into xcodebuild.
+      - name: Check the secrets exist
+        env:
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
+          ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
+          PRIVATE_KEY: ${{ secrets.APPSTORE_PRIVATE_KEY }}
+        run: |
+          missing=""
+          [ -n "$TEAM_ID" ]     || missing="$missing APPLE_TEAM_ID"
+          [ -n "$KEY_ID" ]      || missing="$missing APPSTORE_KEY_ID"
+          [ -n "$ISSUER_ID" ]   || missing="$missing APPSTORE_ISSUER_ID"
+          [ -n "$PRIVATE_KEY" ] || missing="$missing APPSTORE_PRIVATE_KEY"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repository secret(s):$missing"
+            echo "Add them under Settings → Secrets and variables → Actions."
+            echo "The header of .github/workflows/testflight.yml says where each one comes from."
+            exit 1
+          fi
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate the Xcode project
+        run: cd App && xcodegen generate
+
+      - name: Write the App Store Connect API key
+        env:
+          PRIVATE_KEY: ${{ secrets.APPSTORE_PRIVATE_KEY }}
+          KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
+        run: |
+          mkdir -p ~/private_keys
+          printf '%s\n' "$PRIVATE_KEY" > ~/private_keys/AuthKey_${KEY_ID}.p8
+          chmod 600 ~/private_keys/AuthKey_${KEY_ID}.p8
+
+      # TestFlight refuses a build number it has already seen for a given
+      # version. The run number only ever increases, which is the whole
+      # requirement.
+      - name: Archive
+        env:
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
+          ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
+        run: |
+          cd App && xcodebuild archive \
+            -project SmoooothOperator.xcodeproj \
+            -scheme SmoooothOperator \
+            -destination "generic/platform=iOS" \
+            -archivePath "$PWD/build/SmoooothOperator.xcarchive" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/private_keys/AuthKey_${KEY_ID}.p8 \
+            -authenticationKeyID "$KEY_ID" \
+            -authenticationKeyIssuerID "$ISSUER_ID" \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
+            CURRENT_PROJECT_VERSION="${{ github.run_number }}"
+
+      - name: Write export options
+        env:
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          # `app-store-connect` is the Xcode 15.3+ name. On an older Xcode
+          # this must read `app-store` instead — that is the single most
+          # likely thing to need changing on a first run.
+          cat > App/ExportOptions.plist <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>${TEAM_ID}</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>uploadSymbols</key><true/>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict>
+          </plist>
+          PLIST
+
+      - name: Export and upload to TestFlight
+        env:
+          KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
+          ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
+        run: |
+          cd App && xcodebuild -exportArchive \
+            -archivePath "$PWD/build/SmoooothOperator.xcarchive" \
+            -exportPath "$PWD/build/export" \
+            -exportOptionsPlist ExportOptions.plist \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/private_keys/AuthKey_${KEY_ID}.p8 \
+            -authenticationKeyID "$KEY_ID" \
+            -authenticationKeyIssuerID "$ISSUER_ID"
+
+      - name: What happens next
+        run: |
+          echo "Uploaded build ${{ github.run_number }}."
+          echo
+          echo "Apple now processes it, which usually takes 5-30 minutes."
+          echo "When it finishes:"
+          echo "  1. App Store Connect -> TestFlight -> add yourself as an Internal Tester"
+          echo "  2. Install TestFlight from the App Store on your iPhone"
+          echo "  3. Sign in with the same Apple ID -- the build is waiting there"
+          echo
+          echo "Internal builds are NOT reviewed by Apple first."
+          echo
+          echo "Then: go and drive a real road. That is the only thing left"
+          echo "that no amount of work in this repository can answer."
+
+      # Kept regardless of outcome: on a failure this is what shows why.
+      - name: Keep the build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testflight-build-${{ github.run_number }}
+          path: |
+            App/build/export
+            App/ExportOptions.plist
+          if-no-files-found: ignore
+          retention-days: 14
