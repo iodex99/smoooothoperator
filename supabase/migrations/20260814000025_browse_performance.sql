@@ -115,10 +115,30 @@ create index if not exists courses_popular_idx
 -- shape matters:
 --   * the function takes NO user id. It reads auth.uid() itself, exactly
 --     like `is_admin()`. There is nothing for a caller to spoof.
---   * the visibility test is the SAME expression as the RLS policy, not a
---     re-derivation, so the two cannot drift into disagreeing.
 --   * pgTAP asserts a private course belonging to someone else is still
 --     invisible through it — that test predates this change and still runs.
+--
+-- ON THE RELATIONSHIP TO THE POLICY. An earlier version of this comment
+-- claimed the predicate below was "the SAME expression as the RLS policy, so
+-- the two cannot drift into disagreeing". That was wrong when it was
+-- written. The policy grants a creator their own course at ANY status:
+--
+--   (visibility='public' AND status='active')
+--   OR creator_id = auth.uid()                      <- no status condition
+--   OR (visibility='friends' AND status='active' AND are_friends(...))
+--
+-- while the predicate below requires status='active' on every branch. That
+-- is deliberate for browse — a draft course cannot be driven, so offering it
+-- would be a broken row on the screen — and it is strictly MORE restrictive
+-- than the policy, so it cannot return anything the policy would hide.
+--
+-- But a comment asserting an equivalence is not a check. The real guard is
+-- `0026_browse_matches_policy_test.sql`, which does not compare the two
+-- texts: it compares the two ANSWERS over a matrix of every visibility ×
+-- status × ownership × friendship combination, re-deriving the expectation
+-- from the LIVE POLICY on each run. Editing either side updates or fails it.
+-- It has been verified to fail against a deliberately leaky version of this
+-- function, which is the only evidence that a guard is a guard.
 
 -- ── the browse queries, using both ────────────────────────────────────────
 

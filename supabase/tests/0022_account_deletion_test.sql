@@ -4,7 +4,7 @@
 -- survive the account that recorded them.
 
 begin;
-select plan(6);
+select plan(9);
 
 insert into auth.users (id, email) values
     ('ef000001-a000-4000-8000-000000000001', 'leaving@test.local'),
@@ -32,6 +32,31 @@ values
 
 insert into public.vehicles (user_id, name)
 values ('ef000001-a000-4000-8000-000000000001', 'The Golf');
+
+-- Two courses THEY created: one nobody has driven, one that carries another
+-- driver's run. `courses.creator_id` is ON DELETE SET NULL, so a cascade
+-- orphans both rather than deleting them — which left the undriven one as a
+-- row nobody could ever see, holding the geometry of a road they recorded.
+insert into public.courses (
+    id, name, country, distance_meters, difficulty, turn_count,
+    geometry, start_point, finish_point, status, visibility, creator_id
+)
+select id, nm, 'ZZ', 4000, 3, 12,
+    extensions.st_setsrid(extensions.st_makeline(
+        extensions.st_makepoint(-163.5, -36.5),
+        extensions.st_makepoint(-163.4, -36.5)), 4326)::extensions.geography,
+    extensions.st_setsrid(extensions.st_makepoint(-163.5, -36.5), 4326)::extensions.geography,
+    extensions.st_setsrid(extensions.st_makepoint(-163.4, -36.5), 4326)::extensions.geography,
+    'active', vis, 'ef000001-a000-4000-8000-000000000001'
+from (values
+    ('ef000006-f000-4000-8000-000000000006'::uuid, 'My Private Road Home', 'private'),
+    ('ef000007-a000-4000-8000-000000000007'::uuid, 'A Road Others Race', 'public')
+) t(id, nm, vis);
+
+-- somebody else has a run on the second one
+insert into public.runs (id, user_id, course_id, status, started_at, completed_at)
+values ('ef000008-b000-4000-8000-000000000008', 'ef000002-b000-4000-8000-000000000002',
+        'ef000007-a000-4000-8000-000000000007', 'uploaded', now(), now());
 
 -- NOTE: the raw telemetry BLOBS are not covered here. Supabase refuses
 -- direct deletes from storage tables, so clearing them is the
@@ -77,8 +102,31 @@ select is(
 
 select is(
     (select count(*) from public.runs where user_id = 'ef000002-b000-4000-8000-000000000002'),
-    1::bigint,
+    2::bigint,
     'the other driver is untouched — deletion is not a blast radius'
+);
+
+-- ── the courses they made ─────────────────────────────────────────────────
+
+select is(
+    (select count(*) from public.courses where id = 'ef000006-f000-4000-8000-000000000006'),
+    0::bigint,
+    'a course they created that NOBODY has driven goes with the account — '
+    'orphaned it was invisible to every user forever while still holding the '
+    'geometry of a road they recorded'
+);
+
+select is(
+    (select count(*) from public.courses where id = 'ef000007-a000-4000-8000-000000000007'),
+    1::bigint,
+    'a course other people have driven survives — those runs are their '
+    'records, not the creator''s to erase'
+);
+
+select is(
+    (select creator_id from public.courses where id = 'ef000007-a000-4000-8000-000000000007'),
+    null,
+    'and it is anonymised rather than still pointing at them'
 );
 
 select * from finish();
