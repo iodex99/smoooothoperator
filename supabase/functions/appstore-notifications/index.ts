@@ -30,6 +30,10 @@ export interface DecodedNotification {
   expiresDate?: number;
   environment: string;
   revoked: boolean;
+  /** When Apple SIGNED this notification. Apple retries for days and states
+   * that notifications can arrive out of order, so this — not arrival time —
+   * is what decides which of two conflicting states is the current one. */
+  signedDate?: number;
   /** The Supabase user id the client attached at purchase time. Absent for
    * purchases made outside the app (promo codes, other devices), which land
    * unattributed and are claimed by the client later. */
@@ -147,6 +151,13 @@ export async function decodeNotification(
     // REFUND and REVOKE both mean: entitlement is gone, now.
     revoked: notificationType === "REFUND" || notificationType === "REVOKE"
       || transaction.revocationDate !== undefined,
+    // Apple puts signedDate on the notification payload; the transaction's
+    // own signedDate is the fallback for payloads that omit it.
+    signedDate: typeof payload.signedDate === "number"
+      ? payload.signedDate
+      : typeof transaction.signedDate === "number"
+      ? transaction.signedDate
+      : undefined,
   };
 }
 
@@ -194,33 +205,39 @@ export async function handleNotification(
     return { status: 400, body: { error: "no transaction identity" } };
   }
 
-  // Upsert by original_transaction_id — Apple's stable identity for a
-  // subscription across every renewal. Idempotent by construction, which
-  // matters because Apple retries notifications.
+  // Keyed on original_transaction_id — Apple's stable identity for a
+  // subscription across every renewal — and applied through a function
+  // rather than a raw merge, because being idempotent is not the same as
+  // being order-independent and Apple guarantees only retries, not order.
+  // The function refuses an older notification than the one already applied,
+  // and never writes a NULL user over a known subscriber.
   const response = await fetch(
-    `${deps.restUrl}/subscriptions?on_conflict=original_transaction_id`,
+    `${deps.restUrl}/rpc/record_subscription_notification`,
     {
       method: "POST",
       headers: {
         apikey: deps.serviceKey,
         Authorization: `Bearer ${deps.serviceKey}`,
         "Content-Type": "application/json",
-        Prefer: "resolution=merge-duplicates",
       },
       body: JSON.stringify({
-        original_transaction_id: notification.originalTransactionId,
+        p_original_transaction_id: notification.originalTransactionId,
         // Required by the table; falls back to the original when Apple's
         // payload carries only the subscription identity.
-        latest_transaction_id: notification.transactionId ||
+        p_latest_transaction_id: notification.transactionId ||
           notification.originalTransactionId,
-        // NULL when we can't attribute yet — the client claims it later.
-        user_id: notification.appAccountToken ?? null,
-        product_id: notification.productId,
-        status: statusFor(notification),
-        expires_at: notification.expiresDate
+        // NULL when we can't attribute yet — the client claims it later, and
+        // the function will not let this NULL erase an earlier claim.
+        p_user_id: notification.appAccountToken ?? null,
+        p_product_id: notification.productId,
+        p_status: statusFor(notification),
+        p_expires_at: notification.expiresDate
           ? new Date(notification.expiresDate).toISOString()
           : null,
-        environment: notification.environment === "Sandbox" ? "sandbox" : "production",
+        p_environment: notification.environment === "Sandbox" ? "sandbox" : "production",
+        p_notified_at: notification.signedDate
+          ? new Date(notification.signedDate).toISOString()
+          : null,
       }),
     },
   );
