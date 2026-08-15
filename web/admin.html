@@ -131,6 +131,14 @@
     <p class="hint" id="price-hint"></p>
   </section>
 
+  <section id="health-section">
+    <h2>Anything broken</h2>
+    <p class="hint">The four things here fail quietly — the app carries on
+    looking normal, nobody gets an error, and the damage accumulates. This is
+    the only place they surface.</p>
+    <div id="health"></div>
+  </section>
+
   <section>
     <h2>Last 30 days</h2>
     <div class="panels" id="growth"></div>
@@ -274,7 +282,7 @@
   // ── render ────────────────────────────────────────────────────────────
   async function load() {
     dashMsg.textContent = "";
-    const [overview, growth, revenue, regions, catalog, courses, retention] =
+    const [overview, growth, revenue, regions, catalog, courses, retention, health] =
       await Promise.all([
         rpc("admin_overview"),
         rpc("admin_growth_daily", { p_days: 30 }),
@@ -283,6 +291,7 @@
         rpc("admin_courses_by_region"),
         rpc("admin_top_courses", { p_limit: 15 }),
         rpc("admin_retention"),
+        rpc("admin_health"),
       ]);
 
     const o = overview[0] || {}, r = retention[0] || {};
@@ -353,6 +362,38 @@
       { label: "Verified", num: true, cell: (x) => pct(x.verified_count, x.run_count) },
       { label: "Best", num: true, cell: (x) => fmt(x.best_score) },
     ], courses, "No course has been driven yet.");
+
+    // Green is reserved for verification everywhere in this product, so a
+    // healthy state is stated in words rather than coloured in. Trouble gets
+    // the caution colour, and the age beside the count: three failing since
+    // March is a different problem from three failing this morning.
+    const h = health[0] || {};
+    const troubles = [
+      ["Runs that will never be scored", h.failed_scoring_jobs, h.oldest_failed_job_hours,
+       "scoring gave up after five attempts — the driver is never told"],
+      ["Jobs nothing is driving", h.overdue_scoring_jobs, h.oldest_overdue_job_hours,
+       "past their own retry time: the sweeper is not running, which raises no error anywhere"],
+      ["Subscriptions attached to nobody", h.unattributed_subscriptions, h.oldest_unattributed_hours,
+       "money arrived and no account got Pro"],
+      ["Drives with no verdict", h.unscored_runs, h.oldest_unscored_hours,
+       "uploaded over an hour ago and still unscored"],
+    ].filter(([, count]) => Number(count) > 0);
+
+    document.getElementById("health").innerHTML = troubles.length === 0
+      ? `<p class="empty">Nothing is stuck. No failed scoring jobs, no overdue
+         queue, every subscription attached to an account, every finished
+         drive scored.</p>`
+      : troubles.map(([label, count, hours, why]) => `
+          <div class="kpi" style="border-color:var(--caution);margin-bottom:10px">
+            <dt>${esc(label)}</dt>
+            <dd style="color:var(--caution)">${fmt(count)}
+              <span class="sub">${esc(why)}${
+                hours ? ` · oldest ${esc(fmt(hours))} h` : ""
+              }</span></dd>
+          </div>`).join("")
+        + (h.last_error
+            ? `<p class="hint">Most recent error: <code>${esc(h.last_error)}</code></p>`
+            : "");
 
     document.getElementById("stamp").textContent =
       "as of " + new Date().toLocaleTimeString();
