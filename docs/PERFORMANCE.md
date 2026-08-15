@@ -118,6 +118,67 @@ than the sum.
 
 ---
 
+## The leaderboard
+
+This was the worst thing found, and it came with a correctness bug attached.
+
+`course_leaderboards` computes rank with a window function. A window function
+runs *before* ORDER BY and LIMIT, so asking for the top 50 sorts the whole
+partition and discards the rest.
+
+| Query | Before | After |
+|---|---|---|
+| Top 50 of a 20,000-entry board | **47.8 ms** | **1.89 ms** |
+| Profile's rank summary | **24.2 ms** | **0.687 ms** |
+
+The profile one was the real problem. It asked with no course filter at all:
+
+```
+course_leaderboards?user_id=eq.<id>&select=rank
+```
+
+With nothing to partition-prune, the window ran over every entry on every
+course, hash-joined every profile, sorted the lot, then threw away all but
+the caller's rows — `Rows Removed by Filter: 19999`, to return one row. That
+is **O(total entries in the entire product)**, on the profile screen. 24 ms
+at 20,000 rows is survivable; the shape is not, and it only goes one way.
+
+It also downloaded every rank the driver held to count the 1s and the ≤10s in
+Swift, when it wanted two integers. `my_rank_summary()` counts them where the
+rows are.
+
+Three fixes:
+
+1. **Slice, then rank.** `leaderboard_page()` takes the page with ORDER BY +
+   LIMIT before any window function exists, then numbers that slice and adds
+   the offset. With the tie-break in the index the scan stops after N rows.
+2. **The index needed the full sort key.** It stopped at `(course_id, score
+   desc)`, so the planner still sorted within equal scores.
+3. **There was no index on `user_id` alone.** The unique index starts with
+   `course_id`, which cannot answer "which boards am I on" — so every profile
+   question scanned the whole table for a handful of rows. This was the
+   O(product) term that survived fixing the window function.
+
+### The ranks were also wrong
+
+The national and friends boards filtered the view by country / user id
+*after* the global rank was computed. A friends board with five people on it
+read:
+
+```
+#4,912   #8,201   #15,043
+```
+
+Correctly ordered, meaninglessly numbered — and on a friends board the number
+is the entire point of the screen. `leaderboard_page()` ranks within the
+scope requested, so a friends board reads #1–#5 and a national board has a
+#1. pgTAP asserts this for both scopes.
+
+The view is kept: it is the honest definition of a rank, pgTAP reads it, and
+it is fine for small sets. It is just no longer what the app calls.
+
+---
+
 ## Loading a ghost
 
 `ghosts?course_id=eq.X&order=score.desc&limit=1`, backed by

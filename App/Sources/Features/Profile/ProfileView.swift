@@ -260,7 +260,6 @@ struct ProfileView: View {
             var rating: Int
             var rating_tier: String
         }
-        struct Entry: Decodable { var rank: Int }
         if let profiles = try? await api.get(
             "profiles?id=eq.\(id)&select=rating,rating_tier", as: [Profile].self
         ), let profile = profiles.first {
@@ -272,11 +271,14 @@ struct ProfileView: View {
         ) {
             stats.verifiedRuns = runs.count
         }
-        if let entries = try? await api.get(
-            "course_leaderboards?user_id=eq.\(id)&select=rank", as: [Entry].self
-        ) {
-            stats.wins = entries.filter { $0.rank == 1 }.count
-            stats.topTen = entries.filter { $0.rank <= 10 }.count
+        // Two integers, counted where the rows are. This used to download
+        // every rank the driver held and count them here — which made the
+        // server rank EVERY entry on EVERY course to answer it.
+        struct Summary: Decodable { var wins: Int; var top_ten: Int }
+        if let data = try? await api.rpc("my_rank_summary", json: [:]),
+           let summary = (try? JSONDecoder().decode([Summary].self, from: data))?.first {
+            stats.wins = summary.wins
+            stats.topTen = summary.top_ten
         }
     }
 

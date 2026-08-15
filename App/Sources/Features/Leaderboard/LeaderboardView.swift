@@ -151,27 +151,29 @@ struct LeaderboardView: View {
                 state = .failed("No challenge course yet — drive one and the board opens up.")
                 return
             }
-            var query = "course_leaderboards?course_id=eq.\(course)"
-                + "&select=rank,username,score,duration_seconds&order=rank&limit=100"
+            // The board is ranked by the server WITHIN the scope being shown,
+            // so a friends board reads #1..#5 rather than the global ranks of
+            // those five people — on that board the number is the whole point.
+            var body: [String: Any] = ["p_course": course, "p_limit": 100]
             switch scope {
             case .global:
                 break
             case .country:
-                if let country = try await myCountry(api: api) {
-                    query += "&country=eq.\(country)"
-                } else {
+                guard let mine = try await myCountry(api: api) else {
                     state = .failed("Add your country in Profile to see your national board.")
                     return
                 }
+                body["p_country"] = mine
             case .friends:
                 let ids = try await friendIds(api: api)
                 guard !ids.isEmpty else {
                     state = .ready([])
                     return
                 }
-                query += "&user_id=in.(\(ids.joined(separator: ",")))"
+                body["p_user_ids"] = ids
             }
-            state = .ready(try await api.get(query, as: [Entry].self))
+            let data = try await api.rpc("leaderboard_page", json: body)
+            state = .ready(try JSONDecoder().decode([Entry].self, from: data))
         } catch {
             state = .failed("Couldn't load the board. Check your connection and try again.")
         }

@@ -204,13 +204,13 @@ struct RunResultView: View {
 
     /// Best-effort: a rank makes the card worth posting, but never blocks it.
     private func loadRank() async {
-        guard let api = environment.api, let id = await api.userId else { return }
-        struct Row: Decodable { var rank: Int }
-        guard let rows = try? await api.get(
-            "course_leaderboards?course_id=eq.\(courseId)&user_id=eq.\(id)&select=rank",
-            as: [Row].self
-        ), let rank = rows.first else { return }
-        rankText = rank.rank == 1 ? "#1 on this course" : "#\(rank.rank) on this course"
+        // The rank is the caller's own; the server reads auth.uid() itself.
+        guard let api = environment.api, await api.userId != nil else { return }
+        // Counts the drivers ahead of you rather than ranking the whole board
+        // to find one row.
+        guard let data = try? await api.rpc("my_course_rank", json: ["p_course": courseId]),
+              let rank = try? JSONDecoder().decode(Int.self, from: data) else { return }
+        rankText = rank == 1 ? "#1 on this course" : "#\(rank) on this course"
     }
 
     /// The single definition of the card, used both for what is shown on
