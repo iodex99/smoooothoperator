@@ -233,6 +233,26 @@ launch blocker.
 
 ---
 
+## Measured and left alone
+
+Recorded so the next person does not re-derive them.
+
+- **`are_friends()`** is called per row inside two RLS policies, and its
+  `(a,b) or (b,a)` form cannot use the functional unique index on
+  `(least, greatest)`. It does not need to: the planner bitmap-ORs
+  `friendships_addressee_idx` twice, because both halves constrain
+  `addressee_id`. Sub-millisecond against 40,000 friendships. Rewriting it to
+  match the pair index measured no faster.
+- **Signup** — `handle_new_user` fires per row: **20.7 ms**.
+- **Run history** already pages at 100.
+- **The remaining unbounded server functions** (`course_route`,
+  `my_course_rank`, `my_rank_summary`, `my_vehicle_bests`) are bounded by
+  their subject — one course's polyline, one integer, one row, one garage.
+- **`course_leaderboards`** still contains a window function, and that is
+  fine: nothing in the app calls it any more.
+
+---
+
 ## What is still unmeasured
 
 - **Every number here is local.** No network latency, no Supabase pooler, no
