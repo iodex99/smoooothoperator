@@ -398,21 +398,28 @@ final class CourseDetailModel {
                 var turn_count: Int
                 var benchmark_seconds: Int?
             }
-            let rows = try await api.get(
+            // CONCURRENTLY. These three requests do not depend on each
+            // other, and they were awaited one after another — three round
+            // trips in series. On a mobile connection at ~100 ms that is a
+            // third of a second of spinner for no reason, while the driver
+            // stands at the side of a road.
+            async let rowsTask = api.get(
                 "courses?id=eq.\(courseId)&select=name,distance_meters,difficulty,turn_count,benchmark_seconds",
                 as: [Row].self
             )
+            async let routeTask = api.courseRoute(courseId: courseId)
+            // Best-effort: a driver with no garage, or a failure here, must
+            // never stop the course from loading.
+            async let bestsTask = try? api.rpc("my_vehicle_bests", json: ["p_course": courseId])
+
+            let rows = try await rowsTask
             guard let row = rows.first else {
                 state = .failed("This course is no longer available.")
                 return
             }
-            // Best-effort and non-blocking: a driver with no garage, or a
-            // failure here, must never stop the course from loading.
-            vehicleBests = (try? await api.rpc(
-                "my_vehicle_bests", json: ["p_course": courseId]
-            )).flatMap { try? JSONDecoder().decode([VehicleBest].self, from: $0) } ?? []
-
-            let route = try await api.courseRoute(courseId: courseId)
+            vehicleBests = (await bestsTask)
+                .flatMap { try? JSONDecoder().decode([VehicleBest].self, from: $0) } ?? []
+            let route = try await routeTask
             state = .ready(Course(
                 name: row.name,
                 polyline: route.polyline,
