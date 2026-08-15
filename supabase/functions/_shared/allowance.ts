@@ -19,3 +19,22 @@ export function utcDayStart(now: Date = new Date()): string {
 export function withinAllowance(scoredToday: number, isPro: boolean): boolean {
   return isPro || scoredToday < FREE_RUNS_PER_DAY;
 }
+
+/**
+ * Courses one account may add to the catalog in a day.
+ *
+ * Course creation was gated on Pro and on nothing else, so a single $4.99
+ * subscription could insert unbounded rows into the catalog EVERY driver
+ * browses — the same table whose scan cost the browse work went to some
+ * trouble to remove. Unlike the run allowance this is not about revenue:
+ * Pro pays for the feature, and this only says how fast.
+ *
+ * Ten is far above real use and far below useful abuse. Making a course
+ * means driving the road, so a person creating ten in a day has spent the
+ * day driving; a script creating the eleventh has not.
+ */
+export const COURSES_PER_DAY = 10;
+
+export function withinCourseAllowance(createdToday: number): boolean {
+  return createdToday < COURSES_PER_DAY;
+}

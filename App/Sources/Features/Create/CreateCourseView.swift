@@ -314,6 +314,12 @@ struct CreateCourseView: View {
         } catch SupabaseAPI.APIError.http(403, _) {
             // The server gates this on Pro and re-checks on every call.
             error = "Creating courses is part of Smooooth Pro."
+        } catch SupabaseAPI.APIError.http(429, _) {
+            // Not a paywall — Pro already paid for this. It is a ceiling on
+            // how fast the shared catalog can grow, so say that plainly
+            // rather than leaving a driver to read a status code.
+            error = "That's ten new courses today — the most in one day. "
+                + "The road will still be there tomorrow."
         } catch {
             // The server ran the same rules; if it still said no, say what it
             // said rather than inventing a reason.
