@@ -61,6 +61,12 @@ curve used for racing — and only if you allow it. Ghost visibility is yours to
 set: everyone, friends only, or nobody.</p>
 <p>Leaderboards show your username, score and time. They never show where you
 started, where you stopped, or the path you took.</p>
+<p><strong>Creating a course is the one exception, and it is deliberate.</strong>
+A custom course is made by recording a drive, so the course line <em>is</em> a
+road you drove. Anyone who can see the course can see that line — that is what
+makes it drivable by someone else. You choose who that is when you create it:
+public, friends only, or private. Think about where you start the recording:
+a course that begins at your front door tells people where your front door is.</p>
 
 <h2>Where it is stored</h2>
 <p>Account data, runs and scores are stored with Supabase (PostgreSQL and
@@ -75,9 +81,15 @@ you can delete it with your account at any time.</p>
 
 <h2>Deleting your account</h2>
 <p><strong>In the app: Profile → Delete account.</strong> This removes your
-profile, runs, ghosts, leaderboard entries, friendships and telemetry. It is
-immediate and it is not reversible. You do not have to email anyone or wait for
-a reply.</p>
+profile, runs, ghosts, leaderboard entries, friendships, telemetry — including
+the raw GPS files, not just the records pointing at them — and any course you
+created that nobody has driven. It is immediate and it is not reversible. You
+do not have to email anyone or wait for a reply.</p>
+<p><strong>One thing survives, and you should know which.</strong> If you
+created a course and other drivers have recorded runs on it, the course stays
+in the catalog with your name removed from it. Their runs, records and ghosts
+are their data, not yours, and deleting the road out from under them would
+erase what they drove. The course keeps no link to you.</p>
 
 <h2>Children</h2>
 <p>Smooooth Operator is for licensed drivers. It is not directed at children

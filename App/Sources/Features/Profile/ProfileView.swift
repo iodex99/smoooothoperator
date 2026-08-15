@@ -239,7 +239,14 @@ struct ProfileView: View {
                 }
                 Button("Keep my account", role: .cancel) {}
             } message: {
-                Text("This erases your profile, runs, telemetry and friendships. It cannot be undone.")
+                // Names what survives as well as what goes. A course other
+                // people have driven stays, anonymised, because their runs
+                // are their records — and someone deleting an account is
+                // owed that fact before they tap, not after.
+                Text("This erases your profile, runs, telemetry, friendships "
+                    + "and any course nobody has driven. A course others have "
+                    + "driven stays in the catalog with your name removed. "
+                    + "It cannot be undone.")
             }
             .alert(
                 notice ?? "",
