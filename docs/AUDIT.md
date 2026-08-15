@@ -10,7 +10,8 @@ along, records what was checked on each, and — more usefully — records what
 was **deliberately not changed** and why. An axis with nothing under it is an
 admission, not an omission.
 
-Last full pass: **2026-08-15**.
+Last full pass: **2026-08-15**. Second pass same day — worked the gaps this
+file itself named, rather than searching again. That is what it is for.
 
 ---
 
@@ -140,8 +141,9 @@ by any account, and read by nothing in the entire product.
   signature instead, which is correct for a webhook.
 - `anon` and `authenticated` cannot `CREATE` in `public` or `extensions`, so
   the `SECURITY DEFINER` functions with a non-empty `search_path` are not
-  exploitable. They still deviate from this project's `search_path = ''`
-  convention — see Open, below.
+  exploitable. That invariant is now asserted (§13) rather than relied on
+  silently, and the two browse functions were tightened to `search_path = ''`
+  anyway. The `admin_*` functions were deliberately left — see Accepted.
 - Storage: uploads confined to the caller's own uid prefix, path re-validated
   against the run's owner, reads and deletes owner-only.
 
@@ -188,6 +190,11 @@ cannot match the functional unique index on `(least, greatest)`. It does not
 need to: the planner bitmap-ORs the addressee index twice. Sub-millisecond
 against 40,000 friendships, and the pair-index rewrite measured no faster.
 
+**The `admin_*` functions keep `search_path = public`.** Eight long
+analytical bodies, every reference to qualify, to remove a risk that "no
+client role can CREATE in public" already removes — and that fact is now a
+test. Churn with a real chance of a new bug, against no change in exposure.
+
 **Index creation is not `CONCURRENTLY`.** The migrations take a lock that
 would block writes on a populated table. The production database is still
 empty — no migration has been pushed — so the first deploy is unaffected. This
@@ -196,12 +203,6 @@ becomes real the day a schema change ships to a live database.
 ---
 
 ## Open
-
-**`courses_near`, `courses_in_region` and the `admin_*` functions use
-`search_path = public` rather than `''`.** Not exploitable today — no client
-role can create objects in those schemas — but it deviates from the
-convention every other `SECURITY DEFINER` function here follows, and the
-protection is a grant somewhere else rather than the function itself.
 
 **No sensor path has ever seen a real GPS chip.** Every number in this
 project comes from simulated telemetry through the real pipeline. This is the
@@ -218,14 +219,49 @@ defect — but it means the behaviour is unproven.
 
 ---
 
+## 12. Observability
+
+**Fixed — this axis was blank and is no longer.** `admin_health()` surfaces
+the four failures where the app carries on looking normal, nobody gets an
+error, and the damage accumulates: scoring jobs that gave up, jobs nothing is
+driving (which means the sweeper is unconfigured, a state that raises zero
+errors anywhere), subscriptions attached to no account, and finished drives
+with no verdict. Each with the age of the oldest, because a count cannot tell
+"this morning" from "since March", and with the last real error in its own
+words.
+
+Shown at the top of the console. Eight pgTAP tests each *create* the trouble
+and require it to be reported — a health panel reading zero because it is
+broken looks exactly like one reading zero because all is well.
+
+Still not covered: nothing pushes. Somebody has to open the console.
+
+## 13. Are the checks themselves guards, or just tests?
+
+**Fixed.** Several verifications from the first pass were ad-hoc shell
+commands, which is precisely what regresses silently and produces the next
+"you found something new".
+
+- `0017` asserted admin refusal for **3** of 8 analytics functions while
+  naming all 8, which is what made it look complete. Its source-text check
+  also excluded `admin_mrr_minor` **by name** — an allow-list, which is where
+  the next one hides. `0030` now enumerates `admin_*` from the catalog and
+  requires each to refuse *behaviourally*, so it needs no exception and
+  covers a function added later the moment it exists. Verified by planting an
+  ungated `admin_secret_numbers()`.
+- The invariant that makes a non-empty `search_path` safe — no client role can
+  `CREATE` in `public` or `extensions` — was load-bearing and unasserted.
+  Now `0032`.
+
+---
+
 ## Axes with nothing under them
 
 Recorded so the gap is visible rather than implied.
 
-- **Observability.** There is no logging, alerting or error reporting story.
-  If scoring starts failing in production, nothing tells anyone. The
-  `scoring_jobs` table records attempts and failures, so the data exists —
-  nothing watches it.
+- **Alerting.** `admin_health()` makes the silent failures visible, but
+  visible is not the same as noticed. Nothing emails, pages or pushes; the
+  operator has to look.
 - **Load and rate limiting at the edge.** The daily course ceiling is the only
   rate limit in the product. Nothing bounds request rate per account.
 - **Backup and restore.** Delegated entirely to Supabase's managed backups;

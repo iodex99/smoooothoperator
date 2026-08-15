@@ -49,7 +49,7 @@ Nothing else can start until these exist.
 ## Phase 1 — Make the backend real
 
 The Supabase project exists but is **empty** — I checked, and `public.courses`
-does not exist there yet. All 32 migrations are still local-only.
+does not exist there yet. All 34 migrations are still local-only.
 
 4. **YOU — push the schema.** This needs the database password, which I
    deliberately do not have:
@@ -206,7 +206,7 @@ unknowns are not code:
   the server re-validates every rule before it enters the catalog. Pro-gated
   in the app and re-checked on the server. The Swift→TypeScript contract is
   tested against output the Swift builder actually generates.
-- Database: 32 migrations, RLS on every table, **327 pgTAP tests**.
+- Database: 34 migrations, RLS on every table, **346 pgTAP tests**.
 - Server: 6 edge functions, 101 Deno tests, fail-closed App Store webhook.
 - iOS: builds, boots and completes a scored ghost race on the CI Mac.
 - Site: landing, privacy, terms, support, and the operator console.
