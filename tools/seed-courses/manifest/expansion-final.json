@@ -1,0 +1,1970 @@
+[
+  {
+    "slug": "us-mt-baldy-road",
+    "name": "Mount Baldy Road",
+    "country": "US",
+    "region": "California",
+    "city": "Claremont",
+    "category": "canyon",
+    "description": "The other San Gabriel climb, and quieter than its famous neighbour.",
+    "waypoints": [
+      [
+        34.136,
+        -117.656
+      ],
+      [
+        34.236,
+        -117.626
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-angeles-forest-hwy",
+    "name": "Angeles Forest Highway",
+    "country": "US",
+    "region": "California",
+    "city": "La Cañada Flintridge",
+    "category": "canyon",
+    "description": "The fast one: long sweepers where the Crest is tight and busy.",
+    "waypoints": [
+      [
+        34.276,
+        -118.166
+      ],
+      [
+        34.436,
+        -118.116
+      ]
+    ],
+    "expectedKm": [
+      15,
+      45
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-hwy-9-big-basin",
+    "name": "Big Basin Way — CA-236",
+    "country": "US",
+    "region": "California",
+    "city": "Boulder Creek",
+    "category": "forest",
+    "description": "Old-growth redwoods and a road that never sees the sun.",
+    "waypoints": [
+      [
+        37.126,
+        -122.121
+      ],
+      [
+        37.176,
+        -122.221
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-panoche-road",
+    "name": "Panoche Road",
+    "country": "US",
+    "region": "California",
+    "city": "Paicines",
+    "category": "highland",
+    "description": "Empty ranch country between two valleys, and nobody on it ever.",
+    "waypoints": [
+      [
+        36.726,
+        -121.286
+      ],
+      [
+        36.606,
+        -120.836
+      ]
+    ],
+    "expectedKm": [
+      25,
+      70
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-cerro-gordo-road",
+    "name": "Onion Valley Road",
+    "country": "US",
+    "region": "California",
+    "city": "Independence",
+    "category": "alpine",
+    "description": "Sea level to nine thousand feet in thirteen miles.",
+    "waypoints": [
+      [
+        36.801,
+        -118.201
+      ],
+      [
+        36.771,
+        -118.341
+      ]
+    ],
+    "expectedKm": [
+      10,
+      35
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-emigrant-trail-ca88",
+    "name": "Carson Pass — CA-88",
+    "country": "US",
+    "region": "California",
+    "city": "Jackson",
+    "category": "alpine",
+    "description": "The quiet Sierra crossing, wide and smooth and rarely queued.",
+    "waypoints": [
+      [
+        38.686,
+        -120.006
+      ],
+      [
+        38.701,
+        -119.901
+      ]
+    ],
+    "expectedKm": [
+      8,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-co-14-poudre",
+    "name": "Poudre Canyon — CO-14",
+    "country": "US",
+    "region": "Colorado",
+    "city": "Fort Collins",
+    "category": "canyon",
+    "description": "Sixty miles of river canyon with granite either side.",
+    "waypoints": [
+      [
+        40.686,
+        -105.226
+      ],
+      [
+        40.666,
+        -105.606
+      ]
+    ],
+    "expectedKm": [
+      25,
+      70
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-co-133-mcclure",
+    "name": "McClure Pass — CO-133",
+    "country": "US",
+    "region": "Colorado",
+    "city": "Carbondale",
+    "category": "alpine",
+    "description": "Aspen groves and a pass the tourists drive past.",
+    "waypoints": [
+      [
+        39.236,
+        -107.216
+      ],
+      [
+        39.126,
+        -107.286
+      ]
+    ],
+    "expectedKm": [
+      12,
+      40
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-co-145-lizard-head",
+    "name": "Lizard Head Pass — CO-145",
+    "country": "US",
+    "region": "Colorado",
+    "city": "Telluride",
+    "category": "alpine",
+    "description": "The San Juans from the south, with the Wilsons on the skyline.",
+    "waypoints": [
+      [
+        37.806,
+        -107.876
+      ],
+      [
+        37.701,
+        -107.936
+      ]
+    ],
+    "expectedKm": [
+      10,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-ut-39-monte-cristo",
+    "name": "Monte Cristo — UT-39",
+    "country": "US",
+    "region": "Utah",
+    "city": "Huntsville",
+    "category": "alpine",
+    "description": "Ogden's back road over the Wasatch, closed all winter.",
+    "waypoints": [
+      [
+        41.266,
+        -111.766
+      ],
+      [
+        41.456,
+        -111.496
+      ]
+    ],
+    "expectedKm": [
+      25,
+      70
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-ut-12-boulder-mtn",
+    "name": "Boulder Mountain — UT-12 North",
+    "country": "US",
+    "region": "Utah",
+    "city": "Torrey",
+    "category": "alpine",
+    "description": "Aspen at eleven thousand feet with the Waterpocket Fold below.",
+    "waypoints": [
+      [
+        38.296,
+        -111.426
+      ],
+      [
+        38.006,
+        -111.426
+      ]
+    ],
+    "expectedKm": [
+      20,
+      60
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-az-260-mogollon",
+    "name": "Mogollon Rim — AZ-260",
+    "country": "US",
+    "region": "Arizona",
+    "city": "Payson",
+    "category": "highland",
+    "description": "Up the rim in a single sustained climb, then pine forest for miles.",
+    "waypoints": [
+      [
+        34.266,
+        -111.256
+      ],
+      [
+        34.376,
+        -111.006
+      ]
+    ],
+    "expectedKm": [
+      15,
+      50
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-az-89a-jerome",
+    "name": "Jerome Hill — AZ-89A",
+    "country": "US",
+    "region": "Arizona",
+    "city": "Cottonwood",
+    "category": "canyon",
+    "description": "Switchbacks through a mining town built on a cliff.",
+    "waypoints": [
+      [
+        34.726,
+        -112.016
+      ],
+      [
+        34.766,
+        -112.136
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-nm-152-emory",
+    "name": "Emory Pass — NM-152",
+    "country": "US",
+    "region": "New Mexico",
+    "city": "Hillsboro",
+    "category": "alpine",
+    "description": "The Black Range crossing, and one of the emptiest good roads anywhere.",
+    "waypoints": [
+      [
+        32.916,
+        -107.566
+      ],
+      [
+        32.936,
+        -107.806
+      ]
+    ],
+    "expectedKm": [
+      15,
+      50
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-nv-431-mt-rose-west",
+    "name": "Mount Rose — NV-431 West",
+    "country": "US",
+    "region": "Nevada",
+    "city": "Incline Village",
+    "category": "alpine",
+    "description": "The Tahoe side, dropping to the lake through granite.",
+    "waypoints": [
+      [
+        39.316,
+        -119.936
+      ],
+      [
+        39.251,
+        -119.886
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-mt-83-swan-valley",
+    "name": "Swan Valley — MT-83",
+    "country": "US",
+    "region": "Montana",
+    "city": "Bigfork",
+    "category": "forest",
+    "description": "Between two mountain ranges with lakes the whole length.",
+    "waypoints": [
+      [
+        48.056,
+        -114.076
+      ],
+      [
+        47.426,
+        -113.766
+      ]
+    ],
+    "expectedKm": [
+      30,
+      90
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "us-wy-14a-alt",
+    "name": "Bighorn — US-14 Granite Pass",
+    "country": "US",
+    "region": "Wyoming",
+    "city": "Sheridan",
+    "category": "alpine",
+    "description": "Shell Canyon and the climb onto the Bighorn plateau.",
+    "waypoints": [
+      [
+        44.546,
+        -107.226
+      ],
+      [
+        44.606,
+        -107.656
+      ]
+    ],
+    "expectedKm": [
+      20,
+      60
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-sd-16a-custer",
+    "name": "Custer State Park — Wildlife Loop",
+    "country": "US",
+    "region": "South Dakota",
+    "city": "Custer",
+    "category": "highland",
+    "description": "Bison on the road, and grassland corners nobody expects here.",
+    "waypoints": [
+      [
+        43.746,
+        -103.406
+      ],
+      [
+        43.776,
+        -103.236
+      ]
+    ],
+    "expectedKm": [
+      12,
+      40
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "us-wa-20-loup-loup",
+    "name": "Loup Loup Pass — SR-20",
+    "country": "US",
+    "region": "Washington",
+    "city": "Twisp",
+    "category": "forest",
+    "description": "The Methow's back road, dry pine and long sightlines.",
+    "waypoints": [
+      [
+        48.366,
+        -120.116
+      ],
+      [
+        48.406,
+        -119.866
+      ]
+    ],
+    "expectedKm": [
+      15,
+      45
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-or-66-greensprings",
+    "name": "Greensprings Highway — OR-66",
+    "country": "US",
+    "region": "Oregon",
+    "city": "Ashland",
+    "category": "forest",
+    "description": "The old road to Klamath, all corners and no traffic.",
+    "waypoints": [
+      [
+        42.186,
+        -122.666
+      ],
+      [
+        42.106,
+        -122.366
+      ]
+    ],
+    "expectedKm": [
+      20,
+      60
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-id-55-payette",
+    "name": "Payette River Scenic — ID-55",
+    "country": "US",
+    "region": "Idaho",
+    "city": "Horseshoe Bend",
+    "category": "canyon",
+    "description": "Whitewater on one side and rock on the other for fifty miles.",
+    "waypoints": [
+      [
+        43.916,
+        -116.196
+      ],
+      [
+        44.496,
+        -116.046
+      ]
+    ],
+    "expectedKm": [
+      30,
+      90
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-vt-108-north",
+    "name": "Vermont Route 108 — Jeffersonville",
+    "country": "US",
+    "region": "Vermont",
+    "city": "Jeffersonville",
+    "category": "forest",
+    "description": "The northern approach to the Notch, gentler and just as good.",
+    "waypoints": [
+      [
+        44.646,
+        -72.826
+      ],
+      [
+        44.556,
+        -72.796
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-ny-73-cascade",
+    "name": "Cascade Pass — NY-73",
+    "country": "US",
+    "region": "New York",
+    "city": "Lake Placid",
+    "category": "alpine",
+    "description": "Between two lakes with cliffs straight up on both sides.",
+    "waypoints": [
+      [
+        44.216,
+        -73.866
+      ],
+      [
+        44.286,
+        -73.976
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-me-27-carrabassett",
+    "name": "Carrabassett Valley — ME-27",
+    "country": "US",
+    "region": "Maine",
+    "city": "Kingfield",
+    "category": "forest",
+    "description": "River valley to the Canadian border, empty the whole way.",
+    "waypoints": [
+      [
+        44.956,
+        -70.156
+      ],
+      [
+        45.286,
+        -70.416
+      ]
+    ],
+    "expectedKm": [
+      25,
+      70
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "us-nh-16-pinkham",
+    "name": "Pinkham Notch — NH-16",
+    "country": "US",
+    "region": "New Hampshire",
+    "city": "Jackson",
+    "category": "alpine",
+    "description": "Between Washington and the Wildcats, with the ravine above you.",
+    "waypoints": [
+      [
+        44.156,
+        -71.186
+      ],
+      [
+        44.306,
+        -71.216
+      ]
+    ],
+    "expectedKm": [
+      12,
+      40
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-wv-32-canaan",
+    "name": "Canaan Valley — WV-32",
+    "country": "US",
+    "region": "West Virginia",
+    "city": "Davis",
+    "category": "highland",
+    "description": "A high valley that looks like Canada dropped into Appalachia.",
+    "waypoints": [
+      [
+        39.126,
+        -79.416
+      ],
+      [
+        38.986,
+        -79.446
+      ]
+    ],
+    "expectedKm": [
+      10,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-va-39-goshen",
+    "name": "Goshen Pass — VA-39",
+    "country": "US",
+    "region": "Virginia",
+    "city": "Lexington",
+    "category": "canyon",
+    "description": "A river gorge with the road cut into the rock beside it.",
+    "waypoints": [
+      [
+        37.836,
+        -79.466
+      ],
+      [
+        37.986,
+        -79.556
+      ]
+    ],
+    "expectedKm": [
+      12,
+      40
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-nc-repeat-181",
+    "name": "NC-181 — Jonas Ridge",
+    "country": "US",
+    "region": "North Carolina",
+    "city": "Morganton",
+    "category": "forest",
+    "description": "The escarpment climb the Blue Ridge locals actually use.",
+    "waypoints": [
+      [
+        35.806,
+        -81.766
+      ],
+      [
+        35.966,
+        -81.876
+      ]
+    ],
+    "expectedKm": [
+      15,
+      45
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-tn-30-ocoee",
+    "name": "Ocoee Gorge — US-64",
+    "country": "US",
+    "region": "Tennessee",
+    "city": "Ducktown",
+    "category": "canyon",
+    "description": "Olympic whitewater on one side, rock wall on the other.",
+    "waypoints": [
+      [
+        35.076,
+        -84.466
+      ],
+      [
+        35.026,
+        -84.666
+      ]
+    ],
+    "expectedKm": [
+      15,
+      45
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-ky-32-appalachian",
+    "name": "Kentucky 32 — Licking River",
+    "country": "US",
+    "region": "Kentucky",
+    "city": "Morehead",
+    "category": "forest",
+    "description": "Ridge and hollow country, and a road that never straightens.",
+    "waypoints": [
+      [
+        38.186,
+        -83.436
+      ],
+      [
+        38.376,
+        -83.206
+      ]
+    ],
+    "expectedKm": [
+      20,
+      60
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-mi-26-brockway",
+    "name": "Brockway Mountain Drive",
+    "country": "US",
+    "region": "Michigan",
+    "city": "Copper Harbor",
+    "category": "coastal",
+    "description": "A ridge above Lake Superior at the very top of Michigan.",
+    "waypoints": [
+      [
+        47.456,
+        -87.906
+      ],
+      [
+        47.466,
+        -87.836
+      ]
+    ],
+    "expectedKm": [
+      5,
+      20
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-wi-hwy-13-bayfield",
+    "name": "Bayfield Peninsula — WI-13",
+    "country": "US",
+    "region": "Wisconsin",
+    "city": "Bayfield",
+    "category": "coastal",
+    "description": "Orchards and the Apostle Islands, on Wisconsin's forgotten corner.",
+    "waypoints": [
+      [
+        46.816,
+        -90.816
+      ],
+      [
+        46.606,
+        -91.156
+      ]
+    ],
+    "expectedKm": [
+      25,
+      70
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "gb-a4086-pen-y-pass",
+    "name": "Pen-y-Pass — A4086",
+    "country": "GB",
+    "region": "Wales",
+    "city": "Llanberis",
+    "category": "alpine",
+    "description": "Under Snowdon on the pass road, and busy for a reason.",
+    "waypoints": [
+      [
+        53.116,
+        -4.126
+      ],
+      [
+        53.076,
+        -4.006
+      ]
+    ],
+    "expectedKm": [
+      8,
+      25
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "gb-b4391-migneint",
+    "name": "Migneint Moor — B4407",
+    "country": "GB",
+    "region": "Wales",
+    "city": "Ffestiniog",
+    "category": "moorland",
+    "description": "Bare bog and a road with nothing on it for ten miles.",
+    "waypoints": [
+      [
+        52.976,
+        -3.926
+      ],
+      [
+        52.986,
+        -3.786
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "gb-a487-mach-loop",
+    "name": "Dyfi Valley — A487 Corris",
+    "country": "GB",
+    "region": "Wales",
+    "city": "Machynlleth",
+    "category": "highland",
+    "description": "Under the low-flying jets, on a valley road that flows.",
+    "waypoints": [
+      [
+        52.596,
+        -3.856
+      ],
+      [
+        52.736,
+        -3.836
+      ]
+    ],
+    "expectedKm": [
+      10,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "gb-a5-ogwen",
+    "name": "Ogwen Valley — A5",
+    "country": "GB",
+    "region": "Wales",
+    "city": "Bethesda",
+    "category": "alpine",
+    "description": "Telford's road through the Carneddau, still the best line anyone found.",
+    "waypoints": [
+      [
+        53.186,
+        -4.056
+      ],
+      [
+        53.096,
+        -3.906
+      ]
+    ],
+    "expectedKm": [
+      10,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "gb-b4368-clun",
+    "name": "Clun Forest — B4368",
+    "country": "GB",
+    "region": "England",
+    "city": "Craven Arms",
+    "category": "moorland",
+    "description": "Shropshire hill country, and empty on any weekday.",
+    "waypoints": [
+      [
+        52.436,
+        -2.836
+      ],
+      [
+        52.416,
+        -3.116
+      ]
+    ],
+    "expectedKm": [
+      12,
+      40
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "gb-a684-wensleydale",
+    "name": "Wensleydale — A684",
+    "country": "GB",
+    "region": "England",
+    "city": "Hawes",
+    "category": "moorland",
+    "description": "The dale road end to end, with walls both sides the whole way.",
+    "waypoints": [
+      [
+        54.306,
+        -2.196
+      ],
+      [
+        54.306,
+        -1.806
+      ]
+    ],
+    "expectedKm": [
+      15,
+      50
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "gb-b6270-tan-hill",
+    "name": "Tan Hill — Arkengarthdale",
+    "country": "GB",
+    "region": "England",
+    "city": "Reeth",
+    "category": "moorland",
+    "description": "Up to the highest pub in Britain across open moor.",
+    "waypoints": [
+      [
+        54.386,
+        -1.946
+      ],
+      [
+        54.436,
+        -2.086
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "gb-a591-windermere",
+    "name": "Kirkstone to Windermere — A592",
+    "country": "GB",
+    "region": "England",
+    "city": "Windermere",
+    "category": "alpine",
+    "description": "The lake road under the pass, and the best of the Lakes' tarmac.",
+    "waypoints": [
+      [
+        54.376,
+        -2.906
+      ],
+      [
+        54.456,
+        -2.926
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "gb-b3306-lands-end",
+    "name": "Land's End Coast — B3315",
+    "country": "GB",
+    "region": "England",
+    "city": "Penzance",
+    "category": "coastal",
+    "description": "The last road in England, with granite and Atlantic either side.",
+    "waypoints": [
+      [
+        50.106,
+        -5.536
+      ],
+      [
+        50.066,
+        -5.666
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "gb-a377-exe-valley",
+    "name": "Exe Valley — A396",
+    "country": "GB",
+    "region": "England",
+    "city": "Tiverton",
+    "category": "forest",
+    "description": "A river road under trees for twenty miles.",
+    "waypoints": [
+      [
+        50.906,
+        -3.486
+      ],
+      [
+        51.086,
+        -3.536
+      ]
+    ],
+    "expectedKm": [
+      12,
+      40
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "ie-gap-of-dunloe",
+    "name": "Gap of Dunloe Approach",
+    "country": "IE",
+    "region": "Kerry",
+    "city": "Killarney",
+    "category": "alpine",
+    "description": "Glacial valley walls and a road threading between them.",
+    "waypoints": [
+      [
+        52.006,
+        -9.586
+      ],
+      [
+        51.966,
+        -9.666
+      ]
+    ],
+    "expectedKm": [
+      6,
+      25
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "ie-r574-healy-north",
+    "name": "Beara — R571 Ardgroom",
+    "country": "IE",
+    "region": "Cork",
+    "city": "Castletownbere",
+    "category": "coastal",
+    "description": "The peninsula's north shore, with Kenmare bay all the way.",
+    "waypoints": [
+      [
+        51.646,
+        -9.906
+      ],
+      [
+        51.736,
+        -9.726
+      ]
+    ],
+    "expectedKm": [
+      12,
+      40
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "fr-col-du-grand-colombier",
+    "name": "Col du Grand Colombier",
+    "country": "FR",
+    "region": "Ain",
+    "city": "Culoz",
+    "category": "alpine",
+    "description": "Twenty-two percent at its worst, above the Rhône.",
+    "waypoints": [
+      [
+        45.846,
+        5.776
+      ],
+      [
+        45.906,
+        5.626
+      ]
+    ],
+    "expectedKm": [
+      10,
+      35
+    ],
+    "difficultyHint": 5
+  },
+  {
+    "slug": "fr-gorges-de-l-ardeche",
+    "name": "Gorges de l'Ardèche — D290",
+    "country": "FR",
+    "region": "Ardèche",
+    "city": "Vallon-Pont-d'Arc",
+    "category": "canyon",
+    "description": "A limestone gorge rim road with belvederes every kilometre.",
+    "waypoints": [
+      [
+        44.386,
+        4.406
+      ],
+      [
+        44.306,
+        4.556
+      ]
+    ],
+    "expectedKm": [
+      15,
+      50
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "fr-col-de-la-schlucht",
+    "name": "Col de la Schlucht",
+    "country": "FR",
+    "region": "Vosges",
+    "city": "Munster",
+    "category": "highland",
+    "description": "The classic Vosges crossing, wide and fast under beech.",
+    "waypoints": [
+      [
+        48.046,
+        7.136
+      ],
+      [
+        48.066,
+        7.006
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "fr-route-des-cretes-cassis",
+    "name": "Route des Crêtes — Cassis",
+    "country": "FR",
+    "region": "Bouches-du-Rhône",
+    "city": "Cassis",
+    "category": "coastal",
+    "description": "France's highest sea cliff, with a road along the top of it.",
+    "waypoints": [
+      [
+        43.216,
+        5.536
+      ],
+      [
+        43.186,
+        5.626
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "es-desfiladero-la-hermida",
+    "name": "Desfiladero de La Hermida",
+    "country": "ES",
+    "region": "Cantabria",
+    "city": "Panes",
+    "category": "canyon",
+    "description": "The deepest gorge in Spain, and the road runs the whole length.",
+    "waypoints": [
+      [
+        43.256,
+        -4.526
+      ],
+      [
+        43.136,
+        -4.606
+      ]
+    ],
+    "expectedKm": [
+      12,
+      40
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "es-puerto-de-piedrafita",
+    "name": "Puerto de Ancares",
+    "country": "ES",
+    "region": "León",
+    "city": "Villafranca del Bierzo",
+    "category": "alpine",
+    "description": "A pre-Roman crossing into Galicia, single track most of the way.",
+    "waypoints": [
+      [
+        42.606,
+        -6.806
+      ],
+      [
+        42.836,
+        -6.856
+      ]
+    ],
+    "expectedKm": [
+      15,
+      50
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "es-mirador-del-fito",
+    "name": "Mirador del Fito",
+    "country": "ES",
+    "region": "Asturias",
+    "city": "Arriondas",
+    "category": "coastal",
+    "description": "Sea one way, the Picos the other, from the same viewpoint.",
+    "waypoints": [
+      [
+        43.426,
+        -5.136
+      ],
+      [
+        43.386,
+        -5.106
+      ]
+    ],
+    "expectedKm": [
+      6,
+      25
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "it-passo-croce-domini",
+    "name": "Passo Croce Domini",
+    "country": "IT",
+    "region": "Lombardy",
+    "city": "Breno",
+    "category": "alpine",
+    "description": "A single-lane military road across the Brescian pre-Alps.",
+    "waypoints": [
+      [
+        45.936,
+        10.296
+      ],
+      [
+        45.896,
+        10.406
+      ]
+    ],
+    "expectedKm": [
+      12,
+      40
+    ],
+    "difficultyHint": 5
+  },
+  {
+    "slug": "it-passo-cento-croci",
+    "name": "Passo del Cento Croci",
+    "country": "IT",
+    "region": "Liguria",
+    "city": "Varese Ligure",
+    "category": "highland",
+    "description": "Apennine ridge road between Liguria and Emilia.",
+    "waypoints": [
+      [
+        44.376,
+        9.596
+      ],
+      [
+        44.436,
+        9.696
+      ]
+    ],
+    "expectedKm": [
+      10,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "ch-schwaegalp",
+    "name": "Schwägalp Pass",
+    "country": "CH",
+    "region": "Appenzell",
+    "city": "Urnäsch",
+    "category": "alpine",
+    "description": "Under the Säntis wall, and Swiss drivers' local favourite.",
+    "waypoints": [
+      [
+        47.276,
+        9.316
+      ],
+      [
+        47.246,
+        9.396
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "ch-glaubenberg",
+    "name": "Glaubenbergpass",
+    "country": "CH",
+    "region": "Obwalden",
+    "city": "Sarnen",
+    "category": "alpine",
+    "description": "A narrow, empty crossing between two Swiss valleys.",
+    "waypoints": [
+      [
+        46.896,
+        8.246
+      ],
+      [
+        46.856,
+        8.066
+      ]
+    ],
+    "expectedKm": [
+      12,
+      40
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "at-loibl-pass",
+    "name": "Loibl Pass",
+    "country": "AT",
+    "region": "Carinthia",
+    "city": "Ferlach",
+    "category": "alpine",
+    "description": "The old road over the Karawanks into Slovenia, hairpins throughout.",
+    "waypoints": [
+      [
+        46.486,
+        14.266
+      ],
+      [
+        46.436,
+        14.276
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "at-sölkpass",
+    "name": "Sölkpass",
+    "country": "AT",
+    "region": "Styria",
+    "city": "Schöder",
+    "category": "alpine",
+    "description": "A single-lane crossing of the Niedere Tauern with grass in the middle.",
+    "waypoints": [
+      [
+        47.246,
+        14.036
+      ],
+      [
+        47.336,
+        13.966
+      ]
+    ],
+    "expectedKm": [
+      12,
+      40
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "de-b19-tauberbischofsheim",
+    "name": "Tauber Valley — B292",
+    "country": "DE",
+    "region": "Baden-Württemberg",
+    "city": "Bad Mergentheim",
+    "category": "forest",
+    "description": "Vineyard slopes and a river road, an hour from Frankfurt.",
+    "waypoints": [
+      [
+        49.496,
+        9.766
+      ],
+      [
+        49.616,
+        9.666
+      ]
+    ],
+    "expectedKm": [
+      10,
+      35
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "de-b303-fichtelgebirge",
+    "name": "Fichtelgebirge — B303",
+    "country": "DE",
+    "region": "Bavaria",
+    "city": "Wunsiedel",
+    "category": "forest",
+    "description": "Granite tors and forest on the old Czech border road.",
+    "waypoints": [
+      [
+        50.036,
+        11.966
+      ],
+      [
+        50.106,
+        12.106
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "no-rv55-lustrafjord",
+    "name": "Lustrafjord — Rv55",
+    "country": "NO",
+    "region": "Vestland",
+    "city": "Skjolden",
+    "category": "coastal",
+    "description": "Fjord wall on one side and water on the other, all the way down.",
+    "waypoints": [
+      [
+        61.486,
+        7.596
+      ],
+      [
+        61.296,
+        7.226
+      ]
+    ],
+    "expectedKm": [
+      20,
+      60
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "se-siljansleden",
+    "name": "Siljan Ring — Route 242",
+    "country": "SE",
+    "region": "Dalarna",
+    "city": "Rättvik",
+    "category": "forest",
+    "description": "Around a meteorite crater lake, on Sweden's most driven loop.",
+    "waypoints": [
+      [
+        60.886,
+        15.116
+      ],
+      [
+        61.036,
+        14.606
+      ]
+    ],
+    "expectedKm": [
+      20,
+      60
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "fi-koli-hills",
+    "name": "Koli Heights Road",
+    "country": "FI",
+    "region": "North Karelia",
+    "city": "Lieksa",
+    "category": "highland",
+    "description": "Up Finland's national landscape, which is a hill and a lake.",
+    "waypoints": [
+      [
+        63.106,
+        29.806
+      ],
+      [
+        63.076,
+        29.766
+      ]
+    ],
+    "expectedKm": [
+      5,
+      22
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "jp-yatsugatake-echo",
+    "name": "Yatsugatake Echo Line",
+    "country": "JP",
+    "region": "Nagano",
+    "city": "Chino",
+    "category": "highland",
+    "description": "A long fast ridge road under the Yatsugatake range.",
+    "waypoints": [
+      [
+        35.966,
+        138.366
+      ],
+      [
+        36.066,
+        138.436
+      ]
+    ],
+    "expectedKm": [
+      10,
+      40
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "jp-fruit-line-yamanashi",
+    "name": "Fruit Line — Yamanashi",
+    "country": "JP",
+    "region": "Yamanashi",
+    "city": "Kofu",
+    "category": "highland",
+    "description": "Vineyard terraces above the Kofu basin, with Fuji across it.",
+    "waypoints": [
+      [
+        35.706,
+        138.666
+      ],
+      [
+        35.766,
+        138.766
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "jp-oku-musashi-r299",
+    "name": "Oku-Musashi — Shomaru Pass",
+    "country": "JP",
+    "region": "Saitama",
+    "city": "Hanno",
+    "category": "forest",
+    "description": "Tokyo's nearest touge, and busy with locals every weekend.",
+    "waypoints": [
+      [
+        35.886,
+        139.266
+      ],
+      [
+        35.936,
+        139.166
+      ]
+    ],
+    "expectedKm": [
+      6,
+      25
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "jp-shikoku-sadamisaki",
+    "name": "Sadamisaki Peninsula Road",
+    "country": "JP",
+    "region": "Ehime",
+    "city": "Yawatahama",
+    "category": "coastal",
+    "description": "A ridge along Japan's narrowest peninsula with sea both sides.",
+    "waypoints": [
+      [
+        33.466,
+        132.406
+      ],
+      [
+        33.346,
+        132.026
+      ]
+    ],
+    "expectedKm": [
+      20,
+      60
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "kr-hwangmaesan",
+    "name": "Hwangmaesan Ascent",
+    "country": "KR",
+    "region": "South Gyeongsang",
+    "city": "Hapcheon",
+    "category": "highland",
+    "description": "A steep climb to azalea slopes with hairpins throughout.",
+    "waypoints": [
+      [
+        35.536,
+        127.916
+      ],
+      [
+        35.566,
+        127.946
+      ]
+    ],
+    "expectedKm": [
+      5,
+      22
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "tw-highway-11-east",
+    "name": "East Coast — Highway 11",
+    "country": "TW",
+    "region": "Taitung",
+    "city": "Taitung",
+    "category": "coastal",
+    "description": "Pacific on one side, mountains on the other, for a hundred kilometres.",
+    "waypoints": [
+      [
+        22.756,
+        121.146
+      ],
+      [
+        23.106,
+        121.376
+      ]
+    ],
+    "expectedKm": [
+      30,
+      90
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "nz-skippers-canyon",
+    "name": "Skippers Canyon Road",
+    "country": "NZ",
+    "region": "Otago",
+    "city": "Queenstown",
+    "category": "canyon",
+    "description": "Unsealed, one lane, cut into a cliff, and no rental car is insured on it.",
+    "waypoints": [
+      [
+        -44.936,
+        168.656
+      ],
+      [
+        -44.836,
+        168.626
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 5
+  },
+  {
+    "slug": "nz-gentle-annie",
+    "name": "Gentle Annie — Taihape Napier Road",
+    "country": "NZ",
+    "region": "Hawke's Bay",
+    "city": "Taihape",
+    "category": "highland",
+    "description": "Remote high country on a road that is anything but gentle.",
+    "waypoints": [
+      [
+        -39.676,
+        175.796
+      ],
+      [
+        -39.506,
+        176.206
+      ]
+    ],
+    "expectedKm": [
+      30,
+      90
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "au-mount-donna-buang",
+    "name": "Mount Donna Buang Road",
+    "country": "AU",
+    "region": "Victoria",
+    "city": "Warburton",
+    "category": "alpine",
+    "description": "Melbourne's nearest snow, up a road of nothing but corners.",
+    "waypoints": [
+      [
+        -37.756,
+        145.686
+      ],
+      [
+        -37.706,
+        145.706
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "au-mount-mee",
+    "name": "Mount Mee Road",
+    "country": "AU",
+    "region": "Queensland",
+    "city": "Dayboro",
+    "category": "forest",
+    "description": "Brisbane's other mountain road, and quieter than Glorious.",
+    "waypoints": [
+      [
+        -27.196,
+        152.826
+      ],
+      [
+        -27.076,
+        152.746
+      ]
+    ],
+    "expectedKm": [
+      10,
+      40
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "in-bhandardara-ghat",
+    "name": "Sandhan Valley — Bhandardara Ghat",
+    "country": "IN",
+    "region": "Maharashtra",
+    "city": "Igatpuri",
+    "category": "ghat",
+    "description": "Reservoir, fort and Sahyadri walls on a road few outsiders find.",
+    "waypoints": [
+      [
+        19.536,
+        73.756
+      ],
+      [
+        19.436,
+        73.706
+      ]
+    ],
+    "expectedKm": [
+      10,
+      40
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "in-pachmarhi-ghat",
+    "name": "Pachmarhi Ghat",
+    "country": "IN",
+    "region": "Madhya Pradesh",
+    "city": "Pipariya",
+    "category": "ghat",
+    "description": "Central India's only hill station, up a proper ghat road.",
+    "waypoints": [
+      [
+        22.606,
+        78.356
+      ],
+      [
+        22.466,
+        78.436
+      ]
+    ],
+    "expectedKm": [
+      15,
+      50
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "in-araku-valley",
+    "name": "Araku Valley Ghat",
+    "country": "IN",
+    "region": "Andhra Pradesh",
+    "city": "Visakhapatnam",
+    "category": "ghat",
+    "description": "Coffee country in the Eastern Ghats, on a road with fifty bends.",
+    "waypoints": [
+      [
+        17.906,
+        83.136
+      ],
+      [
+        18.326,
+        82.876
+      ]
+    ],
+    "expectedKm": [
+      30,
+      90
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "in-tirumala-ghat",
+    "name": "Tirumala Ghat Road",
+    "country": "IN",
+    "region": "Andhra Pradesh",
+    "city": "Tirupati",
+    "category": "ghat",
+    "description": "A one-way uphill ghat with fifty-seven numbered hairpins.",
+    "waypoints": [
+      [
+        13.636,
+        79.416
+      ],
+      [
+        13.676,
+        79.346
+      ]
+    ],
+    "expectedKm": [
+      10,
+      40
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "in-gangtok-nathula",
+    "name": "Gangtok — Tsomgo Lake Road",
+    "country": "IN",
+    "region": "Sikkim",
+    "city": "Gangtok",
+    "category": "alpine",
+    "description": "To a glacial lake at twelve thousand feet on the old Silk Route.",
+    "waypoints": [
+      [
+        27.336,
+        88.616
+      ],
+      [
+        27.376,
+        88.766
+      ]
+    ],
+    "expectedKm": [
+      20,
+      60
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "ae-hatta-mountain",
+    "name": "Hatta Mountain Road",
+    "country": "AE",
+    "region": "Dubai",
+    "city": "Hatta",
+    "category": "canyon",
+    "description": "Ophiolite rock and new tarmac on the road to the Omani border.",
+    "waypoints": [
+      [
+        24.806,
+        56.116
+      ],
+      [
+        24.896,
+        56.006
+      ]
+    ],
+    "expectedKm": [
+      10,
+      40
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "za-outeniqua-pass",
+    "name": "Outeniqua Pass",
+    "country": "ZA",
+    "region": "Western Cape",
+    "city": "George",
+    "category": "alpine",
+    "description": "The Garden Route's mountain wall, crossed on a fast modern pass.",
+    "waypoints": [
+      [
+        -33.936,
+        22.436
+      ],
+      [
+        -33.836,
+        22.406
+      ]
+    ],
+    "expectedKm": [
+      8,
+      30
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "za-bainskloof",
+    "name": "Bainskloof Pass",
+    "country": "ZA",
+    "region": "Western Cape",
+    "city": "Wellington",
+    "category": "canyon",
+    "description": "An 1853 pass cut by hand, unchanged and still spectacular.",
+    "waypoints": [
+      [
+        -33.636,
+        19.066
+      ],
+      [
+        -33.586,
+        19.206
+      ]
+    ],
+    "expectedKm": [
+      10,
+      40
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "cl-cuesta-el-melon",
+    "name": "Ruta 5 — Cuesta Las Chilcas",
+    "country": "CL",
+    "region": "Valparaíso",
+    "city": "Llaillay",
+    "category": "highland",
+    "description": "Chile's coastal range crossing, and the road every Santiago driver knows.",
+    "waypoints": [
+      [
+        -32.836,
+        -70.956
+      ],
+      [
+        -32.926,
+        -70.836
+      ]
+    ],
+    "expectedKm": [
+      8,
+      35
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "br-serra-de-petropolis",
+    "name": "Serra de Petrópolis — BR-040",
+    "country": "BR",
+    "region": "Rio de Janeiro",
+    "city": "Petrópolis",
+    "category": "alpine",
+    "description": "Atlantic forest and a mountain wall an hour from Rio.",
+    "waypoints": [
+      [
+        -22.506,
+        -43.186
+      ],
+      [
+        -22.306,
+        -43.176
+      ]
+    ],
+    "expectedKm": [
+      15,
+      50
+    ],
+    "difficultyHint": 3
+  }
+]

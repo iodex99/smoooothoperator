@@ -1,0 +1,362 @@
+[
+  {
+    "slug": "au-great-alpine-road",
+    "name": "Great Alpine Road — Mount Hotham",
+    "country": "AU",
+    "region": "Victoria",
+    "city": "Bright",
+    "category": "alpine",
+    "description": "Australia's highest sealed road, and the climb out of Harrietville is relentless.",
+    "waypoints": [
+      [
+        -36.729,
+        146.963
+      ],
+      [
+        -36.976,
+        147.136
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "au-falls-creek-bogong",
+    "name": "Bogong High Plains Road",
+    "country": "AU",
+    "region": "Victoria",
+    "city": "Falls Creek",
+    "category": "alpine",
+    "description": "Above the treeline in Australia, which barely sounds possible.",
+    "waypoints": [
+      [
+        -36.866,
+        147.276
+      ],
+      [
+        -36.931,
+        147.316
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "au-bells-line-of-road",
+    "name": "Bells Line of Road",
+    "country": "AU",
+    "region": "New South Wales",
+    "city": "Bilpin",
+    "category": "highland",
+    "description": "The Blue Mountains' better road, and the locals' choice over the highway.",
+    "waypoints": [
+      [
+        -33.501,
+        150.531
+      ],
+      [
+        -33.481,
+        150.291
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "au-thunderbolts-way",
+    "name": "Thunderbolts Way",
+    "country": "AU",
+    "region": "New South Wales",
+    "city": "Gloucester",
+    "category": "highland",
+    "description": "Up the Barrington escarpment on a road with no traffic at all.",
+    "waypoints": [
+      [
+        -32.006,
+        151.961
+      ],
+      [
+        -31.601,
+        151.646
+      ]
+    ],
+    "expectedKm": [
+      45,
+      72
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "au-clyde-mountain",
+    "name": "Clyde Mountain — Kings Highway",
+    "country": "AU",
+    "region": "New South Wales",
+    "city": "Braidwood",
+    "category": "forest",
+    "description": "The descent from the tablelands to the coast, and it drops fast.",
+    "waypoints": [
+      [
+        -35.441,
+        149.796
+      ],
+      [
+        -35.621,
+        150.016
+      ]
+    ],
+    "expectedKm": [
+      36,
+      60
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "au-great-ocean-road-otway",
+    "name": "Great Ocean Road — Cape Otway",
+    "country": "AU",
+    "region": "Victoria",
+    "city": "Apollo Bay",
+    "category": "coastal",
+    "description": "The genuinely twisty half, once the tour buses have turned back.",
+    "waypoints": [
+      [
+        -38.756,
+        143.671
+      ],
+      [
+        -38.626,
+        143.426
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "au-grand-ridge-road",
+    "name": "Grand Ridge Road",
+    "country": "AU",
+    "region": "Victoria",
+    "city": "Mirboo North",
+    "category": "forest",
+    "description": "A ridge road through the Strzelecki Ranges, mostly forgotten.",
+    "waypoints": [
+      [
+        -38.406,
+        146.166
+      ],
+      [
+        -38.356,
+        146.446
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "au-adelaide-hills-gorge",
+    "name": "Gorge Road — Adelaide Hills",
+    "country": "AU",
+    "region": "South Australia",
+    "city": "Athelstone",
+    "category": "canyon",
+    "description": "A river gorge road on Adelaide's doorstep, and everybody's test route.",
+    "waypoints": [
+      [
+        -34.856,
+        138.721
+      ],
+      [
+        -34.821,
+        138.876
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "au-tasmania-a10-west",
+    "name": "Tasmania — A10 Queenstown Hairpins",
+    "country": "AU",
+    "region": "Tasmania",
+    "city": "Queenstown",
+    "category": "alpine",
+    "description": "The 99 Bends down into a moonscape mining town.",
+    "waypoints": [
+      [
+        -42.066,
+        145.556
+      ],
+      [
+        -42.116,
+        145.656
+      ]
+    ],
+    "expectedKm": [
+      10,
+      22
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "au-tasmania-b83-coast",
+    "name": "Tasmania — Bruny Island Neck",
+    "country": "AU",
+    "region": "Tasmania",
+    "city": "Kettering",
+    "category": "coastal",
+    "description": "A sandbar with sea on both sides, reached by ferry.",
+    "waypoints": [
+      [
+        -43.136,
+        147.346
+      ],
+      [
+        -43.306,
+        147.266
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "au-perth-hills-brookton",
+    "name": "Brookton Highway — Perth Hills",
+    "country": "AU",
+    "region": "Western Australia",
+    "city": "Karragullen",
+    "category": "forest",
+    "description": "Jarrah forest and the only real corners within reach of Perth.",
+    "waypoints": [
+      [
+        -32.091,
+        116.126
+      ],
+      [
+        -32.156,
+        116.446
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "nz-lewis-pass",
+    "name": "Lewis Pass — SH7",
+    "country": "NZ",
+    "region": "Canterbury",
+    "city": "Springs Junction",
+    "category": "alpine",
+    "description": "Beech forest and river flats on the quiet crossing of the Alps.",
+    "waypoints": [
+      [
+        -42.336,
+        172.186
+      ],
+      [
+        -42.406,
+        172.406
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "nz-coromandel-309",
+    "name": "309 Road — Coromandel",
+    "country": "NZ",
+    "region": "Waikato",
+    "city": "Coromandel",
+    "category": "forest",
+    "description": "A gravel shortcut through kauri forest that locals swear by.",
+    "waypoints": [
+      [
+        -36.766,
+        175.496
+      ],
+      [
+        -36.836,
+        175.656
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "nz-thames-coast-sh25",
+    "name": "Thames Coast — SH25",
+    "country": "NZ",
+    "region": "Waikato",
+    "city": "Thames",
+    "category": "coastal",
+    "description": "Pohutukawa trees, a stony shore and corners the whole length.",
+    "waypoints": [
+      [
+        -37.136,
+        175.541
+      ],
+      [
+        -36.806,
+        175.476
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "nz-danseys-pass",
+    "name": "Danseys Pass",
+    "country": "NZ",
+    "region": "Otago",
+    "city": "Naseby",
+    "category": "highland",
+    "description": "An unsealed high-country pass with a pub at one end.",
+    "waypoints": [
+      [
+        -45.021,
+        170.136
+      ],
+      [
+        -44.876,
+        170.406
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 4
+  }
+]

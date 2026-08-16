@@ -1,0 +1,530 @@
+[
+  {
+    "slug": "in-tawang-sela-pass",
+    "name": "Sela Pass — Tawang Road",
+    "country": "IN",
+    "region": "Arunachal Pradesh",
+    "city": "Dirang",
+    "category": "alpine",
+    "description": "Above thirteen thousand feet on the road to the Tibetan border.",
+    "waypoints": [
+      [
+        27.356,
+        92.241
+      ],
+      [
+        27.506,
+        92.106
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "in-zoji-la",
+    "name": "Zoji La",
+    "country": "IN",
+    "region": "Ladakh",
+    "city": "Sonamarg",
+    "category": "alpine",
+    "description": "A ledge cut into a cliff, and the gateway to Ladakh.",
+    "waypoints": [
+      [
+        34.301,
+        75.286
+      ],
+      [
+        34.281,
+        75.471
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 5
+  },
+  {
+    "slug": "in-khardung-la",
+    "name": "Khardung La",
+    "country": "IN",
+    "region": "Ladakh",
+    "city": "Leh",
+    "category": "alpine",
+    "description": "One of the highest motorable passes on earth, and it feels it.",
+    "waypoints": [
+      [
+        34.166,
+        77.586
+      ],
+      [
+        34.279,
+        77.604
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 5
+  },
+  {
+    "slug": "in-rohtang-atal-tunnel",
+    "name": "Atal Tunnel Approach — Solang",
+    "country": "IN",
+    "region": "Himachal Pradesh",
+    "city": "Manali",
+    "category": "alpine",
+    "description": "The climb out of Manali to the tunnel that changed Lahaul.",
+    "waypoints": [
+      [
+        32.246,
+        77.186
+      ],
+      [
+        32.366,
+        77.206
+      ]
+    ],
+    "expectedKm": [
+      29,
+      49
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "in-spiti-kunzum",
+    "name": "Kunzum Pass — Spiti",
+    "country": "IN",
+    "region": "Himachal Pradesh",
+    "city": "Losar",
+    "category": "alpine",
+    "description": "Bare rock and glacier on the way into the Spiti valley.",
+    "waypoints": [
+      [
+        32.406,
+        77.636
+      ],
+      [
+        32.316,
+        77.766
+      ]
+    ],
+    "expectedKm": [
+      18,
+      32
+    ],
+    "difficultyHint": 5
+  },
+  {
+    "slug": "in-kinnaur-nh5",
+    "name": "Kinnaur — NH5 Sangla Valley",
+    "country": "IN",
+    "region": "Himachal Pradesh",
+    "city": "Karcham",
+    "category": "canyon",
+    "description": "The Sutlej gorge, cut through rock, with drops that do not bear thinking about.",
+    "waypoints": [
+      [
+        31.551,
+        78.176
+      ],
+      [
+        31.426,
+        78.266
+      ]
+    ],
+    "expectedKm": [
+      44,
+      74
+    ],
+    "difficultyHint": 5
+  },
+  {
+    "slug": "in-shimla-narkanda",
+    "name": "Shimla to Narkanda — NH5",
+    "country": "IN",
+    "region": "Himachal Pradesh",
+    "city": "Shimla",
+    "category": "highland",
+    "description": "Apple orchards, deodar forest and the old Hindustan-Tibet road.",
+    "waypoints": [
+      [
+        31.104,
+        77.173
+      ],
+      [
+        31.256,
+        77.456
+      ]
+    ],
+    "expectedKm": [
+      40,
+      62
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "in-mussoorie-dhanaulti",
+    "name": "Mussoorie to Dhanaulti",
+    "country": "IN",
+    "region": "Uttarakhand",
+    "city": "Mussoorie",
+    "category": "highland",
+    "description": "Ridge road through deodar with the Himalaya on the horizon.",
+    "waypoints": [
+      [
+        30.459,
+        78.081
+      ],
+      [
+        30.426,
+        78.236
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "in-nainital-kilbury",
+    "name": "Nainital — Kilbury Road",
+    "country": "IN",
+    "region": "Uttarakhand",
+    "city": "Nainital",
+    "category": "forest",
+    "description": "Oak forest above the lake, and quiet once the tourists stop.",
+    "waypoints": [
+      [
+        29.391,
+        79.456
+      ],
+      [
+        29.436,
+        79.436
+      ]
+    ],
+    "expectedKm": [
+      28,
+      47
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "in-chopta-tungnath",
+    "name": "Chopta — Ukhimath Road",
+    "country": "IN",
+    "region": "Uttarakhand",
+    "city": "Ukhimath",
+    "category": "highland",
+    "description": "Rhododendron meadows on the road they call mini Switzerland.",
+    "waypoints": [
+      [
+        30.516,
+        79.086
+      ],
+      [
+        30.486,
+        79.216
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "in-valparai-ghat",
+    "name": "Valparai Ghat — 40 Hairpins",
+    "country": "IN",
+    "region": "Tamil Nadu",
+    "city": "Pollachi",
+    "category": "ghat",
+    "description": "Forty numbered hairpins through tea estates and elephant country.",
+    "waypoints": [
+      [
+        10.446,
+        76.966
+      ],
+      [
+        10.326,
+        76.956
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "in-yercaud-ghat",
+    "name": "Yercaud Ghat — 20 Hairpins",
+    "country": "IN",
+    "region": "Tamil Nadu",
+    "city": "Salem",
+    "category": "ghat",
+    "description": "Twenty hairpins up to a coffee-growing plateau.",
+    "waypoints": [
+      [
+        11.656,
+        78.156
+      ],
+      [
+        11.776,
+        78.206
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "in-ooty-kotagiri",
+    "name": "Ooty to Kotagiri",
+    "country": "IN",
+    "region": "Tamil Nadu",
+    "city": "Ooty",
+    "category": "highland",
+    "description": "Tea slopes and blue gum on the Nilgiri plateau.",
+    "waypoints": [
+      [
+        11.41,
+        76.695
+      ],
+      [
+        11.426,
+        76.876
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "in-shiradi-ghat",
+    "name": "Shiradi Ghat — NH75",
+    "country": "IN",
+    "region": "Karnataka",
+    "city": "Sakleshpur",
+    "category": "ghat",
+    "description": "The main Bangalore-Mangalore crossing, rebuilt in concrete and fast.",
+    "waypoints": [
+      [
+        12.946,
+        75.786
+      ],
+      [
+        12.906,
+        75.556
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "in-coorg-madikeri",
+    "name": "Coorg — Madikeri to Bhagamandala",
+    "country": "IN",
+    "region": "Karnataka",
+    "city": "Madikeri",
+    "category": "ghat",
+    "description": "Coffee estates, mist and a road that never straightens.",
+    "waypoints": [
+      [
+        12.421,
+        75.736
+      ],
+      [
+        12.386,
+        75.526
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "in-chikmagalur-mullayanagiri",
+    "name": "Mullayanagiri Road",
+    "country": "IN",
+    "region": "Karnataka",
+    "city": "Chikmagalur",
+    "category": "highland",
+    "description": "To the highest point in Karnataka on a single-lane ridge.",
+    "waypoints": [
+      [
+        13.316,
+        75.771
+      ],
+      [
+        13.391,
+        75.721
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "in-wayanad-thamarassery",
+    "name": "Thamarassery Churam — 9 Hairpins",
+    "country": "IN",
+    "region": "Kerala",
+    "city": "Kozhikode",
+    "category": "ghat",
+    "description": "Nine numbered hairpins, and every Malayali knows the number.",
+    "waypoints": [
+      [
+        11.416,
+        75.936
+      ],
+      [
+        11.506,
+        76.006
+      ]
+    ],
+    "expectedKm": [
+      12,
+      24
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "in-ponmudi-ghat",
+    "name": "Ponmudi Ghat — 22 Hairpins",
+    "country": "IN",
+    "region": "Kerala",
+    "city": "Thiruvananthapuram",
+    "category": "ghat",
+    "description": "Twenty-two hairpins up to a hill station nobody has heard of.",
+    "waypoints": [
+      [
+        8.746,
+        77.066
+      ],
+      [
+        8.756,
+        77.116
+      ]
+    ],
+    "expectedKm": [
+      23,
+      38
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "in-goa-chorla-ghat",
+    "name": "Chorla Ghat",
+    "country": "IN",
+    "region": "Goa",
+    "city": "Valpoi",
+    "category": "ghat",
+    "description": "The back way out of Goa into Karnataka, through dense forest.",
+    "waypoints": [
+      [
+        15.606,
+        74.126
+      ],
+      [
+        15.666,
+        74.226
+      ]
+    ],
+    "expectedKm": [
+      12,
+      24
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "in-mahabaleshwar-ghat",
+    "name": "Mahabaleshwar Ghat — Pratapgad",
+    "country": "IN",
+    "region": "Maharashtra",
+    "city": "Poladpur",
+    "category": "ghat",
+    "description": "The old Sahyadri climb to the hill station, all switchbacks.",
+    "waypoints": [
+      [
+        17.996,
+        73.466
+      ],
+      [
+        17.926,
+        73.656
+      ]
+    ],
+    "expectedKm": [
+      41,
+      69
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "in-lonavala-old-mumbai",
+    "name": "Bhor Ghat — Old Mumbai Pune Road",
+    "country": "IN",
+    "region": "Maharashtra",
+    "city": "Khopoli",
+    "category": "ghat",
+    "description": "The original ghat road, bypassed by the expressway and all the better.",
+    "waypoints": [
+      [
+        18.786,
+        73.346
+      ],
+      [
+        18.751,
+        73.406
+      ]
+    ],
+    "expectedKm": [
+      12,
+      24
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "in-cherrapunji-road",
+    "name": "Shillong to Cherrapunji",
+    "country": "IN",
+    "region": "Meghalaya",
+    "city": "Shillong",
+    "category": "highland",
+    "description": "Along the wettest plateau on earth, with the plains a kilometre below.",
+    "waypoints": [
+      [
+        25.576,
+        91.893
+      ],
+      [
+        25.301,
+        91.701
+      ]
+    ],
+    "expectedKm": [
+      45,
+      72
+    ],
+    "difficultyHint": 3
+  }
+]

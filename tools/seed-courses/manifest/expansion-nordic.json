@@ -1,0 +1,530 @@
+[
+  {
+    "slug": "no-geiranger-ornevegen",
+    "name": "Ørnevegen — Eagle Road",
+    "country": "NO",
+    "region": "Møre og Romsdal",
+    "city": "Geiranger",
+    "category": "alpine",
+    "description": "Eleven bends climbing straight out of the fjord.",
+    "waypoints": [
+      [
+        62.101,
+        7.206
+      ],
+      [
+        62.136,
+        7.156
+      ]
+    ],
+    "expectedKm": [
+      8,
+      18
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "no-gamle-strynefjellsvegen",
+    "name": "Gamle Strynefjellsvegen",
+    "country": "NO",
+    "region": "Innlandet",
+    "city": "Grotli",
+    "category": "alpine",
+    "description": "A gravel-era mountain road preserved as it was, and still open.",
+    "waypoints": [
+      [
+        61.931,
+        7.506
+      ],
+      [
+        61.921,
+        7.216
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "no-lofoten-e10",
+    "name": "Lofoten — E10 Reine",
+    "country": "NO",
+    "region": "Nordland",
+    "city": "Leknes",
+    "category": "coastal",
+    "description": "Bridges between islands, with peaks straight out of the sea.",
+    "waypoints": [
+      [
+        68.146,
+        13.611
+      ],
+      [
+        67.931,
+        13.091
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "no-atlanterhavsvegen",
+    "name": "Atlantic Road",
+    "country": "NO",
+    "region": "Møre og Romsdal",
+    "city": "Averøy",
+    "category": "coastal",
+    "description": "Eight bridges across open ocean, and Storseisundet arches over nothing.",
+    "waypoints": [
+      [
+        63.011,
+        7.356
+      ],
+      [
+        62.976,
+        7.296
+      ]
+    ],
+    "expectedKm": [
+      8,
+      18
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "no-gaularfjellet",
+    "name": "Gaularfjellet",
+    "country": "NO",
+    "region": "Vestland",
+    "city": "Balestrand",
+    "category": "alpine",
+    "description": "The viewpoint switchbacks above Sognefjord.",
+    "waypoints": [
+      [
+        61.276,
+        6.226
+      ],
+      [
+        61.356,
+        6.081
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "no-hardangervidda-rv7",
+    "name": "Hardangervidda — Rv7",
+    "country": "NO",
+    "region": "Buskerud",
+    "city": "Geilo",
+    "category": "highland",
+    "description": "Europe's largest mountain plateau, crossed on a fast open road.",
+    "waypoints": [
+      [
+        60.533,
+        8.206
+      ],
+      [
+        60.426,
+        7.533
+      ]
+    ],
+    "expectedKm": [
+      35,
+      58
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "no-lysebotn",
+    "name": "Lysebotn Road",
+    "country": "NO",
+    "region": "Rogaland",
+    "city": "Lysebotn",
+    "category": "alpine",
+    "description": "Twenty-seven hairpins and a tunnel that spirals inside the mountain.",
+    "waypoints": [
+      [
+        59.051,
+        6.656
+      ],
+      [
+        59.011,
+        6.716
+      ]
+    ],
+    "expectedKm": [
+      10,
+      22
+    ],
+    "difficultyHint": 5
+  },
+  {
+    "slug": "se-vildmarksvagen",
+    "name": "Vildmarksvägen — Wilderness Road",
+    "country": "SE",
+    "region": "Jämtland",
+    "city": "Strömsund",
+    "category": "highland",
+    "description": "Sweden's highest road, across a plateau with reindeer on it.",
+    "waypoints": [
+      [
+        64.856,
+        14.321
+      ],
+      [
+        65.106,
+        14.116
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "se-osterlen-coast",
+    "name": "Österlen Coast — Route 9",
+    "country": "SE",
+    "region": "Skåne",
+    "city": "Simrishamn",
+    "category": "coastal",
+    "description": "Rolling Skåne farmland dropping to the Baltic.",
+    "waypoints": [
+      [
+        55.556,
+        14.341
+      ],
+      [
+        55.391,
+        14.176
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 1
+  },
+  {
+    "slug": "se-dalsland-lakes",
+    "name": "Dalsland Lakes — Route 172",
+    "country": "SE",
+    "region": "Västra Götaland",
+    "city": "Bengtsfors",
+    "category": "forest",
+    "description": "Forest and water alternating for fifty kilometres.",
+    "waypoints": [
+      [
+        59.026,
+        12.226
+      ],
+      [
+        58.701,
+        12.281
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "fi-lapland-e75",
+    "name": "Lapland — E75 Inari",
+    "country": "FI",
+    "region": "Lapland",
+    "city": "Ivalo",
+    "category": "forest",
+    "description": "Arctic road with nothing but pine and lake either side.",
+    "waypoints": [
+      [
+        68.656,
+        27.541
+      ],
+      [
+        68.906,
+        27.026
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 1
+  },
+  {
+    "slug": "fi-archipelago-ring",
+    "name": "Archipelago Ring Road",
+    "country": "FI",
+    "region": "Southwest Finland",
+    "city": "Pargas",
+    "category": "coastal",
+    "description": "Island hopping by bridge and ferry through the Baltic archipelago.",
+    "waypoints": [
+      [
+        60.301,
+        22.301
+      ],
+      [
+        60.166,
+        21.856
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 1
+  },
+  {
+    "slug": "dk-molsbjerge",
+    "name": "Mols Bjerge — Route 21",
+    "country": "DK",
+    "region": "Central Jutland",
+    "city": "Ebeltoft",
+    "category": "coastal",
+    "description": "Denmark's hills, such as they are, and genuinely fun.",
+    "waypoints": [
+      [
+        56.216,
+        10.681
+      ],
+      [
+        56.266,
+        10.506
+      ]
+    ],
+    "expectedKm": [
+      15,
+      26
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "dk-vestkysten-181",
+    "name": "West Coast — Route 181",
+    "country": "DK",
+    "region": "North Jutland",
+    "city": "Hvide Sande",
+    "category": "coastal",
+    "description": "A sand-swept road between the North Sea and the fjord.",
+    "waypoints": [
+      [
+        55.996,
+        8.126
+      ],
+      [
+        56.306,
+        8.136
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 1
+  },
+  {
+    "slug": "is-golden-circle-35",
+    "name": "Golden Circle — Route 35",
+    "country": "IS",
+    "region": "Southern Region",
+    "city": "Selfoss",
+    "category": "highland",
+    "description": "Iceland's most driven road, and still a good one out of season.",
+    "waypoints": [
+      [
+        63.936,
+        -20.916
+      ],
+      [
+        64.326,
+        -20.106
+      ]
+    ],
+    "expectedKm": [
+      50,
+      80
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "is-snaefellsnes-54",
+    "name": "Snæfellsnes — Route 54",
+    "country": "IS",
+    "region": "Western Region",
+    "city": "Grundarfjörður",
+    "category": "coastal",
+    "description": "A volcano at the end of a peninsula with the sea on both sides.",
+    "waypoints": [
+      [
+        64.921,
+        -23.261
+      ],
+      [
+        64.746,
+        -23.806
+      ]
+    ],
+    "expectedKm": [
+      35,
+      58
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "is-east-fjords-939",
+    "name": "Öxi Pass — Route 939",
+    "country": "IS",
+    "region": "Eastern Region",
+    "city": "Djúpivogur",
+    "category": "highland",
+    "description": "A gravel shortcut over the mountains that saves an hour and costs nerve.",
+    "waypoints": [
+      [
+        64.656,
+        -14.286
+      ],
+      [
+        64.801,
+        -14.626
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "nl-limburg-cauberg",
+    "name": "Limburg Hills — Cauberg Loop",
+    "country": "NL",
+    "region": "Limburg",
+    "city": "Valkenburg",
+    "category": "highland",
+    "description": "The only corners in the Netherlands, and the Dutch make the most of them.",
+    "waypoints": [
+      [
+        50.866,
+        5.831
+      ],
+      [
+        50.806,
+        5.916
+      ]
+    ],
+    "expectedKm": [
+      12,
+      24
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "nl-veluwe-forest",
+    "name": "Veluwe — Posbank",
+    "country": "NL",
+    "region": "Gelderland",
+    "city": "Rheden",
+    "category": "forest",
+    "description": "Heathland and beech woods, and a road that actually rises.",
+    "waypoints": [
+      [
+        52.006,
+        5.996
+      ],
+      [
+        52.056,
+        6.046
+      ]
+    ],
+    "expectedKm": [
+      10,
+      20
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "be-ardennes-n68",
+    "name": "Ardennes — N68 Malmedy",
+    "country": "BE",
+    "region": "Liège",
+    "city": "Malmedy",
+    "category": "forest",
+    "description": "Spa-Francorchamps country, on the roads the circuit was carved from.",
+    "waypoints": [
+      [
+        50.426,
+        6.026
+      ],
+      [
+        50.316,
+        6.116
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "be-la-roche-n860",
+    "name": "La Roche-en-Ardenne — N860",
+    "country": "BE",
+    "region": "Luxembourg",
+    "city": "La Roche-en-Ardenne",
+    "category": "forest",
+    "description": "Ourthe valley bends under wooded cliffs.",
+    "waypoints": [
+      [
+        50.181,
+        5.576
+      ],
+      [
+        50.106,
+        5.706
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "lu-mullerthal",
+    "name": "Mullerthal — Little Switzerland",
+    "country": "LU",
+    "region": "Echternach",
+    "city": "Echternach",
+    "category": "forest",
+    "description": "Sandstone gorges and forest lanes in a country most people drive through.",
+    "waypoints": [
+      [
+        49.811,
+        6.421
+      ],
+      [
+        49.746,
+        6.316
+      ]
+    ],
+    "expectedKm": [
+      12,
+      24
+    ],
+    "difficultyHint": 2
+  }
+]

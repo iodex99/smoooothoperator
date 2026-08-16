@@ -1,0 +1,530 @@
+[
+  {
+    "slug": "es-ma-10-tramuntana",
+    "name": "Serra de Tramuntana — MA-10",
+    "country": "ES",
+    "region": "Mallorca",
+    "city": "Sóller",
+    "category": "alpine",
+    "description": "The whole north coast of Mallorca on one continuous corner.",
+    "waypoints": [
+      [
+        39.766,
+        2.716
+      ],
+      [
+        39.916,
+        3.021
+      ]
+    ],
+    "expectedKm": [
+      35,
+      58
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "es-picos-de-europa",
+    "name": "Desfiladero de los Beyos — N-625",
+    "country": "ES",
+    "region": "Asturias",
+    "city": "Cangas de Onís",
+    "category": "canyon",
+    "description": "A limestone gorge so narrow the sky is a strip.",
+    "waypoints": [
+      [
+        43.35,
+        -5.133
+      ],
+      [
+        43.116,
+        -5.043
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "es-n-260-pyrenees",
+    "name": "N-260 — Pyrenean Axis",
+    "country": "ES",
+    "region": "Huesca",
+    "city": "Ainsa",
+    "category": "alpine",
+    "description": "The Spanish Pyrenees' long way round, and better than the fast way.",
+    "waypoints": [
+      [
+        42.416,
+        0.138
+      ],
+      [
+        42.581,
+        -0.133
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "es-sierra-nevada-a395",
+    "name": "Sierra Nevada — A-395",
+    "country": "ES",
+    "region": "Granada",
+    "city": "Granada",
+    "category": "alpine",
+    "description": "The highest asphalt in Europe outside the Alps, with Granada below.",
+    "waypoints": [
+      [
+        37.15,
+        -3.591
+      ],
+      [
+        37.096,
+        -3.396
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "es-ronda-a397",
+    "name": "Ronda — A-397 San Pedro",
+    "country": "ES",
+    "region": "Málaga",
+    "city": "Ronda",
+    "category": "canyon",
+    "description": "The climb from the coast to Ronda, forty kilometres of switchbacks.",
+    "waypoints": [
+      [
+        36.483,
+        -4.986
+      ],
+      [
+        36.741,
+        -5.166
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "es-cabo-de-gata",
+    "name": "Cabo de Gata Coast",
+    "country": "ES",
+    "region": "Almería",
+    "city": "San José",
+    "category": "coastal",
+    "description": "Volcanic desert running straight into the Mediterranean.",
+    "waypoints": [
+      [
+        36.766,
+        -2.106
+      ],
+      [
+        36.833,
+        -1.921
+      ]
+    ],
+    "expectedKm": [
+      18,
+      32
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "es-lanzarote-tabayesco",
+    "name": "Haría — Tabayesco Ascent",
+    "country": "ES",
+    "region": "Canary Islands",
+    "city": "Haría",
+    "category": "coastal",
+    "description": "Volcanic hairpins with the Atlantic below on both sides.",
+    "waypoints": [
+      [
+        29.146,
+        -13.496
+      ],
+      [
+        29.116,
+        -13.446
+      ]
+    ],
+    "expectedKm": [
+      8,
+      18
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "es-tenerife-teide-tf21",
+    "name": "Teide — TF-21",
+    "country": "ES",
+    "region": "Canary Islands",
+    "city": "La Orotava",
+    "category": "alpine",
+    "description": "Through a laurel forest, above the clouds, onto a volcano.",
+    "waypoints": [
+      [
+        28.39,
+        -16.521
+      ],
+      [
+        28.226,
+        -16.626
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "pt-madeira-er110",
+    "name": "Madeira — ER110 Paul da Serra",
+    "country": "PT",
+    "region": "Madeira",
+    "city": "Calheta",
+    "category": "highland",
+    "description": "A plateau above the clouds, and the emptiest tarmac on the island.",
+    "waypoints": [
+      [
+        32.75,
+        -17.066
+      ],
+      [
+        32.766,
+        -17.166
+      ]
+    ],
+    "expectedKm": [
+      12,
+      24
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "pt-n2-serra-estrela",
+    "name": "Serra da Estrela — N339",
+    "country": "PT",
+    "region": "Guarda",
+    "city": "Covilhã",
+    "category": "alpine",
+    "description": "To the highest point in mainland Portugal, on granite moorland.",
+    "waypoints": [
+      [
+        40.276,
+        -7.501
+      ],
+      [
+        40.321,
+        -7.616
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "pt-n247-sintra-coast",
+    "name": "Sintra Coast — N247",
+    "country": "PT",
+    "region": "Lisbon",
+    "city": "Sintra",
+    "category": "coastal",
+    "description": "Atlantic cliffs half an hour from Lisbon, and quiet on a weekday.",
+    "waypoints": [
+      [
+        38.793,
+        -9.49
+      ],
+      [
+        38.926,
+        -9.421
+      ]
+    ],
+    "expectedKm": [
+      18,
+      32
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "hr-ucka-pass",
+    "name": "Učka Pass",
+    "country": "HR",
+    "region": "Istria",
+    "city": "Opatija",
+    "category": "alpine",
+    "description": "The old road over Istria's mountain, bypassed by a tunnel and empty since.",
+    "waypoints": [
+      [
+        45.333,
+        14.306
+      ],
+      [
+        45.321,
+        14.166
+      ]
+    ],
+    "expectedKm": [
+      12,
+      24
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "si-vrsic-pass",
+    "name": "Vršič Pass",
+    "country": "SI",
+    "region": "Upper Carniola",
+    "city": "Kranjska Gora",
+    "category": "alpine",
+    "description": "Fifty numbered hairpins, twenty-four of them cobbled.",
+    "waypoints": [
+      [
+        46.483,
+        13.783
+      ],
+      [
+        46.416,
+        13.736
+      ]
+    ],
+    "expectedKm": [
+      12,
+      24
+    ],
+    "difficultyHint": 5
+  },
+  {
+    "slug": "si-logar-valley",
+    "name": "Logar Valley — Solčava Panoramic",
+    "country": "SI",
+    "region": "Savinja",
+    "city": "Solčava",
+    "category": "alpine",
+    "description": "A panoramic road along the top of a glacial valley.",
+    "waypoints": [
+      [
+        46.411,
+        14.701
+      ],
+      [
+        46.381,
+        14.621
+      ]
+    ],
+    "expectedKm": [
+      10,
+      22
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "at-grossglockner-north",
+    "name": "Großglockner — Fuscher Törl Spur",
+    "country": "AT",
+    "region": "Salzburg",
+    "city": "Fusch",
+    "category": "alpine",
+    "description": "The spur off the main pass, and the best view on the whole road.",
+    "waypoints": [
+      [
+        47.133,
+        12.821
+      ],
+      [
+        47.101,
+        12.833
+      ]
+    ],
+    "expectedKm": [
+      6,
+      15
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "sk-tatras-cesta-slobody",
+    "name": "Cesta Slobody — High Tatras",
+    "country": "SK",
+    "region": "Prešov",
+    "city": "Štrbské Pleso",
+    "category": "alpine",
+    "description": "Under the Tatra wall on Slovakia's finest stretch of road.",
+    "waypoints": [
+      [
+        49.121,
+        20.061
+      ],
+      [
+        49.166,
+        20.286
+      ]
+    ],
+    "expectedKm": [
+      18,
+      32
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "cz-jizerske-hory",
+    "name": "Jizera Mountains — Jizerka Ridge",
+    "country": "CZ",
+    "region": "Liberec",
+    "city": "Kořenov",
+    "category": "forest",
+    "description": "Bohemian forest road on the Polish border, with nothing on it.",
+    "waypoints": [
+      [
+        50.801,
+        15.316
+      ],
+      [
+        50.836,
+        15.416
+      ]
+    ],
+    "expectedKm": [
+      33,
+      56
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "cz-sumava-b4",
+    "name": "Šumava — Kvilda Plateau",
+    "country": "CZ",
+    "region": "South Bohemia",
+    "city": "Kvilda",
+    "category": "forest",
+    "description": "The Bohemian Forest, high and cold and completely empty.",
+    "waypoints": [
+      [
+        49.021,
+        13.581
+      ],
+      [
+        48.956,
+        13.716
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "pl-zakopianka-tatra",
+    "name": "Tatra Foothills — Zakopane to Morskie Oko",
+    "country": "PL",
+    "region": "Lesser Poland",
+    "city": "Zakopane",
+    "category": "alpine",
+    "description": "Poland's alpine corner, and the road every Pole knows.",
+    "waypoints": [
+      [
+        49.296,
+        19.956
+      ],
+      [
+        49.256,
+        20.076
+      ]
+    ],
+    "expectedKm": [
+      12,
+      24
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "gr-crete-imbros",
+    "name": "Imbros Gorge Road",
+    "country": "GR",
+    "region": "Crete",
+    "city": "Chania",
+    "category": "canyon",
+    "description": "Down the spine of Crete on a road nobody expects to be this good.",
+    "waypoints": [
+      [
+        35.301,
+        24.166
+      ],
+      [
+        35.211,
+        24.216
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "gr-peloponnese-menalon",
+    "name": "Mount Mainalo — Vytina to Dimitsana",
+    "country": "GR",
+    "region": "Peloponnese",
+    "city": "Vytina",
+    "category": "highland",
+    "description": "Fir forest, stone villages and an empty mountain road between them.",
+    "waypoints": [
+      [
+        37.666,
+        22.176
+      ],
+      [
+        37.591,
+        22.041
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "me-kotor-serpentine",
+    "name": "Kotor Serpentine — P1",
+    "country": "ME",
+    "region": "Kotor",
+    "city": "Kotor",
+    "category": "coastal",
+    "description": "Twenty-five hairpins stacked above a fjord, on a road a metre too narrow.",
+    "waypoints": [
+      [
+        42.426,
+        18.771
+      ],
+      [
+        42.411,
+        18.836
+      ]
+    ],
+    "expectedKm": [
+      12,
+      24
+    ],
+    "difficultyHint": 5
+  }
+]

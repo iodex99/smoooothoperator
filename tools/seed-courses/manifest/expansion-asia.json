@@ -1,0 +1,578 @@
+[
+  {
+    "slug": "jp-nikko-kirifuri",
+    "name": "Kirifuri Highland Road",
+    "country": "JP",
+    "region": "Tochigi",
+    "city": "Nikko",
+    "category": "highland",
+    "description": "The quieter road above Nikko, and rarely more than three cars on it.",
+    "waypoints": [
+      [
+        36.756,
+        139.626
+      ],
+      [
+        36.806,
+        139.666
+      ]
+    ],
+    "expectedKm": [
+      10,
+      22
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "jp-norikura-skyline",
+    "name": "Norikura Skyline",
+    "country": "JP",
+    "region": "Gifu",
+    "city": "Takayama",
+    "category": "alpine",
+    "description": "Japan's highest sealed road, closed to private cars in season but open in shoulder.",
+    "waypoints": [
+      [
+        36.136,
+        137.556
+      ],
+      [
+        36.106,
+        137.546
+      ]
+    ],
+    "expectedKm": [
+      45,
+      75
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "jp-shibu-toge",
+    "name": "Shibu Pass — Route 292",
+    "country": "JP",
+    "region": "Nagano",
+    "city": "Yamanouchi",
+    "category": "alpine",
+    "description": "The highest national route in Japan, over a live volcano.",
+    "waypoints": [
+      [
+        36.736,
+        138.516
+      ],
+      [
+        36.656,
+        138.506
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "jp-mount-fuji-subaru",
+    "name": "Fuji Subaru Line",
+    "country": "JP",
+    "region": "Yamanashi",
+    "city": "Fujiyoshida",
+    "category": "alpine",
+    "description": "Twenty-four kilometres of toll road straight up Mount Fuji.",
+    "waypoints": [
+      [
+        35.466,
+        138.776
+      ],
+      [
+        35.396,
+        138.736
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "jp-ashinoko-skyline",
+    "name": "Ashinoko Skyline",
+    "country": "JP",
+    "region": "Kanagawa",
+    "city": "Hakone",
+    "category": "highland",
+    "description": "The ridge above Lake Ashi with Fuji on the other side.",
+    "waypoints": [
+      [
+        35.206,
+        139.006
+      ],
+      [
+        35.166,
+        138.976
+      ]
+    ],
+    "expectedKm": [
+      10,
+      22
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "jp-nagasaki-inasayama",
+    "name": "Inasayama Skyline",
+    "country": "JP",
+    "region": "Nagasaki",
+    "city": "Nagasaki",
+    "category": "highland",
+    "description": "A night view Japan rates in its top three, on a road that earns it.",
+    "waypoints": [
+      [
+        32.756,
+        129.856
+      ],
+      [
+        32.746,
+        129.836
+      ]
+    ],
+    "expectedKm": [
+      6,
+      15
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "jp-aso-milk-road",
+    "name": "Milk Road — Aso Caldera",
+    "country": "JP",
+    "region": "Kumamoto",
+    "city": "Aso",
+    "category": "highland",
+    "description": "The rim of the largest caldera in Japan, on open grassland.",
+    "waypoints": [
+      [
+        32.976,
+        131.006
+      ],
+      [
+        32.916,
+        131.136
+      ]
+    ],
+    "expectedKm": [
+      28,
+      47
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "jp-yamanami-highway",
+    "name": "Yamanami Highway",
+    "country": "JP",
+    "region": "Ōita",
+    "city": "Yufu",
+    "category": "highland",
+    "description": "Kyushu's great crossing, between two volcanic ranges.",
+    "waypoints": [
+      [
+        33.166,
+        131.306
+      ],
+      [
+        32.986,
+        131.206
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "jp-shimanami-kaido",
+    "name": "Shimanami Kaidō",
+    "country": "JP",
+    "region": "Ehime",
+    "city": "Imabari",
+    "category": "coastal",
+    "description": "Six islands linked by bridges across the Inland Sea.",
+    "waypoints": [
+      [
+        34.066,
+        132.996
+      ],
+      [
+        34.406,
+        133.206
+      ]
+    ],
+    "expectedKm": [
+      45,
+      72
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "jp-iroha-downhill",
+    "name": "Irohazaka — Downhill",
+    "country": "JP",
+    "region": "Tochigi",
+    "city": "Nikko",
+    "category": "forest",
+    "description": "The other half: twenty-eight one-way corners going down.",
+    "waypoints": [
+      [
+        36.736,
+        139.486
+      ],
+      [
+        36.746,
+        139.576
+      ]
+    ],
+    "expectedKm": [
+      8,
+      18
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "jp-tsumagoi-panorama",
+    "name": "Tsumagoi Panorama Line",
+    "country": "JP",
+    "region": "Gunma",
+    "city": "Tsumagoi",
+    "category": "highland",
+    "description": "Cabbage fields and empty sweepers under Mount Asama.",
+    "waypoints": [
+      [
+        36.516,
+        138.536
+      ],
+      [
+        36.456,
+        138.476
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "jp-rokko-arima",
+    "name": "Rokko Arima Road",
+    "country": "JP",
+    "region": "Hyōgo",
+    "city": "Kobe",
+    "category": "forest",
+    "description": "Kobe's mountain, and a road the city's drivers have used for decades.",
+    "waypoints": [
+      [
+        34.766,
+        135.236
+      ],
+      [
+        34.796,
+        135.256
+      ]
+    ],
+    "expectedKm": [
+      10,
+      22
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "kr-hangyeryeong",
+    "name": "Hangyeryeong Pass",
+    "country": "KR",
+    "region": "Gangwon",
+    "city": "Inje",
+    "category": "alpine",
+    "description": "Seoraksan's pass, and Korea's best-known driving road.",
+    "waypoints": [
+      [
+        38.116,
+        128.356
+      ],
+      [
+        38.166,
+        128.456
+      ]
+    ],
+    "expectedKm": [
+      36,
+      60
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "kr-jeju-1100-road",
+    "name": "Jeju 1100 Road",
+    "country": "KR",
+    "region": "Jeju",
+    "city": "Jeju City",
+    "category": "highland",
+    "description": "Over the shoulder of Hallasan, through cloud forest.",
+    "waypoints": [
+      [
+        33.406,
+        126.496
+      ],
+      [
+        33.256,
+        126.466
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "kr-jirisan-noeodo",
+    "name": "Jirisan Nogodan Road",
+    "country": "KR",
+    "region": "South Jeolla",
+    "city": "Gurye",
+    "category": "alpine",
+    "description": "Korea's highest paved road, climbing to a ridge in the national park.",
+    "waypoints": [
+      [
+        35.266,
+        127.536
+      ],
+      [
+        35.316,
+        127.506
+      ]
+    ],
+    "expectedKm": [
+      12,
+      24
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "tw-wuling-highway-14",
+    "name": "Wuling Pass — Highway 14A East",
+    "country": "TW",
+    "region": "Nantou",
+    "city": "Cingjing",
+    "category": "alpine",
+    "description": "The highest road in East Asia's public network, at 3,275 m.",
+    "waypoints": [
+      [
+        24.056,
+        121.166
+      ],
+      [
+        24.136,
+        121.286
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "tw-taroko-gorge",
+    "name": "Taroko Gorge — Highway 8",
+    "country": "TW",
+    "region": "Hualien",
+    "city": "Xincheng",
+    "category": "canyon",
+    "description": "Marble walls a hundred metres high with a road carved into them.",
+    "waypoints": [
+      [
+        24.136,
+        121.626
+      ],
+      [
+        24.176,
+        121.496
+      ]
+    ],
+    "expectedKm": [
+      18,
+      32
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "tw-north-coast-2",
+    "name": "North Coast — Highway 2",
+    "country": "TW",
+    "region": "New Taipei",
+    "city": "Tamsui",
+    "category": "coastal",
+    "description": "Taipei's weekend loop, running the whole northern shore.",
+    "waypoints": [
+      [
+        25.176,
+        121.436
+      ],
+      [
+        25.296,
+        121.656
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "hk-tai-mo-shan",
+    "name": "Tai Mo Shan Road",
+    "country": "HK",
+    "region": "New Territories",
+    "city": "Tsuen Wan",
+    "category": "highland",
+    "description": "Up Hong Kong's highest peak on a road barely wide enough.",
+    "waypoints": [
+      [
+        22.376,
+        114.116
+      ],
+      [
+        22.411,
+        114.124
+      ]
+    ],
+    "expectedKm": [
+      19,
+      32
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "my-cameron-highlands",
+    "name": "Cameron Highlands — Route 59",
+    "country": "MY",
+    "region": "Pahang",
+    "city": "Tapah",
+    "category": "ghat",
+    "description": "Jungle, then tea, on a colonial-era climb that never straightens.",
+    "waypoints": [
+      [
+        4.196,
+        101.256
+      ],
+      [
+        4.471,
+        101.376
+      ]
+    ],
+    "expectedKm": [
+      45,
+      72
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "my-genting-highlands",
+    "name": "Genting Highlands Road",
+    "country": "MY",
+    "region": "Pahang",
+    "city": "Gombak",
+    "category": "ghat",
+    "description": "Kuala Lumpur's mountain climb, and a magnet for its car scene.",
+    "waypoints": [
+      [
+        3.306,
+        101.736
+      ],
+      [
+        3.426,
+        101.796
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "th-doi-inthanon",
+    "name": "Doi Inthanon Summit Road",
+    "country": "TH",
+    "region": "Chiang Mai",
+    "city": "Chom Thong",
+    "category": "highland",
+    "description": "To the highest point in Thailand through cloud forest.",
+    "waypoints": [
+      [
+        18.416,
+        98.676
+      ],
+      [
+        18.586,
+        98.486
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "id-bali-kintamani",
+    "name": "Kintamani Caldera Road",
+    "country": "ID",
+    "region": "Bali",
+    "city": "Ubud",
+    "category": "highland",
+    "description": "The rim of Batur's caldera, with the volcano in the middle of it.",
+    "waypoints": [
+      [
+        -8.436,
+        115.266
+      ],
+      [
+        -8.256,
+        115.356
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "ph-kennon-road",
+    "name": "Kennon Road — Baguio",
+    "country": "PH",
+    "region": "Benguet",
+    "city": "Baguio",
+    "category": "ghat",
+    "description": "The original American-built climb to Baguio, cut into a gorge.",
+    "waypoints": [
+      [
+        16.306,
+        120.596
+      ],
+      [
+        16.406,
+        120.596
+      ]
+    ],
+    "expectedKm": [
+      14,
+      23
+    ],
+    "difficultyHint": 4
+  }
+]

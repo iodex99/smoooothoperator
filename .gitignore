@@ -29,3 +29,7 @@ App/Configs/Supabase.xcconfig
 # Web: the operator's own Supabase URL/key go here (publishable key is public,
 # but the project URL is theirs to publish, not ours to commit).
 web/config.local.js
+tools/seed-courses/gen.log
+
+# Authoring helpers compile to bytecode; the .py files are the source.
+tools/seed-courses/__pycache__/

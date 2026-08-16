@@ -1,0 +1,1490 @@
+[
+  {
+    "slug": "us-foothills-parkway-west",
+    "name": "Foothills Parkway — West",
+    "country": "US",
+    "region": "Tennessee",
+    "city": "Walland",
+    "category": "forest",
+    "description": "A parkway with no driveways, no towns and a view of the whole Smokies wall.",
+    "waypoints": [
+      [
+        35.657,
+        -83.834
+      ],
+      [
+        35.6062,
+        -83.949
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-newfound-gap",
+    "name": "Newfound Gap Road — US-441",
+    "country": "US",
+    "region": "Tennessee",
+    "city": "Gatlinburg",
+    "category": "forest",
+    "description": "The climb through the Smokies, hairpin after hairpin to the state line.",
+    "waypoints": [
+      [
+        35.689,
+        -83.535
+      ],
+      [
+        35.562,
+        -83.43
+      ]
+    ],
+    "expectedKm": [
+      22,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-blue-ridge-graveyard",
+    "name": "Blue Ridge Parkway — Graveyard Fields",
+    "country": "US",
+    "region": "North Carolina",
+    "city": "Canton",
+    "category": "highland",
+    "description": "The high, cold section above 5,000 ft where the parkway stops being scenic and starts being a road.",
+    "waypoints": [
+      [
+        35.313,
+        -82.842
+      ],
+      [
+        35.39,
+        -82.98
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-diamondback-226a",
+    "name": "The Diamondback — NC-226A",
+    "country": "US",
+    "region": "North Carolina",
+    "city": "Little Switzerland",
+    "category": "forest",
+    "description": "One hundred and ninety curves in twelve miles, and far quieter than the Dragon.",
+    "waypoints": [
+      [
+        35.856,
+        -82.101
+      ],
+      [
+        35.722,
+        -82.064
+      ]
+    ],
+    "expectedKm": [
+      15,
+      25
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-rattler-nc-28",
+    "name": "The Rattler — NC-28 North",
+    "country": "US",
+    "region": "North Carolina",
+    "city": "Robbinsville",
+    "category": "forest",
+    "description": "The road everyone drives to reach the Dragon, which is better than the Dragon.",
+    "waypoints": [
+      [
+        35.323,
+        -83.809
+      ],
+      [
+        35.456,
+        -83.63
+      ]
+    ],
+    "expectedKm": [
+      25,
+      40
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-hellbender-nc-143",
+    "name": "Hellbender — NC-143 Santeetlah",
+    "country": "US",
+    "region": "North Carolina",
+    "city": "Robbinsville",
+    "category": "forest",
+    "description": "Tight, wooded and rarely photographed, climbing to the Skyway's eastern end.",
+    "waypoints": [
+      [
+        35.32,
+        -83.808
+      ],
+      [
+        35.308,
+        -83.933
+      ]
+    ],
+    "expectedKm": [
+      15,
+      26
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-mount-mitchell-nc-128",
+    "name": "Mount Mitchell — NC-128",
+    "country": "US",
+    "region": "North Carolina",
+    "city": "Burnsville",
+    "category": "highland",
+    "description": "The spur to the highest point east of the Mississippi.",
+    "waypoints": [
+      [
+        35.742,
+        -82.277
+      ],
+      [
+        35.765,
+        -82.265
+      ]
+    ],
+    "expectedKm": [
+      4,
+      10
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-skyline-drive-north",
+    "name": "Skyline Drive — Northern District",
+    "country": "US",
+    "region": "Virginia",
+    "city": "Front Royal",
+    "category": "forest",
+    "description": "Ridge-top parkway with overlooks every mile and a speed limit nobody minds.",
+    "waypoints": [
+      [
+        38.904,
+        -78.198
+      ],
+      [
+        38.669,
+        -78.335
+      ]
+    ],
+    "expectedKm": [
+      30,
+      48
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "us-highland-scenic-wv",
+    "name": "Highland Scenic Highway — WV-150",
+    "country": "US",
+    "region": "West Virginia",
+    "city": "Marlinton",
+    "category": "highland",
+    "description": "The highest road in West Virginia, and often the emptiest.",
+    "waypoints": [
+      [
+        38.236,
+        -80.232
+      ],
+      [
+        38.356,
+        -80.063
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-wv-33-seneca",
+    "name": "Seneca Rocks Run — WV-33",
+    "country": "US",
+    "region": "West Virginia",
+    "city": "Seneca Rocks",
+    "category": "canyon",
+    "description": "Fast river-valley sweepers under the rock fin, then the climb over Allegheny Front.",
+    "waypoints": [
+      [
+        38.836,
+        -79.373
+      ],
+      [
+        38.718,
+        -79.586
+      ]
+    ],
+    "expectedKm": [
+      36,
+      61
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-hawks-nest-wv",
+    "name": "Hawks Nest — US-60 Midland Trail",
+    "country": "US",
+    "region": "West Virginia",
+    "city": "Ansted",
+    "category": "canyon",
+    "description": "The old road down into the New River gorge, switchback after switchback.",
+    "waypoints": [
+      [
+        38.123,
+        -81.135
+      ],
+      [
+        38.167,
+        -81.077
+      ]
+    ],
+    "expectedKm": [
+      8,
+      16
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-pa-125-stony",
+    "name": "Stony Valley — PA-125",
+    "country": "US",
+    "region": "Pennsylvania",
+    "city": "Pine Grove",
+    "category": "forest",
+    "description": "A Pennsylvania secret: empty ridge road with nothing on it but trees.",
+    "waypoints": [
+      [
+        40.547,
+        -76.383
+      ],
+      [
+        40.46,
+        -76.606
+      ]
+    ],
+    "expectedKm": [
+      18,
+      32
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-ny-28-catskills",
+    "name": "Catskills — NY-28 to Belleayre",
+    "country": "US",
+    "region": "New York",
+    "city": "Margaretville",
+    "category": "forest",
+    "description": "Flowing Catskill sweepers an hour past where the traffic gives up.",
+    "waypoints": [
+      [
+        42.043,
+        -74.651
+      ],
+      [
+        42.142,
+        -74.503
+      ]
+    ],
+    "expectedKm": [
+      44,
+      74
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "us-hawk-mountain-ny-97",
+    "name": "Hawk's Nest — NY-97",
+    "country": "US",
+    "region": "New York",
+    "city": "Sparrow Bush",
+    "category": "canyon",
+    "description": "The cliff-edge corners above the Delaware that every car advert films.",
+    "waypoints": [
+      [
+        41.423,
+        -74.718
+      ],
+      [
+        41.479,
+        -74.829
+      ]
+    ],
+    "expectedKm": [
+      8,
+      18
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-vt-108-smugglers",
+    "name": "Smugglers' Notch — VT-108",
+    "country": "US",
+    "region": "Vermont",
+    "city": "Stowe",
+    "category": "alpine",
+    "description": "A single lane threading between boulders, closed all winter for good reason.",
+    "waypoints": [
+      [
+        44.465,
+        -72.689
+      ],
+      [
+        44.554,
+        -72.79
+      ]
+    ],
+    "expectedKm": [
+      10,
+      20
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-vt-17-appalachian-gap",
+    "name": "Appalachian Gap — VT-17",
+    "country": "US",
+    "region": "Vermont",
+    "city": "Waitsfield",
+    "category": "alpine",
+    "description": "The steepest paved gap in the Green Mountains, and the best surface of them.",
+    "waypoints": [
+      [
+        44.19,
+        -72.825
+      ],
+      [
+        44.205,
+        -72.935
+      ]
+    ],
+    "expectedKm": [
+      10,
+      18
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-nh-mt-washington-auto",
+    "name": "Mount Washington Auto Road",
+    "country": "US",
+    "region": "New Hampshire",
+    "city": "Gorham",
+    "category": "alpine",
+    "description": "Twelve percent average for eight miles, to the worst weather in America.",
+    "waypoints": [
+      [
+        44.258,
+        -71.253
+      ],
+      [
+        44.2706,
+        -71.3033
+      ]
+    ],
+    "expectedKm": [
+      10,
+      16
+    ],
+    "difficultyHint": 5
+  },
+  {
+    "slug": "us-me-17-height-of-land",
+    "name": "Height of Land — ME-17",
+    "country": "US",
+    "region": "Maine",
+    "city": "Rangeley",
+    "category": "highland",
+    "description": "The lake view Maine puts on postcards, reached by a genuinely good road.",
+    "waypoints": [
+      [
+        44.839,
+        -70.753
+      ],
+      [
+        44.974,
+        -70.647
+      ]
+    ],
+    "expectedKm": [
+      16,
+      30
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-million-dollar-highway",
+    "name": "Million Dollar Highway — US-550",
+    "country": "US",
+    "region": "Colorado",
+    "city": "Ouray",
+    "category": "alpine",
+    "description": "No guardrails, no shoulder, and the finest thirty miles in Colorado.",
+    "waypoints": [
+      [
+        38.023,
+        -107.671
+      ],
+      [
+        37.811,
+        -107.665
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 5
+  },
+  {
+    "slug": "us-cottonwood-pass-co",
+    "name": "Cottonwood Pass — CO-306",
+    "country": "US",
+    "region": "Colorado",
+    "city": "Buena Vista",
+    "category": "alpine",
+    "description": "Newly paved to the Continental Divide, and still nobody knows.",
+    "waypoints": [
+      [
+        38.842,
+        -106.131
+      ],
+      [
+        38.827,
+        -106.416
+      ]
+    ],
+    "expectedKm": [
+      24,
+      40
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-rabbit-ears-pass",
+    "name": "Rabbit Ears Pass — US-40",
+    "country": "US",
+    "region": "Colorado",
+    "city": "Steamboat Springs",
+    "category": "alpine",
+    "description": "Long, fast, high sweepers where the Rockies open up.",
+    "waypoints": [
+      [
+        40.456,
+        -106.762
+      ],
+      [
+        40.369,
+        -106.6
+      ]
+    ],
+    "expectedKm": [
+      33,
+      54
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-unaweep-canyon",
+    "name": "Unaweep Canyon — CO-141",
+    "country": "US",
+    "region": "Colorado",
+    "city": "Whitewater",
+    "category": "canyon",
+    "description": "A canyon that drains both ways, and a road nobody else is on.",
+    "waypoints": [
+      [
+        38.976,
+        -108.478
+      ],
+      [
+        38.671,
+        -108.79
+      ]
+    ],
+    "expectedKm": [
+      40,
+      62
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-beartooth-highway",
+    "name": "Beartooth Highway — US-212",
+    "country": "US",
+    "region": "Montana",
+    "city": "Red Lodge",
+    "category": "alpine",
+    "description": "Charles Kuralt called it the most beautiful road in America and never took it back.",
+    "waypoints": [
+      [
+        45.186,
+        -109.247
+      ],
+      [
+        44.936,
+        -109.468
+      ]
+    ],
+    "expectedKm": [
+      35,
+      55
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-teton-pass",
+    "name": "Teton Pass — WY-22",
+    "country": "US",
+    "region": "Wyoming",
+    "city": "Wilson",
+    "category": "alpine",
+    "description": "Ten percent both sides and the Tetons filling the mirror.",
+    "waypoints": [
+      [
+        43.5,
+        -110.876
+      ],
+      [
+        43.514,
+        -111.047
+      ]
+    ],
+    "expectedKm": [
+      12,
+      22
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-chief-joseph-scenic",
+    "name": "Chief Joseph Scenic Byway — WY-296",
+    "country": "US",
+    "region": "Wyoming",
+    "city": "Cody",
+    "category": "alpine",
+    "description": "Dead Indian Pass and the switchbacks down into Sunlight Basin.",
+    "waypoints": [
+      [
+        44.766,
+        -109.427
+      ],
+      [
+        44.928,
+        -109.79
+      ]
+    ],
+    "expectedKm": [
+      35,
+      55
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-bighorn-us-16",
+    "name": "Bighorn Mountains — US-16 Powder River Pass",
+    "country": "US",
+    "region": "Wyoming",
+    "city": "Buffalo",
+    "category": "alpine",
+    "description": "The quiet crossing of the Bighorns, and the best of the three.",
+    "waypoints": [
+      [
+        44.348,
+        -106.698
+      ],
+      [
+        44.018,
+        -107.19
+      ]
+    ],
+    "expectedKm": [
+      40,
+      62
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-mirror-lake-hwy",
+    "name": "Mirror Lake Highway — UT-150",
+    "country": "US",
+    "region": "Utah",
+    "city": "Kamas",
+    "category": "alpine",
+    "description": "The Uintas at ten thousand feet, on tarmac that stays smooth.",
+    "waypoints": [
+      [
+        40.643,
+        -111.28
+      ],
+      [
+        40.766,
+        -110.876
+      ]
+    ],
+    "expectedKm": [
+      40,
+      62
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-ut-12-boulder",
+    "name": "Scenic Byway 12 — Hogback",
+    "country": "US",
+    "region": "Utah",
+    "city": "Boulder",
+    "category": "canyon",
+    "description": "A ridge two lanes wide with a thousand-foot drop either side.",
+    "waypoints": [
+      [
+        37.762,
+        -111.42
+      ],
+      [
+        37.911,
+        -111.416
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-ut-128-river-road",
+    "name": "Colorado River Scenic — UT-128",
+    "country": "US",
+    "region": "Utah",
+    "city": "Moab",
+    "category": "canyon",
+    "description": "Red walls, green river, and long third-gear bends the whole way.",
+    "waypoints": [
+      [
+        38.611,
+        -109.576
+      ],
+      [
+        38.725,
+        -109.312
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "us-zion-mount-carmel",
+    "name": "Zion — Mount Carmel Highway",
+    "country": "US",
+    "region": "Utah",
+    "city": "Springdale",
+    "category": "canyon",
+    "description": "Six switchbacks stacked on a cliff, then a tunnel with windows.",
+    "waypoints": [
+      [
+        37.2,
+        -112.987
+      ],
+      [
+        37.232,
+        -112.863
+      ]
+    ],
+    "expectedKm": [
+      12,
+      22
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-az-89a-oak-creek",
+    "name": "Oak Creek Canyon — AZ-89A",
+    "country": "US",
+    "region": "Arizona",
+    "city": "Sedona",
+    "category": "canyon",
+    "description": "The switchback climb out of Sedona, red rock the whole way up.",
+    "waypoints": [
+      [
+        34.87,
+        -111.761
+      ],
+      [
+        35.011,
+        -111.735
+      ]
+    ],
+    "expectedKm": [
+      18,
+      32
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-mt-lemmon-hwy",
+    "name": "Mount Lemmon Highway — Catalina",
+    "country": "US",
+    "region": "Arizona",
+    "city": "Tucson",
+    "category": "alpine",
+    "description": "Cactus to pine forest in twenty-five miles of perfect surface.",
+    "waypoints": [
+      [
+        32.316,
+        -110.715
+      ],
+      [
+        32.443,
+        -110.788
+      ]
+    ],
+    "expectedKm": [
+      30,
+      48
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-nm-4-jemez",
+    "name": "Jemez Mountain Trail — NM-4",
+    "country": "US",
+    "region": "New Mexico",
+    "city": "Los Alamos",
+    "category": "highland",
+    "description": "Across the Valles Caldera, which is a volcano you drive through.",
+    "waypoints": [
+      [
+        35.811,
+        -106.535
+      ],
+      [
+        35.894,
+        -106.7
+      ]
+    ],
+    "expectedKm": [
+      25,
+      45
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-ca-1-big-sur",
+    "name": "Big Sur — CA-1 Bixby Run",
+    "country": "US",
+    "region": "California",
+    "city": "Carmel",
+    "category": "coastal",
+    "description": "The stretch every car advertisement has already used.",
+    "waypoints": [
+      [
+        36.539,
+        -121.926
+      ],
+      [
+        36.27,
+        -121.807
+      ]
+    ],
+    "expectedKm": [
+      30,
+      48
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-ca-58-santa-margarita",
+    "name": "CA-58 — Santa Margarita to Simmler",
+    "country": "US",
+    "region": "California",
+    "city": "Santa Margarita",
+    "category": "highland",
+    "description": "Empty, rolling, and the reason Californians know this number.",
+    "waypoints": [
+      [
+        35.39,
+        -120.61
+      ],
+      [
+        35.345,
+        -119.995
+      ]
+    ],
+    "expectedKm": [
+      45,
+      70
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-ca-4-ebbetts",
+    "name": "Ebbetts Pass — CA-4",
+    "country": "US",
+    "region": "California",
+    "city": "Markleeville",
+    "category": "alpine",
+    "description": "No centre line, no guardrail, no traffic — a one-lane pass over the Sierra.",
+    "waypoints": [
+      [
+        38.547,
+        -119.813
+      ],
+      [
+        38.477,
+        -120.029
+      ]
+    ],
+    "expectedKm": [
+      18,
+      32
+    ],
+    "difficultyHint": 5
+  },
+  {
+    "slug": "us-ca-108-sonora",
+    "name": "Sonora Pass — CA-108",
+    "country": "US",
+    "region": "California",
+    "city": "Strawberry",
+    "category": "alpine",
+    "description": "Twenty-six percent grades and the steepest paved pass in the Sierra.",
+    "waypoints": [
+      [
+        38.227,
+        -119.953
+      ],
+      [
+        38.326,
+        -119.636
+      ]
+    ],
+    "expectedKm": [
+      25,
+      45
+    ],
+    "difficultyHint": 5
+  },
+  {
+    "slug": "us-ca-33-lockwood",
+    "name": "CA-33 — Lockwood Valley",
+    "country": "US",
+    "region": "California",
+    "city": "Ojai",
+    "category": "canyon",
+    "description": "The back road out of Ojai that Los Angeles drivers keep to themselves.",
+    "waypoints": [
+      [
+        34.524,
+        -119.283
+      ],
+      [
+        34.762,
+        -119.232
+      ]
+    ],
+    "expectedKm": [
+      44,
+      73
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-ca-9-santa-cruz",
+    "name": "CA-9 — Santa Cruz Mountains",
+    "country": "US",
+    "region": "California",
+    "city": "Saratoga",
+    "category": "forest",
+    "description": "Redwood tunnels and second-gear corners above Silicon Valley.",
+    "waypoints": [
+      [
+        37.255,
+        -122.033
+      ],
+      [
+        37.161,
+        -122.145
+      ]
+    ],
+    "expectedKm": [
+      31,
+      52
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-ca-84-la-honda",
+    "name": "La Honda Road — CA-84",
+    "country": "US",
+    "region": "California",
+    "city": "Woodside",
+    "category": "forest",
+    "description": "The Bay Area's default answer to 'where do you go on a Sunday'.",
+    "waypoints": [
+      [
+        37.429,
+        -122.254
+      ],
+      [
+        37.319,
+        -122.274
+      ]
+    ],
+    "expectedKm": [
+      15,
+      26
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-ca-1-jenner",
+    "name": "CA-1 — Jenner to Gualala",
+    "country": "US",
+    "region": "California",
+    "city": "Jenner",
+    "category": "coastal",
+    "description": "The Sonoma coast where the road stops pretending to be a highway.",
+    "waypoints": [
+      [
+        38.45,
+        -123.115
+      ],
+      [
+        38.767,
+        -123.531
+      ]
+    ],
+    "expectedKm": [
+      40,
+      62
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-or-242-mckenzie",
+    "name": "McKenzie Pass — OR-242",
+    "country": "US",
+    "region": "Oregon",
+    "city": "Sisters",
+    "category": "alpine",
+    "description": "A single-lane road across a lava field, closed most of the year.",
+    "waypoints": [
+      [
+        44.291,
+        -121.549
+      ],
+      [
+        44.26,
+        -121.811
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-wa-123-cayuse",
+    "name": "Cayuse Pass — WA-123",
+    "country": "US",
+    "region": "Washington",
+    "city": "Packwood",
+    "category": "alpine",
+    "description": "Rainier filling the windscreen on smooth national-park tarmac.",
+    "waypoints": [
+      [
+        46.753,
+        -121.556
+      ],
+      [
+        46.868,
+        -121.537
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-wa-410-white-pass",
+    "name": "White Pass — US-12",
+    "country": "US",
+    "region": "Washington",
+    "city": "Naches",
+    "category": "alpine",
+    "description": "The quiet Cascades crossing, fast and wide with a good surface.",
+    "waypoints": [
+      [
+        46.73,
+        -121.073
+      ],
+      [
+        46.647,
+        -120.722
+      ]
+    ],
+    "expectedKm": [
+      28,
+      48
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-nv-highway-50",
+    "name": "Loneliest Road — US-50 Austin Summit",
+    "country": "US",
+    "region": "Nevada",
+    "city": "Austin",
+    "category": "highland",
+    "description": "Basin, range, basin, range, and a pass at the end of each.",
+    "waypoints": [
+      [
+        39.493,
+        -117.07
+      ],
+      [
+        39.396,
+        -116.606
+      ]
+    ],
+    "expectedKm": [
+      35,
+      58
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "us-ak-seward-highway",
+    "name": "Seward Highway — Turnagain Arm",
+    "country": "US",
+    "region": "Alaska",
+    "city": "Anchorage",
+    "category": "coastal",
+    "description": "Mountains straight into the sea, on the best surface in Alaska.",
+    "waypoints": [
+      [
+        61.04,
+        -149.74
+      ],
+      [
+        60.828,
+        -148.993
+      ]
+    ],
+    "expectedKm": [
+      40,
+      62
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "us-hi-hana-highway",
+    "name": "Road to Hāna",
+    "country": "US",
+    "region": "Hawaii",
+    "city": "Paia",
+    "category": "coastal",
+    "description": "Six hundred corners and fifty-six one-lane bridges.",
+    "waypoints": [
+      [
+        20.905,
+        -156.368
+      ],
+      [
+        20.758,
+        -156.013
+      ]
+    ],
+    "expectedKm": [
+      45,
+      70
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-mo-125-glade-top",
+    "name": "Glade Top Trail",
+    "country": "US",
+    "region": "Missouri",
+    "city": "Ava",
+    "category": "highland",
+    "description": "A ridge-top gravel-free byway through the Ozarks nobody outside Missouri knows.",
+    "waypoints": [
+      [
+        36.742,
+        -92.665
+      ],
+      [
+        36.611,
+        -92.796
+      ]
+    ],
+    "expectedKm": [
+      18,
+      32
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-ar-23-pig-trail",
+    "name": "Pig Trail — AR-23",
+    "country": "US",
+    "region": "Arkansas",
+    "city": "Ozark",
+    "category": "forest",
+    "description": "Nineteen miles of tight forest corners, and a name every Arkansas driver uses.",
+    "waypoints": [
+      [
+        35.49,
+        -93.83
+      ],
+      [
+        35.718,
+        -93.841
+      ]
+    ],
+    "expectedKm": [
+      22,
+      38
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-ok-talimena",
+    "name": "Talimena Scenic Drive",
+    "country": "US",
+    "region": "Oklahoma",
+    "city": "Talihina",
+    "category": "highland",
+    "description": "A ridge road built purely to be driven, straddling two states.",
+    "waypoints": [
+      [
+        34.718,
+        -95.047
+      ],
+      [
+        34.791,
+        -94.426
+      ]
+    ],
+    "expectedKm": [
+      45,
+      72
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-mi-119-tunnel-of-trees",
+    "name": "Tunnel of Trees — M-119",
+    "country": "US",
+    "region": "Michigan",
+    "city": "Harbor Springs",
+    "category": "forest",
+    "description": "A no-centre-line road with branches closing overhead for twenty miles.",
+    "waypoints": [
+      [
+        45.431,
+        -84.992
+      ],
+      [
+        45.622,
+        -85.018
+      ]
+    ],
+    "expectedKm": [
+      18,
+      32
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-wi-great-river-road",
+    "name": "Great River Road — WI-35 Bluffs",
+    "country": "US",
+    "region": "Wisconsin",
+    "city": "Alma",
+    "category": "coastal",
+    "description": "Mississippi bluffs, long sweepers, and river on the left the whole way.",
+    "waypoints": [
+      [
+        44.33,
+        -91.918
+      ],
+      [
+        44.618,
+        -92.09
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "us-mn-north-shore-61",
+    "name": "North Shore — MN-61 Tettegouche",
+    "country": "US",
+    "region": "Minnesota",
+    "city": "Silver Bay",
+    "category": "coastal",
+    "description": "Lake Superior does a convincing impression of an ocean.",
+    "waypoints": [
+      [
+        47.294,
+        -91.26
+      ],
+      [
+        47.556,
+        -90.894
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "us-sd-spearfish-canyon",
+    "name": "Spearfish Canyon — US-14A",
+    "country": "US",
+    "region": "South Dakota",
+    "city": "Spearfish",
+    "category": "canyon",
+    "description": "Limestone walls, cold water and a road that flows the whole way.",
+    "waypoints": [
+      [
+        44.452,
+        -103.863
+      ],
+      [
+        44.339,
+        -103.702
+      ]
+    ],
+    "expectedKm": [
+      18,
+      32
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "us-ky-red-river-gorge",
+    "name": "Red River Gorge — KY-715",
+    "country": "US",
+    "region": "Kentucky",
+    "city": "Slade",
+    "category": "forest",
+    "description": "Sandstone arches, a one-lane tunnel, and corners the whole way.",
+    "waypoints": [
+      [
+        37.818,
+        -83.627
+      ],
+      [
+        37.828,
+        -83.568
+      ]
+    ],
+    "expectedKm": [
+      6,
+      11
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-ga-180-brasstown",
+    "name": "Brasstown Bald — GA-180",
+    "country": "US",
+    "region": "Georgia",
+    "city": "Blairsville",
+    "category": "highland",
+    "description": "The climb to Georgia's highest point, and better than the view.",
+    "waypoints": [
+      [
+        34.86,
+        -83.813
+      ],
+      [
+        34.856,
+        -83.736
+      ]
+    ],
+    "expectedKm": [
+      8,
+      18
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "us-al-cheaha",
+    "name": "Cheaha Skyway — AL-281",
+    "country": "US",
+    "region": "Alabama",
+    "city": "Delta",
+    "category": "highland",
+    "description": "The southern end of the Appalachians, and Alabama's only mountain road.",
+    "waypoints": [
+      [
+        33.486,
+        -85.809
+      ],
+      [
+        33.628,
+        -85.771
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-fl-a1a-flagler",
+    "name": "A1A — Flagler Coast",
+    "country": "US",
+    "region": "Florida",
+    "city": "Flagler Beach",
+    "category": "coastal",
+    "description": "Florida has one road worth driving for its own sake and this is it.",
+    "waypoints": [
+      [
+        29.475,
+        -81.127
+      ],
+      [
+        29.718,
+        -81.251
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 1
+  },
+  {
+    "slug": "us-md-68-sideling",
+    "name": "Sideling Hill — US-40 Scenic",
+    "country": "US",
+    "region": "Maryland",
+    "city": "Hancock",
+    "category": "highland",
+    "description": "The old National Road over the ridges, bypassed and therefore empty.",
+    "waypoints": [
+      [
+        39.698,
+        -78.18
+      ],
+      [
+        39.641,
+        -78.373
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-nj-206-delaware",
+    "name": "Old Mine Road — Delaware Water Gap",
+    "country": "US",
+    "region": "New Jersey",
+    "city": "Layton",
+    "category": "forest",
+    "description": "One of the oldest roads in America, and still barely two cars wide.",
+    "waypoints": [
+      [
+        41.057,
+        -74.931
+      ],
+      [
+        41.296,
+        -74.8
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-oh-hocking-374",
+    "name": "Hocking Hills — OH-374",
+    "country": "US",
+    "region": "Ohio",
+    "city": "Logan",
+    "category": "forest",
+    "description": "Ohio's one properly good road, threading the gorges.",
+    "waypoints": [
+      [
+        39.438,
+        -82.535
+      ],
+      [
+        39.402,
+        -82.621
+      ]
+    ],
+    "expectedKm": [
+      10,
+      22
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "us-in-brown-county",
+    "name": "Brown County — IN-46 to Nashville",
+    "country": "US",
+    "region": "Indiana",
+    "city": "Nashville",
+    "category": "forest",
+    "description": "Indiana's hills, which nobody outside Indiana believes exist.",
+    "waypoints": [
+      [
+        39.207,
+        -86.248
+      ],
+      [
+        39.13,
+        -86.018
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 2
+  }
+]

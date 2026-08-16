@@ -1,0 +1,410 @@
+[
+  {
+    "slug": "ca-icefields-parkway",
+    "name": "Icefields Parkway — Bow Pass",
+    "country": "CA",
+    "region": "Alberta",
+    "city": "Lake Louise",
+    "category": "alpine",
+    "description": "Glaciers on both sides for two hundred kilometres.",
+    "waypoints": [
+      [
+        51.426,
+        -116.181
+      ],
+      [
+        51.716,
+        -116.466
+      ]
+    ],
+    "expectedKm": [
+      40,
+      65
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "ca-crowsnest-3",
+    "name": "Crowsnest Pass — Highway 3",
+    "country": "CA",
+    "region": "Alberta",
+    "city": "Blairmore",
+    "category": "alpine",
+    "description": "The southern Rockies crossing, quieter than the Trans-Canada.",
+    "waypoints": [
+      [
+        49.601,
+        -114.426
+      ],
+      [
+        49.636,
+        -114.681
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "ca-kootenay-3a",
+    "name": "Kootenay Lake — Highway 3A",
+    "country": "CA",
+    "region": "British Columbia",
+    "city": "Nelson",
+    "category": "coastal",
+    "description": "Lakeshore corners for eighty kilometres, and a free ferry at the end.",
+    "waypoints": [
+      [
+        49.496,
+        -117.286
+      ],
+      [
+        49.701,
+        -116.901
+      ]
+    ],
+    "expectedKm": [
+      35,
+      58
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "ca-charlevoix-138",
+    "name": "Charlevoix — Route 138",
+    "country": "CA",
+    "region": "Quebec",
+    "city": "Baie-Saint-Paul",
+    "category": "coastal",
+    "description": "Big descents into river villages on the north shore of the St Lawrence.",
+    "waypoints": [
+      [
+        47.441,
+        -70.496
+      ],
+      [
+        47.696,
+        -70.141
+      ]
+    ],
+    "expectedKm": [
+      35,
+      58
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "ca-laurentians-329",
+    "name": "Laurentians — Route 329",
+    "country": "CA",
+    "region": "Quebec",
+    "city": "Saint-Donat",
+    "category": "forest",
+    "description": "Quebec's cottage-country road, and it flows properly.",
+    "waypoints": [
+      [
+        46.316,
+        -74.216
+      ],
+      [
+        46.021,
+        -74.136
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "ca-thousand-islands",
+    "name": "Thousand Islands Parkway",
+    "country": "CA",
+    "region": "Ontario",
+    "city": "Gananoque",
+    "category": "coastal",
+    "description": "A parkway with no trucks, following the St Lawrence.",
+    "waypoints": [
+      [
+        44.326,
+        -76.166
+      ],
+      [
+        44.506,
+        -75.866
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 1
+  },
+  {
+    "slug": "ca-agawa-canyon-17",
+    "name": "Lake Superior — Highway 17 Agawa",
+    "country": "CA",
+    "region": "Ontario",
+    "city": "Wawa",
+    "category": "coastal",
+    "description": "Canadian Shield rock and an inland sea, for two hundred kilometres.",
+    "waypoints": [
+      [
+        47.996,
+        -84.776
+      ],
+      [
+        47.606,
+        -84.916
+      ]
+    ],
+    "expectedKm": [
+      45,
+      72
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "mx-espinazo-del-diablo",
+    "name": "Espinazo del Diablo — Highway 40 Libre",
+    "country": "MX",
+    "region": "Durango",
+    "city": "El Salto",
+    "category": "alpine",
+    "description": "The Devil's Backbone, superseded by a motorway and now blissfully empty.",
+    "waypoints": [
+      [
+        23.776,
+        -105.366
+      ],
+      [
+        23.616,
+        -105.716
+      ]
+    ],
+    "expectedKm": [
+      40,
+      65
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "mx-tepoztlan-road",
+    "name": "Tepoztlán — Cuernavaca Ridge",
+    "country": "MX",
+    "region": "Morelos",
+    "city": "Tepoztlán",
+    "category": "highland",
+    "description": "Volcanic spires above a road Mexico City escapes to.",
+    "waypoints": [
+      [
+        18.986,
+        -99.101
+      ],
+      [
+        18.921,
+        -99.236
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "br-estrada-graciosa",
+    "name": "Estrada da Graciosa",
+    "country": "BR",
+    "region": "Paraná",
+    "city": "Morretes",
+    "category": "forest",
+    "description": "A cobbled colonial road through Atlantic rainforest.",
+    "waypoints": [
+      [
+        -25.476,
+        -48.836
+      ],
+      [
+        -25.306,
+        -48.906
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "ar-caracoles-de-villavicencio",
+    "name": "Caracoles de Villavicencio",
+    "country": "AR",
+    "region": "Mendoza",
+    "city": "Mendoza",
+    "category": "alpine",
+    "description": "Three hundred and sixty-five curves, one for each day, on gravel.",
+    "waypoints": [
+      [
+        -32.536,
+        -68.986
+      ],
+      [
+        -32.406,
+        -69.166
+      ]
+    ],
+    "expectedKm": [
+      41,
+      69
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "cl-cuesta-lo-prado",
+    "name": "Cuesta la Dormida",
+    "country": "CL",
+    "region": "Valparaíso",
+    "city": "Olmué",
+    "category": "highland",
+    "description": "Santiago's escape road over the coastal range.",
+    "waypoints": [
+      [
+        -33.006,
+        -71.186
+      ],
+      [
+        -33.056,
+        -70.966
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "za-swartberg-pass",
+    "name": "Swartberg Pass",
+    "country": "ZA",
+    "region": "Western Cape",
+    "city": "Prince Albert",
+    "category": "alpine",
+    "description": "Dry-stone-walled gravel, unchanged since 1888, and a national monument.",
+    "waypoints": [
+      [
+        -33.356,
+        22.036
+      ],
+      [
+        -33.216,
+        22.046
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 5
+  },
+  {
+    "slug": "za-long-tom-pass",
+    "name": "Long Tom Pass",
+    "country": "ZA",
+    "region": "Mpumalanga",
+    "city": "Sabie",
+    "category": "highland",
+    "description": "The escarpment road to the lowveld, fast and wide.",
+    "waypoints": [
+      [
+        -25.106,
+        30.776
+      ],
+      [
+        -25.256,
+        30.636
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "om-jebel-akhdar",
+    "name": "Jebel Akhdar Ascent",
+    "country": "OM",
+    "region": "Ad Dakhiliyah",
+    "city": "Nizwa",
+    "category": "alpine",
+    "description": "A one-in-four climb onto the Green Mountain, four-wheel drive only by law.",
+    "waypoints": [
+      [
+        23.066,
+        57.656
+      ],
+      [
+        23.076,
+        57.666
+      ]
+    ],
+    "expectedKm": [
+      6,
+      9
+    ],
+    "difficultyHint": 5
+  },
+  {
+    "slug": "om-jebel-shams",
+    "name": "Jebel Shams Road",
+    "country": "OM",
+    "region": "Ad Dakhiliyah",
+    "city": "Al Hamra",
+    "category": "canyon",
+    "description": "To the rim of Arabia's Grand Canyon.",
+    "waypoints": [
+      [
+        23.116,
+        57.296
+      ],
+      [
+        23.236,
+        57.256
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "ma-tizi-n-tichka",
+    "name": "Tizi n'Tichka",
+    "country": "MA",
+    "region": "Marrakesh-Safi",
+    "city": "Marrakesh",
+    "category": "alpine",
+    "description": "The main Atlas pass, rebuilt wide and fast, on the road to the Sahara.",
+    "waypoints": [
+      [
+        31.406,
+        -7.436
+      ],
+      [
+        31.286,
+        -7.366
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 3
+  }
+]

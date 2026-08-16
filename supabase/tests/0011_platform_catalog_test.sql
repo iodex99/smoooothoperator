@@ -10,7 +10,7 @@ select plan(9);
 -- Catalog size floor (raise deliberately as the catalog grows).
 select cmp_ok(
     (select count(*)::int from public.courses where creator_id is null),
-    '>=', 360,
+    '>=', 700,
     'the platform catalog is seeded'
 );
 
@@ -63,15 +63,15 @@ select is(
 -- Revenue markets lead the catalog; India keeps real depth (directive
 -- 2026-08-13: weight monetization regions, keep IN strong).
 select ok(
-    (select count(*) from public.courses where creator_id is null and country = 'US') >= 80
-    and (select count(*) from public.courses where creator_id is null and country = 'GB') >= 30
-    and (select count(*) from public.courses where creator_id is null and country = 'IN') >= 20,
+    (select count(*) from public.courses where creator_id is null and country = 'US') >= 180
+    and (select count(*) from public.courses where creator_id is null and country = 'GB') >= 70
+    and (select count(*) from public.courses where creator_id is null and country = 'IN') >= 45,
     'US and UK lead; India keeps depth'
 );
 
 select cmp_ok(
     (select count(distinct country)::int from public.courses where creator_id is null),
-    '>=', 25,
+    '>=', 40,
     'the catalog spans at least 25 countries'
 );
 

@@ -1,0 +1,818 @@
+[
+  {
+    "slug": "ch-lukmanier-pass",
+    "name": "Lukmanier Pass",
+    "country": "CH",
+    "region": "Ticino",
+    "city": "Disentis",
+    "category": "alpine",
+    "description": "The quietest of the Gotthard alternatives, and the smoothest.",
+    "waypoints": [
+      [
+        46.704,
+        8.856
+      ],
+      [
+        46.556,
+        8.814
+      ]
+    ],
+    "expectedKm": [
+      22,
+      38
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "ch-simplon-pass",
+    "name": "Simplon Pass",
+    "country": "CH",
+    "region": "Valais",
+    "city": "Brig",
+    "category": "alpine",
+    "description": "Napoleon's road, wide enough for artillery and now for third gear.",
+    "waypoints": [
+      [
+        46.316,
+        7.988
+      ],
+      [
+        46.25,
+        8.033
+      ]
+    ],
+    "expectedKm": [
+      18,
+      32
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "ch-col-du-pillon",
+    "name": "Col du Pillon",
+    "country": "CH",
+    "region": "Vaud",
+    "city": "Aigle",
+    "category": "alpine",
+    "description": "The Vaud Alps on a road that flows rather than fights.",
+    "waypoints": [
+      [
+        46.318,
+        7.015
+      ],
+      [
+        46.351,
+        7.214
+      ]
+    ],
+    "expectedKm": [
+      18,
+      32
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "ch-jaunpass",
+    "name": "Jaunpass",
+    "country": "CH",
+    "region": "Fribourg",
+    "city": "Boltigen",
+    "category": "alpine",
+    "description": "A pre-Alpine pass with a rhythm you find in about three corners.",
+    "waypoints": [
+      [
+        46.635,
+        7.39
+      ],
+      [
+        46.611,
+        7.266
+      ]
+    ],
+    "expectedKm": [
+      12,
+      24
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "at-nockalmstrasse",
+    "name": "Nockalmstraße",
+    "country": "AT",
+    "region": "Carinthia",
+    "city": "Innerkrems",
+    "category": "alpine",
+    "description": "Fifty-two corners engineered purely for the pleasure of them.",
+    "waypoints": [
+      [
+        46.913,
+        13.69
+      ],
+      [
+        46.856,
+        13.783
+      ]
+    ],
+    "expectedKm": [
+      36,
+      60
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "at-malta-hochalmstrasse",
+    "name": "Malta Hochalmstraße",
+    "country": "AT",
+    "region": "Carinthia",
+    "city": "Malta",
+    "category": "alpine",
+    "description": "Six tunnels and a dam wall at the end of it.",
+    "waypoints": [
+      [
+        46.956,
+        13.49
+      ],
+      [
+        47.008,
+        13.321
+      ]
+    ],
+    "expectedKm": [
+      12,
+      24
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "at-gerlos-alpenstrasse",
+    "name": "Gerlos Alpenstraße",
+    "country": "AT",
+    "region": "Salzburg",
+    "city": "Zell am Ziller",
+    "category": "alpine",
+    "description": "The back way to the Krimml falls, and better than the front way.",
+    "waypoints": [
+      [
+        47.23,
+        11.883
+      ],
+      [
+        47.216,
+        12.171
+      ]
+    ],
+    "expectedKm": [
+      22,
+      38
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "at-kitzbuheler-horn",
+    "name": "Kitzbüheler Horn Straße",
+    "country": "AT",
+    "region": "Tyrol",
+    "city": "Kitzbühel",
+    "category": "alpine",
+    "description": "A private toll road straight up a mountain with nothing else on it.",
+    "waypoints": [
+      [
+        47.456,
+        12.4
+      ],
+      [
+        47.446,
+        12.431
+      ]
+    ],
+    "expectedKm": [
+      6,
+      14
+    ],
+    "difficultyHint": 5
+  },
+  {
+    "slug": "de-deutsche-alpenstrasse",
+    "name": "Deutsche Alpenstraße — Oberjoch",
+    "country": "DE",
+    "region": "Bavaria",
+    "city": "Bad Hindelang",
+    "category": "alpine",
+    "description": "Germany's own alpine road, and the Oberjoch section has 106 corners.",
+    "waypoints": [
+      [
+        47.51,
+        10.376
+      ],
+      [
+        47.55,
+        10.46
+      ]
+    ],
+    "expectedKm": [
+      10,
+      22
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "de-rossfeld-panoramastrasse",
+    "name": "Roßfeld Panoramastraße",
+    "country": "DE",
+    "region": "Bavaria",
+    "city": "Berchtesgaden",
+    "category": "alpine",
+    "description": "The highest road in Germany, built as a scenic loop and still one.",
+    "waypoints": [
+      [
+        47.621,
+        13.05
+      ],
+      [
+        47.636,
+        13.093
+      ]
+    ],
+    "expectedKm": [
+      12,
+      24
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "de-schwarzwaldhochstrasse",
+    "name": "Schwarzwaldhochstraße — B500",
+    "country": "DE",
+    "region": "Baden-Württemberg",
+    "city": "Baden-Baden",
+    "category": "forest",
+    "description": "The Black Forest ridge road, sixty kilometres of it.",
+    "waypoints": [
+      [
+        48.75,
+        8.24
+      ],
+      [
+        48.46,
+        8.216
+      ]
+    ],
+    "expectedKm": [
+      40,
+      62
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "de-b500-feldberg",
+    "name": "Feldberg — B500 South",
+    "country": "DE",
+    "region": "Baden-Württemberg",
+    "city": "Titisee",
+    "category": "forest",
+    "description": "The southern Black Forest, higher and emptier than the famous half.",
+    "waypoints": [
+      [
+        47.901,
+        8.166
+      ],
+      [
+        47.811,
+        8.01
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "de-b311-schwaebische-alb",
+    "name": "Schwäbische Alb — B311 Ascent",
+    "country": "DE",
+    "region": "Baden-Württemberg",
+    "city": "Ehingen",
+    "category": "highland",
+    "description": "Escarpment climbs the Swabians use for their Sunday driving.",
+    "waypoints": [
+      [
+        48.283,
+        9.725
+      ],
+      [
+        48.42,
+        9.5
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "de-b180-harz",
+    "name": "Harz — B242 Hochharz",
+    "country": "DE",
+    "region": "Saxony-Anhalt",
+    "city": "Braunlage",
+    "category": "forest",
+    "description": "The Harz crossing, and East Germany's only real driving road.",
+    "waypoints": [
+      [
+        51.726,
+        10.61
+      ],
+      [
+        51.647,
+        10.871
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "de-mosel-b53",
+    "name": "Mosel Loops — B53",
+    "country": "DE",
+    "region": "Rhineland-Palatinate",
+    "city": "Traben-Trarbach",
+    "category": "coastal",
+    "description": "The river writes the corners; you simply follow them.",
+    "waypoints": [
+      [
+        49.95,
+        7.116
+      ],
+      [
+        49.833,
+        7.316
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 2
+  },
+  {
+    "slug": "de-b269-hunsrueck",
+    "name": "Hunsrück — Hochwald B269",
+    "country": "DE",
+    "region": "Rhineland-Palatinate",
+    "city": "Morbach",
+    "category": "forest",
+    "description": "The road the Nürburgring crowd uses to get to the Nürburgring.",
+    "waypoints": [
+      [
+        49.811,
+        7.125
+      ],
+      [
+        49.66,
+        6.933
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "de-bayerwald-b85",
+    "name": "Bayerischer Wald — B85",
+    "country": "DE",
+    "region": "Bavaria",
+    "city": "Regen",
+    "category": "forest",
+    "description": "Bavaria's forgotten forest, and third gear the whole length of it.",
+    "waypoints": [
+      [
+        48.976,
+        13.125
+      ],
+      [
+        49.183,
+        12.85
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "de-fraenkische-schweiz",
+    "name": "Fränkische Schweiz — Aufseß Valley",
+    "country": "DE",
+    "region": "Bavaria",
+    "city": "Ebermannstadt",
+    "category": "forest",
+    "description": "Limestone crags, tight valleys and empty tarmac an hour from Nuremberg.",
+    "waypoints": [
+      [
+        49.783,
+        11.183
+      ],
+      [
+        49.89,
+        11.316
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "it-passo-mortirolo",
+    "name": "Passo del Mortirolo",
+    "country": "IT",
+    "region": "Lombardy",
+    "city": "Mazzo",
+    "category": "alpine",
+    "description": "Eighteen percent in places on a road one lane wide.",
+    "waypoints": [
+      [
+        46.251,
+        10.266
+      ],
+      [
+        46.226,
+        10.301
+      ]
+    ],
+    "expectedKm": [
+      10,
+      22
+    ],
+    "difficultyHint": 5
+  },
+  {
+    "slug": "it-colle-nivolet",
+    "name": "Colle del Nivolet",
+    "country": "IT",
+    "region": "Piedmont",
+    "city": "Ceresole Reale",
+    "category": "alpine",
+    "description": "A dead end at 2,600 m, closed to cars in summer weekends for good reason.",
+    "waypoints": [
+      [
+        45.431,
+        7.24
+      ],
+      [
+        45.476,
+        7.136
+      ]
+    ],
+    "expectedKm": [
+      12,
+      24
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "it-colle-sampeyre",
+    "name": "Colle di Sampeyre",
+    "country": "IT",
+    "region": "Piedmont",
+    "city": "Sampeyre",
+    "category": "alpine",
+    "description": "Piedmont's empty side, and hairpins nobody photographs.",
+    "waypoints": [
+      [
+        44.576,
+        7.181
+      ],
+      [
+        44.531,
+        7.106
+      ]
+    ],
+    "expectedKm": [
+      12,
+      24
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "it-passo-futa",
+    "name": "Passo della Futa",
+    "country": "IT",
+    "region": "Tuscany",
+    "city": "Barberino di Mugello",
+    "category": "highland",
+    "description": "The old Mille Miglia road over the Apennines, still perfect.",
+    "waypoints": [
+      [
+        44.033,
+        11.243
+      ],
+      [
+        44.121,
+        11.296
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "it-passo-abetone",
+    "name": "Passo dell'Abetone",
+    "country": "IT",
+    "region": "Tuscany",
+    "city": "San Marcello",
+    "category": "alpine",
+    "description": "Tuscan Apennine hairpins with beech forest either side.",
+    "waypoints": [
+      [
+        44.056,
+        10.793
+      ],
+      [
+        44.143,
+        10.666
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "it-amalfi-ss163",
+    "name": "Amalfi Coast — SS163",
+    "country": "IT",
+    "region": "Campania",
+    "city": "Amalfi",
+    "category": "coastal",
+    "description": "Impossibly narrow, permanently busy, and unmissable anyway.",
+    "waypoints": [
+      [
+        40.634,
+        14.602
+      ],
+      [
+        40.628,
+        14.483
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "it-ss125-orientale-sarda",
+    "name": "Orientale Sarda — SS125",
+    "country": "IT",
+    "region": "Sardinia",
+    "city": "Baunei",
+    "category": "coastal",
+    "description": "Sardinia's spine road, empty and rebuilt and wonderful.",
+    "waypoints": [
+      [
+        40.033,
+        9.666
+      ],
+      [
+        40.221,
+        9.596
+      ]
+    ],
+    "expectedKm": [
+      43,
+      72
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "fr-col-du-galibier",
+    "name": "Col du Galibier",
+    "country": "FR",
+    "region": "Savoie",
+    "city": "Valloire",
+    "category": "alpine",
+    "description": "The Tour's cathedral, and a proper road when the cyclists have gone.",
+    "waypoints": [
+      [
+        45.166,
+        6.429
+      ],
+      [
+        45.064,
+        6.407
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "fr-col-de-l-iseran",
+    "name": "Col de l'Iseran",
+    "country": "FR",
+    "region": "Savoie",
+    "city": "Bonneval-sur-Arc",
+    "category": "alpine",
+    "description": "The highest paved pass in the Alps, and often the emptiest.",
+    "waypoints": [
+      [
+        45.371,
+        7.043
+      ],
+      [
+        45.418,
+        6.966
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "fr-route-des-grandes-alpes",
+    "name": "Route des Grandes Alpes — Cormet de Roselend",
+    "country": "FR",
+    "region": "Savoie",
+    "city": "Beaufort",
+    "category": "alpine",
+    "description": "A reservoir, a col, and a descent that goes on for twenty minutes.",
+    "waypoints": [
+      [
+        45.716,
+        6.571
+      ],
+      [
+        45.681,
+        6.771
+      ]
+    ],
+    "expectedKm": [
+      18,
+      32
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "fr-col-de-turini",
+    "name": "Col de Turini",
+    "country": "FR",
+    "region": "Alpes-Maritimes",
+    "city": "Sospel",
+    "category": "alpine",
+    "description": "The Monte Carlo Rally's night stage, and a public road all year.",
+    "waypoints": [
+      [
+        43.876,
+        7.446
+      ],
+      [
+        43.988,
+        7.366
+      ]
+    ],
+    "expectedKm": [
+      20,
+      35
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "fr-route-des-cretes-vosges",
+    "name": "Route des Crêtes — Vosges",
+    "country": "FR",
+    "region": "Grand Est",
+    "city": "Munster",
+    "category": "highland",
+    "description": "A ridge road built by an army, running the whole spine of the Vosges.",
+    "waypoints": [
+      [
+        48.011,
+        7.021
+      ],
+      [
+        47.888,
+        7.043
+      ]
+    ],
+    "expectedKm": [
+      25,
+      42
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "fr-gorges-du-tarn",
+    "name": "Gorges du Tarn — D907bis",
+    "country": "FR",
+    "region": "Lozère",
+    "city": "Sainte-Énimie",
+    "category": "canyon",
+    "description": "Cliff on one side, river on the other, for fifty kilometres.",
+    "waypoints": [
+      [
+        44.366,
+        3.411
+      ],
+      [
+        44.216,
+        3.216
+      ]
+    ],
+    "expectedKm": [
+      30,
+      50
+    ],
+    "difficultyHint": 3
+  },
+  {
+    "slug": "fr-col-d-aubisque",
+    "name": "Col d'Aubisque",
+    "country": "FR",
+    "region": "Pyrénées-Atlantiques",
+    "city": "Laruns",
+    "category": "alpine",
+    "description": "The Pyrenean balcony road, cut into a cliff face at Cirque du Litor.",
+    "waypoints": [
+      [
+        42.988,
+        -0.429
+      ],
+      [
+        42.966,
+        -0.336
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "fr-col-du-tourmalet",
+    "name": "Col du Tourmalet",
+    "country": "FR",
+    "region": "Hautes-Pyrénées",
+    "city": "Luz-Saint-Sauveur",
+    "category": "alpine",
+    "description": "The most climbed pass in the Pyrenees, and worth doing with an engine.",
+    "waypoints": [
+      [
+        42.871,
+        -0.006
+      ],
+      [
+        42.908,
+        0.145
+      ]
+    ],
+    "expectedKm": [
+      18,
+      32
+    ],
+    "difficultyHint": 4
+  },
+  {
+    "slug": "fr-corsica-d84-scala",
+    "name": "Scala di Santa Regina — D84",
+    "country": "FR",
+    "region": "Corsica",
+    "city": "Corte",
+    "category": "canyon",
+    "description": "A granite slot canyon with a road wedged into it.",
+    "waypoints": [
+      [
+        42.333,
+        9.071
+      ],
+      [
+        42.301,
+        8.921
+      ]
+    ],
+    "expectedKm": [
+      15,
+      28
+    ],
+    "difficultyHint": 4
+  }
+]

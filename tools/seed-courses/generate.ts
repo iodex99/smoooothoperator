@@ -171,17 +171,54 @@ async function osrmRoute(waypoints: [number, number][]): Promise<{
   const coords = waypoints.map(([lat, lon]) => `${lon},${lat}`).join(";");
   const url =
     `${OSRM_BASE}/route/v1/driving/${coords}?overview=full&geometries=geojson&continue_straight=true`;
-  const response = await fetch(url, {
-    headers: { "User-Agent": "smooooth-operator-course-seeder/1.0" },
-  });
-  if (!response.ok) {
-    throw new Error(`OSRM ${response.status}: ${await response.text()}`);
+
+  // A bare fetch here once hung a full regeneration for over an hour: the
+  // public demo server stopped answering mid-run, the request had no
+  // deadline, and the process sat on a socket at zero percent CPU with
+  // nothing written — no output, no error, no way to tell it apart from slow
+  // progress. Anything that talks to a shared server somebody else operates
+  // needs a deadline and a retry, and this is the whole of that lesson.
+  let lastError = "";
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    try {
+      const response = await fetch(url, {
+        headers: { "User-Agent": "smooooth-operator-course-seeder/1.0" },
+        signal: AbortSignal.timeout(20_000),
+      });
+      if (response.status === 429 || response.status >= 500) {
+        // Rate limited or the far end is unwell: back off rather than
+        // hammering a service that is being given to us free.
+        lastError = `OSRM ${response.status}`;
+        await response.body?.cancel();
+        await new Promise((r) => setTimeout(r, attempt * 4000));
+        continue;
+      }
+      if (!response.ok) {
+        throw new Error(`OSRM ${response.status}: ${await response.text()}`);
+      }
+      const json = await response.json();
+      if (json.code !== "Ok" || !json.routes?.length) {
+        throw new Error(`OSRM: ${json.code ?? "no route"}`);
+      }
+      return shapeRoute(json.routes[0]);
+    } catch (error) {
+      // A timeout or a dropped connection is worth retrying; a genuine
+      // routing refusal is not, and rethrows immediately.
+      const message = String(error);
+      if (!/TimeoutError|timed out|connection|network|aborted/i.test(message)) {
+        throw error;
+      }
+      lastError = message;
+      await new Promise((r) => setTimeout(r, attempt * 4000));
+    }
   }
-  const json = await response.json();
-  if (json.code !== "Ok" || !json.routes?.length) {
-    throw new Error(`OSRM: ${json.code ?? "no route"}`);
-  }
-  const route = json.routes[0];
+  throw new Error(`OSRM unreachable after 4 attempts: ${lastError}`);
+}
+
+function shapeRoute(route: {
+  geometry: { coordinates: number[][] };
+  distance: number;
+}): { geometry: GeoCoordinate[]; distance: number } {
   return {
     geometry: route.geometry.coordinates.map((c: number[]) => ({
       latitude: c[1],
