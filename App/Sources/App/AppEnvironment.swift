@@ -32,6 +32,13 @@ final class AppEnvironment {
     var hasSeenSignIn: Bool {
         didSet { UserDefaults.standard.set(hasSeenSignIn, forKey: "hasSeenSignIn") }
     }
+    /// The Pro offer shown once at the end of onboarding. Set the moment it
+    /// is presented, not when it is dismissed, so a force-quit on the
+    /// paywall cannot bring it back — an offer that reappears after being
+    /// closed is the thing people uninstall apps over.
+    var hasSeenIntroOffer: Bool {
+        didSet { UserDefaults.standard.set(hasSeenIntroOffer, forKey: "hasSeenIntroOffer") }
+    }
     /// Scored runs started today (local date), for the free-tier limit.
     private(set) var runsToday = 0
     var hasAcknowledgedSafety: Bool {
@@ -65,6 +72,7 @@ final class AppEnvironment {
         hasAcknowledgedSafety = UserDefaults.standard.bool(forKey: "safetyAcknowledged")
         hasOnboarded = UserDefaults.standard.bool(forKey: "hasOnboarded")
         hasSeenSignIn = UserDefaults.standard.bool(forKey: "hasSeenSignIn")
+        hasSeenIntroOffer = UserDefaults.standard.bool(forKey: "hasSeenIntroOffer")
         runsToday = Self.storedRunsToday()
     }
 

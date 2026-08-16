@@ -5,6 +5,13 @@ import SwiftUI
 /// Pro paywall (spec §§7-8, 74): products and prices come exclusively from
 /// the App Store — nothing hard-coded, regional pricing automatic.
 struct PaywallView: View {
+    /// True when this is the one-time offer at the end of onboarding rather
+    /// than a gate somebody has just hit. The difference is the wording: a
+    /// gate can say "you have used today's free runs" because that happened;
+    /// an intro offer is talking to somebody who has not driven yet and must
+    /// not imply they are blocked, because they are not.
+    var isIntroOffer = false
+
     @Environment(AppEnvironment.self) private var environment
     @Environment(\.dismiss) private var dismiss
     @State private var products: [Product] = []
@@ -29,9 +36,12 @@ struct PaywallView: View {
                         .font(.system(.title, design: .rounded).weight(.black))
                         .tracking(1.5)
                         .foregroundStyle(.white)
-                    Text("Drive the whole game.")
+                    Text(isIntroOffer
+                        ? "Everything unlocked, from your first drive."
+                        : "Drive the whole game.")
                         .font(.subheadline)
                         .foregroundStyle(SOTheme.textSecondary)
+                        .multilineTextAlignment(.center)
                 }
 
                 VStack(alignment: .leading, spacing: 14) {
@@ -109,6 +119,22 @@ struct PaywallView: View {
                         .buttonStyle(.plain)
                         .disabled(purchasing)
                     }
+                }
+
+                // On the intro offer, the way out is stated as plainly as
+                // the way in. A driver arriving here has not driven yet, and
+                // the free tier is genuinely usable — saying so costs a few
+                // conversions and buys the ones who would otherwise have
+                // uninstalled at the first screen that felt like a wall.
+                if isIntroOffer {
+                    Button("Not now — keep driving free") { dismiss() }
+                        .font(.callout.weight(.semibold))
+                        .tint(SOTheme.textSecondary)
+                        .frame(minHeight: 44)
+                    Text("\(DailyRunAllowance.freeRunsPerDay) scored runs a day, every day, without paying.")
+                        .font(.footnote)
+                        .foregroundStyle(SOTheme.textSecondary)
+                        .multilineTextAlignment(.center)
                 }
 
                 Button("Restore purchases") { Task { await restore() } }

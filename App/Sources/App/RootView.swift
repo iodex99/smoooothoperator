@@ -38,6 +38,35 @@ struct RootView: View {
         )) {
             SignInView(isOnboardingStep: true)
         }
+        // The Pro offer, once, at the end of onboarding.
+        //
+        // DELIBERATELY LAST — after safety and after sign-in. Nothing here
+        // may stand between a driver and their first drive: this app's free
+        // tier is real (three scored runs a day), and asking for money
+        // before somebody has seen a single score is asking them to buy
+        // something they have not been shown.
+        //
+        // It is also the weaker of the two moments and is not the only one.
+        // The stronger is the gate on the course screen, which fires the
+        // day a driver actually runs out of free runs — that is a person
+        // who has seen their score, their breakdown and their rank, and
+        // knows exactly what Pro buys. This one catches everybody else.
+        //
+        // Skippable, because a paywall you cannot close is a refund and a
+        // one-star review, and because the paywall itself states the free
+        // tier honestly rather than implying the app is unusable without it.
+        .sheet(isPresented: Binding(
+            get: {
+                environment.hasAcknowledgedSafety
+                    && environment.hasSeenSignIn
+                    && !environment.hasSeenIntroOffer
+                    && !environment.isPro
+            },
+            set: { if !$0 { environment.hasSeenIntroOffer = true } }
+        )) {
+            PaywallView(isIntroOffer: true)
+                .onAppear { environment.hasSeenIntroOffer = true }
+        }
         // The entitlement has declared applinks since the first iOS commit
         // and nothing read the URL, so every shared challenge opened the app
         // on Home and dropped the code.
