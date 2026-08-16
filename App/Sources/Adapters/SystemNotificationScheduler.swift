@@ -15,7 +15,14 @@ import UserNotifications
 /// `NotificationScheduling` does not — the policy above it never learns which
 /// of the two delivered.
 final class SystemNotificationScheduler: NotificationScheduling {
-    private let center = UNUserNotificationCenter.current()
+    // NOT stored. `NotificationScheduling` is Sendable and this project
+    // builds with strict concurrency complete, under which
+    // UNUserNotificationCenter is not Sendable — holding one as a property
+    // makes the whole type unsendable. `current()` is a cheap accessor on a
+    // process-wide singleton, so fetching it per call costs nothing and
+    // keeps the conformance honest rather than silenced with
+    // @preconcurrency.
+    private var center: UNUserNotificationCenter { .current() }
 
     func isAuthorized() async -> Bool {
         let settings = await center.notificationSettings()
