@@ -264,3 +264,234 @@ Deno.test({
     }
   },
 });
+
+// The uploader gzips every blob now, and until this test nothing had ever
+// pushed a compressed one through real Storage into the real scorer. The
+// pieces were each tested — Swift compresses, `DecompressionStream` reads
+// what Swift writes, the bucket accepts `application/gzip` — and the whole
+// path was still unproven, which is exactly where an integration defect
+// lives.
+//
+// The assertion that matters is that compression is INVISIBLE: the same
+// drive must score identically whether it was uploaded compressed or not.
+Deno.test({
+  name: "e2e: a gzipped blob scores exactly as the same drive uncompressed",
+  ignore: !stackUp,
+  sanitizeResources: false,
+  sanitizeOps: false,
+  fn: async () => {
+    const repoRoot = new URL("../../../", import.meta.url);
+    const telemetry = JSON.parse(
+      await Deno.readTextFile(
+        new URL("fixtures/golden/fastSmooth_1.telemetry.json", repoRoot),
+      ),
+    );
+
+    const email = `e2egz-${crypto.randomUUID().slice(0, 8)}@example.com`;
+    const userResponse = await mustOk(
+      await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ email, email_confirm: true }),
+      }),
+      "admin user creation",
+    );
+    const userId = (await userResponse.json()).id as string;
+
+    const courseInsert = await mustOk(
+      await rest("/courses", {
+        method: "POST",
+        headers: { Prefer: "return=representation" },
+        body: JSON.stringify({
+          name: "E2E Gzip Course",
+          creator_id: userId,
+          country: "US",
+          distance_meters: 1500,
+          difficulty: 3,
+          turn_count: 8,
+          geometry: `SRID=4326;LINESTRING(${wkt(telemetry.route)})`,
+          start_point: `SRID=4326;POINT(${wkt([telemetry.route[0]])})`,
+          finish_point: `SRID=4326;POINT(${
+            wkt([telemetry.route[telemetry.route.length - 1]])
+          })`,
+          benchmark_seconds: Math.round(telemetry.benchmarkSeconds),
+          visibility: "public",
+          status: "active",
+        }),
+      }),
+      "course insert",
+    );
+    const courseId = (await courseInsert.json())[0].id as string;
+
+    await mustOk(
+      await rest("/course_checkpoints", {
+        method: "POST",
+        body: JSON.stringify(
+          telemetry.gates.map((gate: number[]) => ({
+            course_id: courseId,
+            sequence: gate[0],
+            center: `SRID=4326;POINT(${gate[2]} ${gate[1]})`,
+            radius_meters: gate[3],
+          })),
+        ),
+      }),
+      "checkpoint insert",
+    );
+
+    const plain = new TextEncoder().encode(JSON.stringify({
+      formatVersion: 1,
+      gps: telemetry.gps,
+      imu: telemetry.imu,
+    }));
+    const gzipped = new Uint8Array(
+      await new Response(
+        new Blob([plain.slice().buffer as ArrayBuffer]).stream()
+          .pipeThrough(new CompressionStream("gzip")),
+      ).arrayBuffer(),
+    );
+    if (!(gzipped.length < plain.length)) {
+      throw new Error("gzip did not shrink the blob");
+    }
+
+    // `.json.gz`, and the path regex `validate_telemetry_path` enforces has
+    // to accept it — a rejected path would fail the envelope insert below.
+    const storagePath = `${userId}/e2e-run.json.gz`;
+    await mustOk(
+      await fetch(`${SUPABASE_URL}/storage/v1/object/telemetry/${storagePath}`, {
+        method: "POST",
+        headers: {
+          apikey: SERVICE_KEY,
+          Authorization: `Bearer ${SERVICE_KEY}`,
+          // Content-TYPE, never Content-ENCODING: a transparently
+          // decompressing hop would break the hash check below.
+          "Content-Type": "application/gzip",
+        },
+        body: gzipped.slice().buffer as ArrayBuffer,
+      }),
+      "gzip blob upload",
+    );
+
+    const runInsert = await mustOk(
+      await rest("/runs", {
+        method: "POST",
+        headers: { Prefer: "return=representation" },
+        body: JSON.stringify({
+          user_id: userId,
+          course_id: courseId,
+          status: "uploaded",
+          started_at: new Date().toISOString(),
+          client_score: 8000,
+        }),
+      }),
+      "run insert",
+    );
+    const runId = (await runInsert.json())[0].id as string;
+
+    await mustOk(
+      await rest("/telemetry", {
+        method: "POST",
+        body: JSON.stringify({
+          run_id: runId,
+          storage_path: storagePath,
+          gps_count: telemetry.gps.length,
+          imu_count: telemetry.imu.length,
+          byte_size: gzipped.length,
+          // Over the COMPRESSED bytes — what the scorer fetches and hashes
+          // before it decompresses anything.
+          sha256: await sha256Hex(gzipped),
+        }),
+      }),
+      "envelope insert",
+    );
+
+    const result = await handleScoreRun(runId, {
+      restUrl: `${SUPABASE_URL}/rest/v1`,
+      storageUrl: `${SUPABASE_URL}/storage/v1`,
+      serviceKey: SERVICE_KEY,
+    });
+
+    if (result.status !== 200) {
+      throw new Error(`score-run failed on gzip: ${JSON.stringify(result.body)}`);
+    }
+    if (result.body.verdict !== "verified") {
+      throw new Error(`expected verified, got ${JSON.stringify(result.body)}`);
+    }
+
+    // The same drive, uncompressed, through the same code — the two must
+    // agree exactly. Anything else means compression is changing a score.
+    const uncompressedRun = await scoreSameDriveUncompressed(
+      userId,
+      courseId,
+      telemetry,
+      plain,
+    );
+    if (result.body.score !== uncompressedRun) {
+      throw new Error(
+        `gzip changed the score: ${result.body.score} vs ${uncompressedRun}`,
+      );
+    }
+  },
+});
+
+/** Scores the identical telemetry uploaded WITHOUT compression. */
+async function scoreSameDriveUncompressed(
+  userId: string,
+  courseId: string,
+  telemetry: { gps: number[][]; imu: number[][] },
+  plain: Uint8Array,
+): Promise<number> {
+  const storagePath = `${userId}/e2e-run-plain.json`;
+  await mustOk(
+    await fetch(`${SUPABASE_URL}/storage/v1/object/telemetry/${storagePath}`, {
+      method: "POST",
+      headers: {
+        apikey: SERVICE_KEY,
+        Authorization: `Bearer ${SERVICE_KEY}`,
+        "Content-Type": "application/octet-stream",
+      },
+      body: plain.slice().buffer as ArrayBuffer,
+    }),
+    "plain blob upload",
+  );
+
+  const runInsert = await mustOk(
+    await rest("/runs", {
+      method: "POST",
+      headers: { Prefer: "return=representation" },
+      body: JSON.stringify({
+        user_id: userId,
+        course_id: courseId,
+        status: "uploaded",
+        started_at: new Date().toISOString(),
+        client_score: 8000,
+      }),
+    }),
+    "plain run insert",
+  );
+  const runId = (await runInsert.json())[0].id as string;
+
+  await mustOk(
+    await rest("/telemetry", {
+      method: "POST",
+      body: JSON.stringify({
+        run_id: runId,
+        storage_path: storagePath,
+        gps_count: telemetry.gps.length,
+        imu_count: telemetry.imu.length,
+        byte_size: plain.length,
+        sha256: await sha256Hex(plain),
+      }),
+    }),
+    "plain envelope insert",
+  );
+
+  const result = await handleScoreRun(runId, {
+    restUrl: `${SUPABASE_URL}/rest/v1`,
+    storageUrl: `${SUPABASE_URL}/storage/v1`,
+    serviceKey: SERVICE_KEY,
+  });
+  if (result.status !== 200) {
+    throw new Error(`plain score-run failed: ${JSON.stringify(result.body)}`);
+  }
+  return result.body.score as number;
+}
