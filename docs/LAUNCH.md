@@ -49,7 +49,7 @@ Nothing else can start until these exist.
 ## Phase 1 — Make the backend real
 
 The Supabase project exists but is **empty** — I checked, and `public.courses`
-does not exist there yet. All 34 migrations are still local-only.
+does not exist there yet. All 35 migrations are still local-only.
 
 4. **YOU — push the schema.** This needs the database password, which I
    deliberately do not have:
@@ -71,8 +71,21 @@ does not exist there yet. All 34 migrations are still local-only.
 
    ```bash
    supabase functions deploy score-run today-challenge \
-       validate-course resolve-challenge appstore-notifications delete-account
+       validate-course resolve-challenge appstore-notifications \
+       delete-account purge-telemetry
    ```
+
+   `purge-telemetry` is the retention job. It is driven by pg_cron, which
+   needs two database settings that only exist in production — without them
+   it returns 0 rather than erroring nightly forever:
+
+   ```sql
+   alter database postgres set app.functions_url = 'https://<ref>.supabase.co/functions/v1';
+   alter database postgres set app.service_role_key = '<service role key>';
+   ```
+
+   The same two settings drive the scoring sweeper, so if scoring works,
+   retention works.
 
 7. **YOU — set the one secret that is not automatic:**
 
@@ -222,19 +235,23 @@ unknowns are not code:
 
 ## What is already done
 
-- Engine, scoring, anti-cheat, ghosts, leaderboards, friends — 335 Kit
+- Engine, scoring, anti-cheat, ghosts, leaderboards, friends — 366 Kit
   tests, deterministic, Swift ≡ TypeScript on 12 golden vectors.
 - **803 courses across 51 countries**, every one routed over real
   OpenStreetMap roads rather than authored by hand.
 - **Notifications, with the driving rule first** — nothing is delivered to
   someone who is currently driving, whatever else is true.
+- **Telemetry is 6.7× smaller and no longer kept forever.** Blobs are
+  gzipped and written at sensor resolution, and deleted 90 days after a run
+  is scored. That was the difference between a negligible storage bill and
+  ~$800/month at 100,000 users.
 - **Custom courses — a driver can now make one.** You create a course by
   driving it: record the road once, gates are placed at 0/25/50/75/100%, and
   the server re-validates every rule before it enters the catalog. Pro-gated
   in the app and re-checked on the server. The Swift→TypeScript contract is
   tested against output the Swift builder actually generates.
-- Database: 34 migrations, RLS on every table, **346 pgTAP tests**.
-- Server: 6 edge functions, 101 Deno tests, fail-closed App Store webhook.
+- Database: 35 migrations, RLS on every table, **360 pgTAP tests**.
+- Server: 7 edge functions, 114 Deno tests, fail-closed App Store webhook.
 - iOS: builds, boots and completes a scored ghost race on the CI Mac.
 - Site: landing, privacy, terms, support, and the operator console.
 - Owner analytics: users, paying, MRR/ARR, catalog by region, top courses,

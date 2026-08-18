@@ -29,7 +29,7 @@ storage path in the uploader and the scorer. Don't do it now.
 |---|---|---|---|
 | **Account** — Apple user id, username, display name, country/region/city (self-declared) | Postgres `profiles` | ~200 bytes/user | Low. No email or real name required, no password ever. |
 | **Runs** — score, sub-scores, duration, distance, verdict, integrity flags, ~1 Hz preview polyline | Postgres `runs` | ~5 KB/run | Medium. This is the competitive record. |
-| **Raw telemetry** — every GPS fix (10 Hz) and IMU sample (50 Hz) for the drive | Supabase **Storage** (private bucket), pointer row in `telemetry` | **~20 MB/run uncompressed today**; ~2–3 MB gzipped | **Highest.** This is a precise trace of where a person drove and how. |
+| **Raw telemetry** — every GPS fix (10 Hz) and IMU sample (50 Hz) for the drive | Supabase **Storage** (private bucket), pointer row in `telemetry` | **~2.5 MB/run** (gzipped, written at sensor resolution — was ~20 MB), **deleted after 90 days** | **Highest.** This is a precise trace of where a person drove and how. |
 | **Ghosts** — normalized pace along the course | Postgres `ghosts` | ~10 KB/run | Low by design: progress + elapsed time only, never raw coordinates. |
 | **Leaderboards** — best verified run per user per course | Postgres `leaderboard_entries` | ~100 bytes/entry | Public by design. |
 | **Courses** — the 803-course catalog + user-created courses | Postgres `courses` + `course_checkpoints` (PostGIS) | ~5 MB total today | Public. Derived from OpenStreetMap (ODbL — the About screen must credit OSM). |
@@ -40,11 +40,26 @@ storage path in the uploader and the scorer. Don't do it now.
 
 **The one number that matters:** raw telemetry dominates everything else by
 about 4,000×. At 10,000 active drivers doing 4 runs a month, that's roughly
-**120 GB/month of new blobs uncompressed**, or ~15 GB/month gzipped.
+**~18 GB/month of new blobs**, against the ~120 GB/month this would have been
+before compression — and with the 90-day window the total stops growing at
+~54 GB rather than rising forever.
 
-Two things to do before that becomes a bill:
-1. **Compress before upload** (gzip the NDJSON) — ~8× reduction, one change in the uploader.
-2. **Set a retention policy.** Raw telemetry is only needed to re-score a run or investigate a cheat report. Keeping it 90 days and then deleting is defensible, cheap, and better privacy. *(Not yet implemented — currently blobs are kept forever.)*
+Both things that needed doing about it are now done (2026-08-18):
+
+1. **Compressed before upload — 6.7× measured**, on a real simulated drive
+   (2,052,197 → 307,638 bytes). Two thirds of that is *not* gzip: a `Double`
+   serialises to seventeen significant digits, and the trailing ones are
+   floating-point residue rather than measurement. Writing each field at the
+   resolution its sensor can actually resolve is worth more than the
+   compressor is. **Timestamps are the exception and are never rounded** —
+   at 10 Hz a millisecond is 1% of the Δt that speed and acceleration are
+   derived from, and rounding them was measured to move real scores.
+2. **A 90-day retention policy** (migration 0035 + the `purge-telemetry`
+   function, daily at 03:20 UTC). Raw telemetry is only needed to re-score a
+   run or investigate a disputed verdict, and both happen within days. The
+   envelope — hash, counts, path — is kept, because it is the record that
+   the data existed. A run that has not been scored is **never** purged,
+   however old: its blob is the only copy of a drive somebody did.
 
 ---
 
@@ -125,13 +140,13 @@ Estimates, not quotes — verify current pricing before committing.
 |---|---|---|---|
 | Apple Developer | $8/mo | $8/mo | $8/mo |
 | Supabase | $0 (free tier) | $25/mo | $25 + usage, ~$150–400/mo |
-| Telemetry storage *(compressed + 90-day retention)* | negligible | ~$1/mo | ~$25/mo |
-| Telemetry storage *(as built today — uncompressed, kept forever)* | ~$3/mo | ~$60/mo by year end | **~$800/mo by year end** |
+| Telemetry storage *(as built today — compressed, 90-day retention)* | negligible | ~$1/mo | ~$25/mo |
+| Telemetry storage *(as it was — uncompressed, kept forever)* | ~$3/mo | ~$60/mo by year end | **~$800/mo by year end** |
 | Domain | $1/mo | $1/mo | $1/mo |
 | **Total** | **~$10/mo** | **~$35/mo** | **~$200–450/mo** |
 
-That last row is why compression and retention are on the pre-launch list
-rather than the someday list.
+That last row is what compression and retention were worth: the difference
+between the two is roughly the entire hosting bill at 100,000 users.
 
 Revenue for comparison: at 10,000 users and a 3% conversion to $5/month,
 that's ~$1,500/month gross, ~$1,275 after Apple's 15% small-business rate.

@@ -70,12 +70,14 @@ See [SCORING.md](SCORING.md) and ADR-0002.
 sensors → raw telemetry (append-only file, crash-safe)
         → fusion → trajectory → map matching → events
         → provisional score (client, SmoooothKit)
-        → gzip NDJSON blob → Storage (private bucket)
+        → gzip blob at sensor resolution → Storage (private bucket)
         → runs row (status=uploaded) → scoring_jobs queue
         → score-run edge fn: hash check → integrity → verdict → score
         → leaderboard_entries upsert (service role, one transaction)
 ```
 
 Raw telemetry is never public, never destroyed by processing, and never leaves
-the owner's control. Ghosts expose only normalized (progress, elapsed-time)
+the owner's control. It is deleted 90 days after the run is scored (migration
+0035) — nothing in the product reads a blob after scoring, and it is the most
+sensitive thing here. Ghosts expose only normalized (progress, elapsed-time)
 pairs — see [ANTICHEAT.md](ANTICHEAT.md) and [DATABASE.md](DATABASE.md).

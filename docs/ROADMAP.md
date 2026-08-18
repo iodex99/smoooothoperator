@@ -29,6 +29,60 @@ syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
 
+### 2026-08-18 — The 4,000× line: telemetry compressed, and no longer kept forever
+Raw telemetry dominates everything else this product stores by about
+4,000×, and both things OPERATIONS.md had listed as "to do before that
+becomes a bill" were still undone. The uploader sent raw JSON — even though
+`score-run` had accepted gzip transparently all along — and nothing ever
+deleted a blob.
+
+- **6.7× smaller, measured** (2,052,197 → 307,638 bytes on a real simulated
+  drive). **Two thirds of that is not gzip.** Gzip alone gives 2.4×, not the
+  8× the doc assumed, because a `Double` serialises to seventeen significant
+  digits and the trailing ones are floating-point residue — the worst
+  possible input to a compressor. Writing each field at the resolution its
+  sensor can actually resolve is worth more than the compressor is.
+- **Timestamps are the exception, and finding that out is the whole story.**
+  Rounding them to 1 ms — twenty times finer than the shortest interval
+  between samples, and obviously harmless — moved real scores: fastSmooth
+  8800 → 8799, fastAggressive 8116 → 8112. Speed and acceleration are Δx/Δt,
+  and at 10 Hz a millisecond is 1% of Δt. A sweep across IMU precision from
+  5 to 9 decimal places changed nothing, and coordinates were innocent even
+  at twelve; it was the timestamp every time. Rounding them also saved
+  **nothing** — 307,638 bytes against 307,661. A real risk to a driver's
+  score for 23 bytes in the wrong direction.
+- **The wire format moved into the Kit.** It lived in the iOS uploader,
+  which put the one format that crosses the language boundary in the half of
+  the project Linux cannot test — so the fixture the server was held to was
+  hand-written. `sogen telemetry-blob` now emits a real gzipped blob from the
+  uploader's own code path, and the Deno suite validates *that*
+  (`make regen-telemetry-contract`). Same pattern as the course proposal.
+- **SHA-256 written out in Swift**, because the envelope hash is the number
+  that binds a drive to its data and `CryptoKit` does not exist on Linux —
+  so it could never be tested here. Held to the published NIST vectors, and
+  the contract test confirms it agrees with Web Crypto. The hash is over the
+  **compressed** bytes, which is the semantic most easily got backwards: the
+  server hashes what it fetched, before decompressing.
+- **A 90-day retention policy** (migration 0035 + `purge-telemetry`, nightly
+  at 03:20 UTC). The envelope stays when the blob goes — it is the record
+  that the data existed. **A run that has not been scored is never purged**,
+  however old: its blob is the only copy of a drive somebody did. Neither is
+  a failed one, which may yet be re-driven.
+- The purge marks *only* what Storage confirmed it deleted. Marking an
+  unconfirmed row would strand the blob forever — nothing would list it
+  again, and it would sit in the bucket, paid for, holding somebody's
+  location history. Verified by reintroducing the flaw and watching the test
+  go red.
+- **The gzip path now meets the real stack**: a compressed blob through real
+  Storage into the real scorer, asserted to produce the identical score to
+  the same drive uncompressed. Every piece had been tested and the whole
+  path had not.
+
+At 100,000 users this is the difference between a negligible storage line
+and ~$800/month.
+
+**366 Kit · 360 pgTAP · 114 Deno · 10 e2e · xval · parse · a11y · escaping.**
+
 ### 2026-08-16 — Notifications, the offer, and the catalog doubled again
 Three gaps that were not defects — they were things the product simply did
 not have.

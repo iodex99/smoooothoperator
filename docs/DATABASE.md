@@ -59,11 +59,24 @@ Checkpoints inherit course visibility; radius constrained 5–500 m; unique
 ## Telemetry storage decision (ADR-0002 context)
 
 A 20-min run ≈ 72,000 samples (10 Hz GPS + 50 Hz IMU). As rows: ~20 MB and 72k
-tuples per run — unaffordable. As gzip NDJSON in a private Storage bucket:
-1.5–3 MB. The `telemetry` table stores the pointer + envelope (path, counts,
-sha256, byte size, schema version); `runs` carries a ~1 Hz downsampled polyline
-(~40 KB) so maps render without touching blobs. Ghosts store only normalized
-(progress, elapsed) pairs — raw GPS never leaves the owner's run.
+tuples per run — unaffordable. As a gzipped JSON blob in a private Storage
+bucket: **~2.5 MB**, measured 6.7× smaller than the same drive written at full
+`Double` precision. The `telemetry` table stores the pointer + envelope (path,
+counts, sha256, byte size, schema version); `runs` carries a ~1 Hz downsampled
+polyline (~40 KB) so maps render without touching blobs. Ghosts store only
+normalized (progress, elapsed) pairs — raw GPS never leaves the owner's run.
+
+The envelope's **`sha256` is over the compressed bytes**, because `score-run`
+hashes the object it fetched before it decompresses anything. The wire format
+is defined once, in `SOSync.TelemetryBlob`, and the Swift→TypeScript contract
+is pinned by `fixtures/contracts/telemetry_blob.json` (regenerate with
+`make regen-telemetry-contract`).
+
+**Retention (migration 0035).** Blobs are deleted 90 days after a run is
+scored; the envelope stays, because it is the record that the data existed.
+A run that has *not* been scored is never purged however old — the blob is the
+only copy of a drive somebody did. `telemetry_purge_backlog()` surfaces a
+purge that has stopped running, which is otherwise completely silent.
 
 ## Local development
 
