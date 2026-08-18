@@ -1,0 +1,12 @@
+// zlib, as a Swift module.
+//
+// Deliberately a system library rather than a vendored copy or an Apple
+// framework: zlib ships in the iOS/macOS SDKs *and* on Linux, which is the
+// only reason `Gzip` can be tested on this machine at all. Apple's
+// `Compression` framework would work on a phone and nowhere else, and
+// SmoooothKit forbids Apple-only imports (see Package.swift).
+module CZlib [system] {
+    header "shim.h"
+    link "z"
+    export *
+}

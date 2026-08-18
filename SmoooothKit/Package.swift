@@ -28,7 +28,10 @@ let package = Package(
     ],
     targets: [
         // MARK: Libraries
-        .target(name: "SOCore"),
+        // zlib. A system library, not a vendored copy: it is in the iOS SDK
+        // and on Linux, which is what lets Gzip be tested here.
+        .systemLibrary(name: "CZlib", path: "Sources/CZlib"),
+        .target(name: "SOCore", dependencies: ["CZlib"]),
         .target(name: "SOModels", dependencies: ["SOCore"]),
         .target(name: "SOTelemetry", dependencies: ["SOModels"]),
         .target(name: "SOCourse", dependencies: ["SOModels", "SOTelemetry"]),
