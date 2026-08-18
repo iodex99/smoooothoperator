@@ -3,7 +3,7 @@
     "apps": [],
     "details": [
       {
-        "appIDs": ["TEAMID.app.smooooth.operator"],
+        "appIDs": ["44R2VVGF8G.app.smooooth.operator"],
         "components": [
           { "/": "/challenge/*", "comment": "Shared challenge codes open the app" },
           { "/": "/course/*", "comment": "Shared course links open the app" }

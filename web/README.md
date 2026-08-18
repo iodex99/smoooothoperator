@@ -10,7 +10,7 @@ plain HTML that loads one stylesheet.
 | `terms.html` | **Required for auto-renewing subscriptions** (Apple checks for EULA + terms). |
 | `support.html` | **App Store submission blocker.** A support URL is mandatory. |
 | `admin.html` | Owner-only analytics. `noindex`, and useless without a row in `public.admins`. |
-| `.well-known/apple-app-site-association` | Universal links (`/challenge/*`, `/course/*`). Replace `TEAMID`. |
+| `.well-known/apple-app-site-association` | Universal links (`/challenge/*`, `/course/*`). Team ID `44R2VVGF8G` is in place. |
 
 ## Deploying
 
@@ -34,7 +34,9 @@ Netlify, Vercel and GitHub Pages are equally fine — there is nothing to build.
 
 - [ ] Put the logo at `web/logo.png` (square, ideally 1024×1024).
 - [ ] Fill in `config.js` with the Supabase URL + publishable key.
-- [ ] Replace `TEAMID` in the AASA file with the real Apple Team ID.
+- [x] ~~Replace `TEAMID` in the AASA file with the real Apple Team ID.~~ Done
+      2026-08-18: `44R2VVGF8G`. A Team ID is not a secret — it is served
+      publicly in this very file by design, and appears in every receipt.
 - [ ] Point `privacy@`, `legal@` and `support@smoooothoperator.com` somewhere a
       person reads. Apple rejects apps whose support address bounces.
 - [ ] Grant yourself operator access:
