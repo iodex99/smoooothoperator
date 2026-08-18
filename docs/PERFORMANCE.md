@@ -6,8 +6,10 @@ it says so — "fine" is a finding too, and the point of writing them down is
 that the next person does not have to re-derive them.
 
 The measurements at scale were taken against **50,000 courses** and, for
-ghosts, **5,000 ghosts on a single course**. The catalog ships with 397. The
-whole point is that 397 hides everything.
+ghosts, **5,000 ghosts on a single course**. The catalog ships with 803. The
+whole point is that a catalog this size hides everything — it was 397 when
+these were measured, and doubling it changed none of the numbers below,
+because the fixes made them independent of catalog size.
 
 ---
 
@@ -40,7 +42,7 @@ Explore opens on this, every session. It was **O(catalog size)**.
 | `courses_near`, database time | 150 ms | ~1 ms |
 | `courses_in_region`, database time | 40 ms | **0.136 ms** |
 
-Three separate causes, all invisible at 397 courses:
+Three separate causes, all invisible at catalog size:
 
 **1. The spatial index was on the wrong column.** The GiST index covered
 `geometry`, the LineString. `courses_near` filters on `start_point`, which

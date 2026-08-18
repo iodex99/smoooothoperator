@@ -32,7 +32,7 @@ storage path in the uploader and the scorer. Don't do it now.
 | **Raw telemetry** — every GPS fix (10 Hz) and IMU sample (50 Hz) for the drive | Supabase **Storage** (private bucket), pointer row in `telemetry` | **~20 MB/run uncompressed today**; ~2–3 MB gzipped | **Highest.** This is a precise trace of where a person drove and how. |
 | **Ghosts** — normalized pace along the course | Postgres `ghosts` | ~10 KB/run | Low by design: progress + elapsed time only, never raw coordinates. |
 | **Leaderboards** — best verified run per user per course | Postgres `leaderboard_entries` | ~100 bytes/entry | Public by design. |
-| **Courses** — the 397-course catalog + user-created courses | Postgres `courses` + `course_checkpoints` (PostGIS) | ~2.5 MB total today | Public. Derived from OpenStreetMap (ODbL — the About screen must credit OSM). |
+| **Courses** — the 803-course catalog + user-created courses | Postgres `courses` + `course_checkpoints` (PostGIS) | ~5 MB total today | Public. Derived from OpenStreetMap (ODbL — the About screen must credit OSM). |
 | **Friendships, challenges, assignments, achievements** | Postgres | tiny | Medium. |
 | **Subscriptions** — Apple's original transaction id, status, expiry | Postgres `subscriptions` | tiny | Medium. No card data ever touches us — Apple handles payment entirely. |
 | **Pending runs (device only)** | iPhone, Application Support | ~20 MB/queued run | Never leaves the phone until upload. |
@@ -64,7 +64,7 @@ Once enrolled, in the Apple Developer portal:
 1. Create a project at supabase.com. **Pick the region closest to your first users** — this is the single decision you can't easily change later.
 2. Settings → API gives you two values: the **Project URL** and the **anon key**. Both are public and safe in the app binary; row-level security is what protects data.
 3. There is also a **service role key**. It bypasses every security policy. It goes in Supabase's own edge-function secrets and *nowhere else* — never in the app, never in git, never in a message to me.
-4. Deploy what's already written: `supabase link --project-ref <ref>` then `supabase db push` (15 migrations) and `supabase functions deploy` (5 functions), then load the 397-course seed.
+4. Deploy what's already written: `supabase link --project-ref <ref>` then `supabase db push` (34 migrations) and `supabase functions deploy` (6 functions), then load the 803-course seed. The exact commands, in order, are in [LAUNCH.md](LAUNCH.md).
 
 **Free tier limits:** 500 MB database, 1 GB storage, 50k monthly actives — genuinely enough for launch and early beta. Pro ($25/mo) raises that to 8 GB database and 100 GB storage.
 

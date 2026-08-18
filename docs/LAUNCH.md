@@ -57,7 +57,7 @@ does not exist there yet. All 34 migrations are still local-only.
    ```bash
    supabase link --project-ref tsxyxgtjihycaoydyafp
    supabase db push
-   supabase db seed         # loads the 397-course catalog
+   supabase db seed         # loads the 803-course catalog
    ```
 
 5. **YOU — turn on the auth providers.** I queried `/auth/v1/settings` and
@@ -222,8 +222,12 @@ unknowns are not code:
 
 ## What is already done
 
-- Engine, scoring, anti-cheat, ghosts, leaderboards, friends — 321 Kit
+- Engine, scoring, anti-cheat, ghosts, leaderboards, friends — 335 Kit
   tests, deterministic, Swift ≡ TypeScript on 12 golden vectors.
+- **803 courses across 51 countries**, every one routed over real
+  OpenStreetMap roads rather than authored by hand.
+- **Notifications, with the driving rule first** — nothing is delivered to
+  someone who is currently driving, whatever else is true.
 - **Custom courses — a driver can now make one.** You create a course by
   driving it: record the road once, gates are placed at 0/25/50/75/100%, and
   the server re-validates every rule before it enters the catalog. Pro-gated

@@ -29,6 +29,112 @@ syntax gate), docs updated, ledger entry added, work committed in small chunks.
 
 ## Ledger
 
+### 2026-08-16 — Notifications, the offer, and the catalog doubled again
+Three gaps that were not defects — they were things the product simply did
+not have.
+
+- **Notifications, and the rule that comes before all the others.** Nothing
+  existed: no `UNUserNotificationCenter`, no device-token table, no
+  entitlement. The first check is not permission and not quiet hours — it is
+  **whether the person is currently driving**. A banner on a hairpin is not a
+  notification, it is a hazard, and no engagement metric is worth it. The
+  test stacks every reason to send (authorised, urgent, midday, nothing sent
+  yet) and still expects silence. Then: nothing without permission, a hard
+  daily ceiling that *urgent* does not lift, and quiet hours on the driver's
+  **local** hour. `DriverNotifications` is Kit-side and Linux-tested; the app
+  holds only the adapter. Remote push is deliberately absent — APNs needs the
+  Apple Developer account — but the seam is shaped so it slots in without the
+  policy moving.
+- **The paywall was never offered, only triggered.** Pro appeared reactively:
+  a second car, a custom course, the Profile upsell, the out-of-runs gate.
+  That misses everyone who never hits a gate. It is now offered **once**, at
+  the end of onboarding — placed last deliberately, after safety, sign-in and
+  location, because nothing may stand between a driver and their first drive
+  — and it says plainly how to skip.
+- **803 courses across 51 countries** (was 397/30). Weighted to the revenue
+  markets, India kept deep on the ghats. **Geometry is not authored**: every
+  course is routed over real OpenStreetMap roads by OSRM, and the manifest
+  carries only waypoints, a length hint and an editorial difficulty. A
+  waypoint in the wrong valley produces a route outside its hint and is
+  rejected into `report.json` — which is what caught twelve of mine, and a
+  Brazilian road a sign flip had put in the North Atlantic.
+- The Mac caught what Linux cannot: holding a `UNUserNotificationCenter` as a
+  stored property makes the type unsendable under strict concurrency. Fetched
+  per call instead, rather than silenced with `@preconcurrency`.
+
+**335 Kit · 346 pgTAP · 101 Deno · xval · parse · a11y · escaping.**
+
+### 2026-08-15 — The audit with axes, performance at scale, and a route onto a phone
+The rule adopted this pass: **a guard that cannot fail on the bug it was
+written for is not a guard.** Every mechanical check was tested by breaking
+the thing it protects; two did not go red, and were rewritten.
+
+- **A course name could take over the operator's account.** The most serious
+  finding of the project so far, and it was a chain rather than a bug: free
+  text at course creation → `validate-course` checking only `typeof
+  name !== "string"` → stored → returned by `admin_top_courses` → interpolated
+  into `admin.html` with `innerHTML` and no escaping anywhere in the file.
+  A course named `<img src=x onerror=…>` ran in the **operator's** session —
+  the one account that can read the whole business, holding a live admin
+  token in that page. Fixed at the sink (escape by default, opt out
+  explicitly) and at the door (length + control/bidi bounds). Markup is
+  deliberately *not* stripped at the door: refusing `<` would reject
+  "Ampère <-> Curie" and still would not make an unescaped renderer safe.
+  `tools/web-escaping-check.sh` is in `make test` and fails when the escaping
+  is removed.
+- **Money, out of order.** The webhook's upsert was idempotent but not
+  order-independent, and Apple guarantees retries, not order. A retried
+  renewal arriving after a refund handed Pro back to a refunded customer for
+  the rest of the period; and `user_id: appAccountToken ?? null` wrote NULL
+  over an attributed subscriber on any notification carrying no transaction
+  info — unentitling a paying customer *and* leaving the row claimable by
+  someone else. Both guards now live in the database.
+- **Read performance at scale.** Measured against 50,000 courses and 20,000
+  leaderboard entries. Browse scanned the whole catalog every session (wrong
+  index column, and the right index unusable under RLS because PostGIS
+  predicates are not `LEAKPROOF`): 127 ms → 11.8 ms. The leaderboard ranked
+  the entire product to show fifty rows: 47.8 ms → 1.89 ms. The national and
+  friends boards were showing **global** ranks, so the best of five friends
+  read `#4,912`.
+- **Engine complexity on a long drive.** Every other test drives a
+  four-minute course; a real drive lasts an hour. Course tracking was
+  O(points × segments) with both growing — 10.07× for 4× the input, now
+  linear. Guarded at the **stage** level, because the whole-pipeline test
+  passed with the quadratic step reintroduced.
+- **Trust boundaries moved for performance.** Making browse fast required
+  `SECURITY DEFINER`, which bypasses RLS. The migration claimed the inlined
+  predicate was the same expression as the policy; they already disagreed. A
+  test now compares the two *answers* across every visibility × status ×
+  ownership × friendship combination, re-derived from the live policy.
+- **Abuse and cost**: the telemetry bucket had `file_size_limit = NULL`, and
+  course creation was gated on Pro **and nothing else** — one $4.99
+  subscription could insert unbounded rows into the catalog every driver
+  browses. Every user-writable text column is now bounded, with a test
+  asserting the unbounded set is empty.
+- **"All its data" was still false**, the same way as last time: a cascade
+  only reaches what points *at* you. A private course nobody had driven
+  outlived the account, still holding the geometry of a road — often the one
+  they live on. Courses others have driven stay, anonymised, because those
+  runs are their drivers' records. The privacy policy said neither; it does
+  now.
+- **Observability**, previously an axis with nothing under it: `admin_health`
+  surfaces the four failures where the app carries on looking normal — jobs
+  that gave up, jobs past their retry time (which means the sweeper is not
+  running, and it raises no error), subscriptions attached to no account, and
+  finished drives with no verdict. Each with the age of the oldest, because a
+  count cannot tell "this morning" from "since March". Still nothing pushes:
+  somebody has to open the console.
+- **A route onto a real iPhone, without owning a Mac.** TestFlight installs a
+  signed build on a real device and does not review internal builds first;
+  the archiving that needs macOS now happens on the CI Mac. And usefully
+  *today*: the nightly job also builds for a real device, so arm64-against-
+  the-device-SDK failures — an entire class sitting between us and the first
+  drive — are closed for free.
+
+Recorded in **docs/AUDIT.md**, including what was deliberately *not* changed
+and the axes still holding nothing: alerting, rate limiting beyond the daily
+course ceiling, and backups.
+
 ### 2026-08-14 — A systematic audit, along defined axes
 Run after "time and again you find something new — do it once for all". The
 difference from previous passes is method: fixed axes, each worked to

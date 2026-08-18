@@ -36,7 +36,9 @@ confirming it went red. Two of them did not, first time, and were rewritten.
 ## 1. Read performance at scale
 
 **Fixed.** Measured against 50,000 courses and 20,000 leaderboard entries; the
-catalog ships 397, which is exactly why none of it was visible.
+catalog shipped 397 at the time, which is exactly why none of it was visible.
+It ships 803 now, and the measurements held — the fixes removed the dependence
+on catalog size rather than moving the threshold.
 
 - Browse scanned the whole catalog every session — wrong index column, and
   the right index was unusable under RLS because PostGIS predicates are not
