@@ -1,102 +1,82 @@
 {
-  "identifier" : "F3A1C2D4-0000-4000-8000-000000000001",
-  "nonRenewingSubscriptions" : [
-
-  ],
-  "products" : [
-
-  ],
-  "settings" : {
-
-  },
-  "subscriptionGroups" : [
+  "identifier": "F3A1C2D4-0000-4000-8000-000000000001",
+  "nonRenewingSubscriptions": [],
+  "products": [],
+  "settings": {},
+  "subscriptionGroups": [
     {
-      "id" : "SG.SMOOOOTH.PRO",
-      "localizations" : [
-
-      ],
-      "name" : "Smooooth Pro",
-      "subscriptions" : [
+      "id": "SG.SMOOOOTH.PRO",
+      "localizations": [],
+      "name": "Smooooth Pro",
+      "subscriptions": [
         {
-          "adHocOffers" : [
-
-          ],
-          "codeOffers" : [
-
-          ],
-          "displayPrice" : "6.99",
-          "familyShareable" : false,
-          "groupNumber" : 1,
-          "internalID" : "F3A1C2D4-0000-4000-8000-000000000011",
-          "introductoryOffer" : null,
-          "localizations" : [
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "7.00",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "F3A1C2D4-0000-4000-8000-000000000011",
+          "introductoryOffer": null,
+          "localizations": [
             {
-              "description" : "Unlimited challenges, ghosts and custom courses",
-              "displayName" : "Smooooth Pro Weekly",
-              "locale" : "en_US"
+              "description": "Unlimited challenges, ghosts and custom courses",
+              "displayName": "Smooooth Pro Weekly",
+              "locale": "en_US"
             }
           ],
-          "productID" : "smooooth.pro.weekly",
-          "recurringSubscriptionPeriod" : "P1W",
-          "referenceName" : "Pro Weekly",
-          "subscriptionGroupID" : "SG.SMOOOOTH.PRO",
-          "type" : "RecurringSubscription"
+          "productID": "smooooth.pro.weekly",
+          "recurringSubscriptionPeriod": "P1W",
+          "referenceName": "Pro Weekly",
+          "subscriptionGroupID": "SG.SMOOOOTH.PRO",
+          "type": "RecurringSubscription"
         },
         {
-          "adHocOffers" : [
-
-          ],
-          "codeOffers" : [
-
-          ],
-          "displayPrice" : "19.99",
-          "familyShareable" : false,
-          "groupNumber" : 1,
-          "internalID" : "F3A1C2D4-0000-4000-8000-000000000012",
-          "introductoryOffer" : null,
-          "localizations" : [
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "19.00",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "F3A1C2D4-0000-4000-8000-000000000012",
+          "introductoryOffer": null,
+          "localizations": [
             {
-              "description" : "Unlimited challenges, ghosts and custom courses",
-              "displayName" : "Smooooth Pro Monthly",
-              "locale" : "en_US"
+              "description": "Unlimited challenges, ghosts and custom courses",
+              "displayName": "Smooooth Pro Monthly",
+              "locale": "en_US"
             }
           ],
-          "productID" : "smooooth.pro.monthly",
-          "recurringSubscriptionPeriod" : "P1M",
-          "referenceName" : "Pro Monthly",
-          "subscriptionGroupID" : "SG.SMOOOOTH.PRO",
-          "type" : "RecurringSubscription"
+          "productID": "smooooth.pro.monthly",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "Pro Monthly",
+          "subscriptionGroupID": "SG.SMOOOOTH.PRO",
+          "type": "RecurringSubscription"
         },
         {
-          "adHocOffers" : [
-
-          ],
-          "codeOffers" : [
-
-          ],
-          "displayPrice" : "99.99",
-          "familyShareable" : false,
-          "groupNumber" : 1,
-          "internalID" : "F3A1C2D4-0000-4000-8000-000000000013",
-          "introductoryOffer" : null,
-          "localizations" : [
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "99.00",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "F3A1C2D4-0000-4000-8000-000000000013",
+          "introductoryOffer": null,
+          "localizations": [
             {
-              "description" : "Unlimited challenges, ghosts and custom courses",
-              "displayName" : "Smooooth Pro Yearly",
-              "locale" : "en_US"
+              "description": "Unlimited challenges, ghosts and custom courses",
+              "displayName": "Smooooth Pro Yearly",
+              "locale": "en_US"
             }
           ],
-          "productID" : "smooooth.pro.yearly",
-          "recurringSubscriptionPeriod" : "P1Y",
-          "referenceName" : "Pro Yearly",
-          "subscriptionGroupID" : "SG.SMOOOOTH.PRO",
-          "type" : "RecurringSubscription"
+          "productID": "smooooth.pro.yearly",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "Pro Yearly",
+          "subscriptionGroupID": "SG.SMOOOOTH.PRO",
+          "type": "RecurringSubscription"
         }
       ]
     }
   ],
-  "version" : {
-    "major" : 3,
-    "minor" : 0
+  "version": {
+    "major": 3,
+    "minor": 0
   }
 }

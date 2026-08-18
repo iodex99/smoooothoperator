@@ -20,13 +20,21 @@
 #    Store Connect API → generate a key with the "App Manager" role. Apple
 #    lets you download the .p8 file ONCE, so save it somewhere safe.
 #
-# 3. Four repository secrets — Settings → Secrets and variables → Actions:
+# 3. Six repository secrets — Settings → Secrets and variables → Actions:
 #
 #      APPLE_TEAM_ID          ten characters, e.g. A1B2C3D4E5
 #      APPSTORE_KEY_ID        ten characters, from the key you generated
 #      APPSTORE_ISSUER_ID     a UUID, shown above the key list
 #      APPSTORE_PRIVATE_KEY   the ENTIRE .p8 file, including the
 #                             -----BEGIN PRIVATE KEY----- lines
+#      SUPABASE_URL           https://<ref>.supabase.co
+#      SUPABASE_ANON_KEY      the publishable/anon key
+#
+#    The last two are NOT secrets in the security sense — the anon key ships
+#    inside the binary and row-level security is what protects data — but
+#    they are secrets here because without them the build produces an app
+#    that installs, launches, and cannot reach the backend at all. A tester
+#    would see an app that simply does not work, with nothing to explain it.
 #
 # The API key is what lets this sign without anyone hand-managing
 # certificates: `-allowProvisioningUpdates` asks Apple to create and fetch
@@ -68,18 +76,43 @@ jobs:
           KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
           ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
           PRIVATE_KEY: ${{ secrets.APPSTORE_PRIVATE_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
           missing=""
           [ -n "$TEAM_ID" ]     || missing="$missing APPLE_TEAM_ID"
           [ -n "$KEY_ID" ]      || missing="$missing APPSTORE_KEY_ID"
           [ -n "$ISSUER_ID" ]   || missing="$missing APPSTORE_ISSUER_ID"
           [ -n "$PRIVATE_KEY" ] || missing="$missing APPSTORE_PRIVATE_KEY"
+          [ -n "$SUPABASE_URL" ]      || missing="$missing SUPABASE_URL"
+          [ -n "$SUPABASE_ANON_KEY" ] || missing="$missing SUPABASE_ANON_KEY"
           if [ -n "$missing" ]; then
             echo "::error::Missing repository secret(s):$missing"
             echo "Add them under Settings → Secrets and variables → Actions."
             echo "The header of .github/workflows/testflight.yml says where each one comes from."
             exit 1
           fi
+
+      # WITHOUT THIS THE BUILD SHIPS AN APP THAT CANNOT REACH THE BACKEND.
+      # project.yml reads SUPABASE_URL and SUPABASE_ANON_KEY from this
+      # xcconfig, which is gitignored because it is per-developer. The
+      # nightly job copies the EXAMPLE file — placeholder values are fine
+      # there, because that job only proves the code compiles. A TestFlight
+      # build goes on a real phone, and a placeholder URL means sign-in,
+      # courses, leaderboards and uploads all fail silently on a device that
+      # otherwise looks fine.
+      - name: Write the Supabase configuration
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          # The `/$()/` is not a typo: xcconfig treats `//` as a comment, so
+          # the empty variable reference breaks up the `https://` scheme.
+          # Without it the value silently truncates to `https:`.
+          printf 'SUPABASE_URL = %s\nSUPABASE_ANON_KEY = %s\n' \
+            "$(printf '%s' "$SUPABASE_URL" | sed 's|//|/$()/|')" \
+            "$SUPABASE_ANON_KEY" > App/Configs/Supabase.xcconfig
+          echo "wrote App/Configs/Supabase.xcconfig"
 
       - name: Install XcodeGen
         run: brew install xcodegen

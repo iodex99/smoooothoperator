@@ -3,7 +3,7 @@
 -- is a "read the whole user base" endpoint with a friendly name.
 
 begin;
-select plan(27);
+select plan(28);
 
 insert into auth.users (id, email) values
     ('ad000001-a000-4000-8000-000000000001', 'owner@test.local'),
@@ -113,9 +113,36 @@ select ok(
     'the owner sees the whole user base, not just their own row'
 );
 
+-- The real prices are set by migration 0036, so "unconfigured" is no longer
+-- the starting state — it is a state this assertion has to CREATE. Which is
+-- how it should always have been written: the behaviour worth protecting is
+-- that an unpriced product is reported as unknown rather than as $0 of
+-- revenue, and that is true whatever the migrations happen to seed.
+set local role postgres;
+update public.product_prices set price_minor = 0;
+set local role authenticated;
+set local request.jwt.claims = '{"sub":"ad000001-a000-4000-8000-000000000001","role":"authenticated"}';
+
 select ok(
     (select prices_configured from public.admin_overview()) = false,
-    'prices start unconfigured, and the dashboard says so rather than showing $0 MRR as fact'
+    'an unpriced product reads as unconfigured, and the dashboard says so '
+    'rather than showing $0 MRR as fact'
+);
+
+set local role postgres;
+update public.product_prices set price_minor = 1900
+ where product_id = 'smooooth.pro.monthly';
+update public.product_prices set price_minor = 700
+ where product_id = 'smooooth.pro.weekly';
+update public.product_prices set price_minor = 9900
+ where product_id = 'smooooth.pro.yearly';
+set local role authenticated;
+set local request.jwt.claims = '{"sub":"ad000001-a000-4000-8000-000000000001","role":"authenticated"}';
+
+select ok(
+    (select prices_configured from public.admin_overview()) = true,
+    'and priced products read as configured — the flag distinguishes '
+    '"no revenue" from "nobody told me the price"'
 );
 
 -- ── money is never invented ───────────────────────────────────────────────

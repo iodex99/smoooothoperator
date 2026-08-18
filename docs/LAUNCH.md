@@ -4,52 +4,107 @@
 > **YOU** need an account, a card, or a physical device and cannot be done from
 > this Codespace. Items marked **ME** I can do once the thing above it exists.
 
----
+**Status 2026-08-18:** the Apple Developer Program and the domain are bought,
+and the prices are decided. That clears Phase 0 entirely and unblocks
+everything except the two things only a physical iPhone can settle.
 
-## Does the domain have to exist first?
+## The one thing I am waiting on
 
-**No — it is not a launch blocker.** Apple requires a *reachable* privacy policy
-URL and support URL. They do not have to be on your own domain. A free
-`smoooothoperator.pages.dev` from Cloudflare Pages satisfies Apple completely.
+**Your Apple Team ID** — ten characters, like `A1B2C3D4E5`. Find it at
+[developer.apple.com/account](https://developer.apple.com/account) →
+**Membership details** → *Team ID*.
 
-**But buy it now anyway**, for three reasons:
+It is not a secret (it appears in every app's receipt) and it is the only
+value I cannot derive. One file needs it: `web/.well-known/apple-app-site-association`
+currently contains the literal string `TEAMID`, and until it is replaced,
+**shared challenge links will silently not open the app.** There is no error
+anywhere when this is wrong — the link just opens Safari instead. Send it and
+I will commit the change in a minute.
 
-1. **Three things already point at it and will be dead until it resolves.** The
-   share card footer reads `smoooothoperator.com`, the legal links in the
-   paywall and About screen point there, and the universal-links entitlement
-   declares `applinks:smoooothoperator.com`. A share card is designed to travel
-   to strangers — a dead domain on it is worse than no domain.
-2. **The support email has to work.** Apple rejects apps whose support address
-   bounces, and `support@smoooothoperator.com` needs the domain to exist.
-3. **It is ~$12/year and someone else can take it.** The name is distinctive
-   enough to be worth squatting.
-
-**If you want to launch before the domain resolves**, tell me and I will point
-`Brand.domain` at the Pages subdomain — it is one constant now, so it is a
-one-line change plus a CI build. Do not ship with the current value pointing at
-nothing.
+Everything else in this runbook you can start now.
 
 ---
 
-## Phase 0 — Accounts and money
+## Phase 0 — Accounts and money — ✅ done
 
-Nothing else can start until these exist.
+1. ~~Apple Developer Program, $99/year.~~ **Bought 2026-08-18.**
+2. ~~Buy the domain.~~ **Bought 2026-08-18.**
+3. ~~Decide the price.~~ **Decided 2026-08-18:**
 
-1. **YOU — Apple Developer Program, $99/year.** This gates *everything*: bundle
-   identifiers, TestFlight, StoreKit products, Sign in with Apple, push, the
-   lot. Enrolment as an individual is usually same-day; as a company it needs a
-   D-U-N-S number and can take a week or more. Start here.
-2. **YOU — buy `smoooothoperator.com`** (see above).
-3. **YOU — decide the price** of Smooooth Pro weekly / monthly / yearly. You
-   cannot skip this: the product records need real prices, and the analytics
-   console shows `—` for MRR until it is told what they are.
+   | Product id | Price | Period |
+   |---|---|---|
+   | `smooooth.pro.weekly` | **$7** | 1 week |
+   | `smooooth.pro.monthly` | **$19** | 1 month |
+   | `smooooth.pro.yearly` | **$99** | 1 year |
+
+   Already done on my side: migration `0036` mirrors these into
+   `product_prices` so MRR and ARR report real numbers instead of `—`, and
+   `App/Configs/Products.storekit` matches so simulator and sandbox runs show
+   the real ladder.
+
+   **The app never reads either of those.** The paywall shows
+   `product.displayPrice` straight from StoreKit, in the driver's own
+   currency, so App Store Connect is the only source of truth for what anyone
+   is actually charged. The mirror exists solely for your revenue figures —
+   which means it can be wrong quietly. If App Store Connect does not offer
+   exactly $7.00 / $19.00 / $99.00 and you take a neighbouring price point,
+   **tell me the values you picked** and I will correct migration 0036.
+
+---
+
+## Phase 0b — The Apple Developer portal (do this first)
+
+Now that the membership exists, these identifiers have to be created before
+sign-in or the build will work. About twenty minutes, all at
+[developer.apple.com/account](https://developer.apple.com/account).
+
+3a. **YOU — send me your Team ID.** *Membership details* → *Team ID*. See the
+    top of this file for why.
+
+3b. **YOU — register the App ID.** *Identifiers* → **+** → *App IDs* → *App*.
+    - Description: Smooooth Operator
+    - Bundle ID: **Explicit**, `app.smooooth.operator`
+    - Capabilities — tick these three, they are all in the entitlements file:
+      **Sign in with Apple**, **Associated Domains**, **Push Notifications**.
+
+    (Push is ticked now because adding a capability later invalidates the
+    provisioning profile and means a rebuild. The app ships no remote-push
+    code yet — `DriverNotifications` is local-only until APNs is wired — so
+    nothing depends on it working.)
+
+3c. **YOU — create a Services ID** (this is what Supabase uses for Sign in
+    with Apple, and it is *not* the same thing as the App ID).
+    *Identifiers* → **+** → *Services IDs*.
+    - Identifier: `app.smooooth.operator.signin`
+    - Enable *Sign in with Apple* → **Configure**:
+      - Primary App ID: `app.smooooth.operator`
+      - Domains: `smoooothoperator.com`
+      - Return URL: `https://tsxyxgtjihycaoydyafp.supabase.co/auth/v1/callback`
+
+3d. **YOU — create a Sign in with Apple key.** *Keys* → **+** → name it,
+    tick **Sign in with Apple**, configure it to the primary App ID, then
+    **Download the `.p8` file**.
+
+    **You can only download it once.** Keep it somewhere safe. Note the
+    **Key ID** shown next to it — you need Key ID, Team ID, the Services ID
+    and the `.p8` contents for Phase 1 step 5.
+
+3e. **YOU — create an App Store Connect API key**, for the TestFlight
+    workflow. This one lives in *App Store Connect*, not the developer
+    portal: [appstoreconnect.apple.com](https://appstoreconnect.apple.com) →
+    *Users and Access* → *Integrations* → *App Store Connect API* → **+**.
+    - Access: **App Manager**
+    - Download the `.p8` (again, once only) and note the **Key ID** and the
+      **Issuer ID** shown above the table.
+
+    These become three of the four GitHub secrets in Phase 3.
 
 ---
 
 ## Phase 1 — Make the backend real
 
 The Supabase project exists but is **empty** — I checked, and `public.courses`
-does not exist there yet. All 35 migrations are still local-only.
+does not exist there yet. All 36 migrations are still local-only.
 
 4. **YOU — push the schema.** This needs the database password, which I
    deliberately do not have:
@@ -60,12 +115,30 @@ does not exist there yet. All 35 migrations are still local-only.
    supabase db seed         # loads the 803-course catalog
    ```
 
-5. **YOU — turn on the auth providers.** I queried `/auth/v1/settings` and
-   every provider is `false`, including Apple and Google. **Nobody can sign in
-   right now, including you** — which also means the analytics console cannot be
-   reached. Authentication → Providers → enable Apple and Google, then add
-   `smooothoperator://auth-callback` to the redirect allow-list.
-   (Three o's in that scheme is correct — it is what the app registers.)
+5. **YOU — turn on the auth providers.** Every provider is currently `false`,
+   including Apple and Google. **Nobody can sign in right now, including you**
+   — which also means the operator console cannot be reached.
+
+   Supabase dashboard → *Authentication* → *Providers* → **Apple** → enable,
+   then fill in the four values from Phase 0b:
+
+   | Field | What goes in it |
+   |---|---|
+   | Client IDs | `app.smooooth.operator.signin` (the **Services** ID) |
+   | Secret Key | the entire contents of the `.p8` file from 3d |
+   | Team ID | your Team ID |
+   | Key ID | the Key ID from 3d |
+
+   **Google** is optional and free: create an OAuth client (type: *Web
+   application*) in the Google Cloud console with the same
+   `https://tsxyxgtjihycaoydyafp.supabase.co/auth/v1/callback` redirect, and
+   paste the client id and secret.
+
+   Then *Authentication* → *URL Configuration* → **Redirect URLs** → add
+   `smooothoperator://auth-callback`. Sign-in silently fails without it — the
+   callback is how the app receives the session. (Three o's in that scheme is
+   correct; it is what the app registers, and it is deliberately not the same
+   as the four-o brand name.)
 
 6. **YOU — deploy the edge functions:**
 
@@ -116,22 +189,61 @@ does not exist there yet. All 35 migrations are still local-only.
 
 ## Phase 2 — App Store Connect
 
-10. **YOU — create the app record.** Bundle ID must match `project.yml`.
-11. **YOU — create three auto-renewable subscriptions** in one subscription
-    group, with these exact identifiers — the app and the database both check
-    them by string:
-    - `smooooth.pro.weekly`
-    - `smooooth.pro.monthly`
-    - `smooooth.pro.yearly`
-12. **YOU — set the App Store Server Notifications V2 URL** to
-    `https://tsxyxgtjihycaoydyafp.supabase.co/functions/v1/appstore-notifications`
-    and hit **Test**. It returns 200 for Apple's TEST notification specifically
-    so this button works.
-13. **YOU — fill in the privacy nutrition labels.** Declare: precise location
-    (app functionality, linked to identity), motion/fitness data, and purchase
-    history. `PrivacyInfo.xcprivacy` already declares the APIs; the nutrition
-    label is a separate form and Apple checks they agree.
-14. **YOU — screenshots and copy.** The CI gallery is a decent starting set.
+Also do this early: the **Paid Applications agreement** in step 10a can take
+days to clear, and until it does Apple will not take money from anyone.
+
+10. **YOU — create the app record.** *My Apps* → **+** → *New App*.
+    - Platform: iOS
+    - Bundle ID: **`app.smooooth.operator`** — it must match exactly; it is
+      set in `App/project.yml` and baked into the entitlements.
+    - SKU: anything you like, `smooooth-operator` is fine. It is internal.
+    - Primary language, and the app name as it appears on the store.
+
+10a. **YOU — sign the Paid Applications agreement.** *Business* → *Agreements*
+     → complete **banking details and tax forms**. This is the slowest item in
+     the whole runbook: it can take several days and sometimes needs
+     documents. Nothing sells until it is active, so start it the same day.
+
+11. **YOU — create the three subscriptions.** *Subscriptions* → create **one
+    subscription group** (name it something like "Smooooth Pro" — the group
+    name is visible to users), then add three auto-renewable subscriptions
+    inside it. The identifiers must be exact; the app and the database both
+    match them by string:
+
+    | Product ID | Duration | Price |
+    |---|---|---|
+    | `smooooth.pro.weekly` | 1 week | **$7** |
+    | `smooooth.pro.monthly` | 1 month | **$19** |
+    | `smooooth.pro.yearly` | 1 year | **$99** |
+
+    Each one needs a display name and a description before it can be
+    submitted, and at least one needs a **subscription group display name**.
+
+    **If Apple does not offer exactly $7.00 / $19.00 / $99.00**, take the
+    nearest price point and tell me the three values — migration `0036`
+    mirrors them for revenue reporting and would otherwise be quietly wrong.
+
+12. **YOU — set the App Store Server Notifications V2 URL.** *App Information*
+    → *App Store Server Notifications* → **Production Server URL**:
+
+    ```
+    https://tsxyxgtjihycaoydyafp.supabase.co/functions/v1/appstore-notifications
+    ```
+
+    Set the sandbox URL to the same value. Then press **Test**. It returns 200
+    for Apple's TEST notification specifically so that button works — but only
+    after Phase 1 step 7, because without `APPLE_ROOT_CA_SHA256` the function
+    returns 503 by design and the test will fail.
+
+13. **YOU — fill in the privacy nutrition labels.** *App Privacy*. Declare:
+    **precise location** (app functionality, linked to identity), **motion and
+    fitness data**, and **purchase history**. `PrivacyInfo.xcprivacy` already
+    declares the underlying APIs; the nutrition label is a separate form and
+    Apple checks the two agree.
+
+14. **YOU — screenshots and copy.** The CI gallery artifact is a decent
+    starting set — download it from the latest *iOS nightly build* run. You
+    need 6.7" and 6.5" sizes at minimum.
 
 ---
 
@@ -150,13 +262,27 @@ does not exist there yet. All 35 migrations are still local-only.
 
     Archiving and signing need macOS, which is why this used to imply owning a
     Mac. It no longer does: `.github/workflows/testflight.yml` does the whole
-    thing on the CI Mac. Add four secrets (the workflow header says where each
-    comes from), press **Run workflow**, then install TestFlight on the iPhone
-    and sign in with the same Apple ID.
+    thing on the CI Mac. Add **six** repository secrets — GitHub → *Settings*
+    → *Secrets and variables* → *Actions* → *New repository secret* — then
+    press **Run workflow** on the TestFlight action, and install TestFlight on
+    the iPhone signed in with the same Apple ID.
 
-    ```
-    APPLE_TEAM_ID  APPSTORE_KEY_ID  APPSTORE_ISSUER_ID  APPSTORE_PRIVATE_KEY
-    ```
+    | Secret | Where it comes from |
+    |---|---|
+    | `APPLE_TEAM_ID` | Phase 0b step 3a |
+    | `APPSTORE_KEY_ID` | Phase 0b step 3e |
+    | `APPSTORE_ISSUER_ID` | Phase 0b step 3e |
+    | `APPSTORE_PRIVATE_KEY` | the **entire** `.p8` from 3e, `-----BEGIN` lines included |
+    | `SUPABASE_URL` | `https://tsxyxgtjihycaoydyafp.supabase.co` |
+    | `SUPABASE_ANON_KEY` | Supabase → *Settings* → *API* → publishable key |
+
+    **The last two were missing until 2026-08-18 and would have cost you a
+    build.** `project.yml` reads them from a gitignored xcconfig; the nightly
+    job writes placeholders because it only needs to prove the code compiles,
+    and the TestFlight job wrote nothing at all. The build would have
+    succeeded and produced an app that installs, launches, and cannot reach
+    the backend — no sign-in, no courses, no uploads, and nothing on screen
+    to say why.
 
     That workflow has never run and cannot be tested without a paid account.
     Expect the first attempt to want a small correction; send me the log.
@@ -185,21 +311,73 @@ does not exist there yet. All 35 migrations are still local-only.
 
 ---
 
-## Phase 5 — Web
+## Phase 5 — The domain and the site (Cloudflare)
 
-18. **ME/YOU — deploy the site:**
+**Do this early, not last.** App Store review requires a *reachable* privacy
+policy and support URL, and Apple checks them during review — a domain that
+resolves the day after you submit is a rejection. Everything here is free
+apart from the domain you already own.
+
+**Where you bought the domain decides step 18.** If you registered it *at*
+Cloudflare, DNS is already there and you can skip straight to 19.
+
+18. **YOU — put the domain on Cloudflare.**
+    [dash.cloudflare.com](https://dash.cloudflare.com) → *Add a site* → type
+    the domain → **Free** plan. Cloudflare shows you two nameservers. Go to
+    wherever you bought the domain (Namecheap, GoDaddy, Porkbun…), find
+    *Nameservers*, replace what is there with Cloudflare's two, and save.
+    Propagation is usually minutes; Cloudflare emails you when it is active.
+
+19. **YOU — create the Pages project.** Cloudflare dashboard →
+    *Workers & Pages* → *Create* → *Pages* → **Upload assets** (not the Git
+    option — this repository is private and does not need to be connected).
+    Name it `smoooothoperator`. It will ask for files; you need the built
+    `web/` directory, which is what step 20 produces.
+
+    Or skip the dashboard entirely and do it from here in one command —
+    tell me and I will run it, or run it yourself:
 
     ```bash
     npx wrangler pages deploy web --project-name smoooothoperator
     ```
 
-19. **YOU — point the domain** at the Pages project, then verify
-    `https://smoooothoperator.com/.well-known/apple-app-site-association`
-    returns `application/json` with **no redirect**. Universal links fail
-    silently otherwise — there is no error to see anywhere.
+    Wrangler opens a browser window once to authorise. The site is four
+    static pages plus the AASA file; there is no build step.
 
-20. **YOU — make `support@`, `privacy@` and `legal@smoooothoperator.com` reach
-    a real inbox.** Cloudflare Email Routing does this free.
+20. **YOU — attach the domain to the Pages project.** In the Pages project →
+    *Custom domains* → *Set up a custom domain* → enter the apex domain
+    (`smoooothoperator.com`, no `www`). Cloudflare adds the DNS record
+    itself. Add `www` as a second custom domain if you want it to work too.
+
+21. **YOU — verify the AASA file, because nothing tells you when it is wrong.**
+
+    ```bash
+    curl -sI https://smoooothoperator.com/.well-known/apple-app-site-association
+    ```
+
+    Three things must be true, and all three are silent failures:
+    - **HTTP 200 with no redirect.** Apple does not follow redirects for this
+      file. A `301` from apex to `www` breaks universal links completely.
+    - **`content-type: application/json`.** Not `text/plain`, not
+      `application/octet-stream`.
+    - **The body contains your real Team ID**, not the string `TEAMID`.
+
+    If all three hold, a shared challenge link opens the app. If any fails,
+    it opens Safari and nobody ever finds out why.
+
+22. **YOU — make the email addresses work.** Cloudflare dashboard → *Email* →
+    *Email Routing* → *Get started*. Add three routes, all forwarding to your
+    real inbox:
+
+    | Address | Why |
+    |---|---|
+    | `support@` | **Apple rejects apps whose support address bounces.** Linked from Profile. |
+    | `privacy@` | Named in the privacy policy as the data-request address. |
+    | `legal@` | Named in the terms. |
+
+    Cloudflare sends a confirmation email to your destination address; click
+    the link or nothing forwards. Verify by sending yourself a message to
+    `support@smoooothoperator.com` and watching it arrive.
 
 ---
 
