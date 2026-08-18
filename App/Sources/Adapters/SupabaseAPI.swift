@@ -410,12 +410,23 @@ actor SupabaseAPI {
 
     // MARK: - Storage & functions
 
+    /// Blobs are gzip, and the bucket's `allowed_mime_types` pins both this
+    /// and `application/octet-stream`.
+    ///
+    /// **`Content-Type`, deliberately — never `Content-Encoding`.** They look
+    /// interchangeable and are not: `Content-Encoding: gzip` tells every
+    /// proxy and CDN in the path that it may decompress transparently, and
+    /// the scorer hashes the bytes it fetches *before* it decompresses
+    /// anything. One transparently-decompressing hop would fail the hash
+    /// check on every run in the world, and it would do it only in
+    /// production. `Content-Type: application/gzip` says the object *is* a
+    /// gzip file, which is the truth and moves nothing.
     func uploadTelemetry(path: String, data: Data) async throws {
         _ = try await send(
             path: "storage/v1/object/telemetry/\(path)",
             method: "POST",
             body: data,
-            headers: ["Content-Type": "application/octet-stream"]
+            headers: ["Content-Type": "application/gzip"]
         )
     }
 

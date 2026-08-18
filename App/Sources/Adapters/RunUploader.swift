@@ -1,4 +1,3 @@
-import CryptoKit
 import Foundation
 import SOSync
 import SOTelemetry
@@ -7,6 +6,10 @@ import SOTelemetry
 /// envelope → REST, then invokes score-run for the authoritative result
 /// (spec §§46, 60). A completed run must never be lost: failures leave the
 /// run in the local retry queue (UploadState machine).
+///
+/// The wire format itself lives in `SOSync.TelemetryBlob` — it used to be
+/// here, which put the one format that crosses the language boundary in the
+/// half of the project Linux cannot test.
 struct RunUploader {
     let api: SupabaseAPI
 
@@ -16,29 +19,6 @@ struct RunUploader {
         var finished: Bool
     }
 
-    /// Same compact wire format score-run parses ([-9999] = nil sentinel).
-    static func telemetryPayload(outcome: DriveRunOutcome) throws -> Data {
-        let absent = -9999.0
-        let payload: [String: Any] = [
-            "formatVersion": 1,
-            "gps": outcome.rawGPS.map { sample in
-                [sample.timestamp,
-                 sample.coordinate.latitude,
-                 sample.coordinate.longitude,
-                 sample.horizontalAccuracy,
-                 sample.course ?? absent,
-                 sample.speed ?? absent,
-                 sample.altitude ?? absent]
-            },
-            "imu": outcome.rawIMU.map { sample in
-                [sample.timestamp,
-                 sample.accelX, sample.accelY, sample.accelZ,
-                 sample.gyroX, sample.gyroY, sample.gyroZ]
-            },
-        ]
-        return try JSONSerialization.data(withJSONObject: payload)
-    }
-
     func upload(
         outcome: DriveRunOutcome,
         courseId: String,
@@ -46,13 +26,16 @@ struct RunUploader {
     ) async throws -> AuthoritativeResult {
         guard let userId = await api.userId else { throw SupabaseAPI.APIError.notAuthenticated }
 
-        let blob = try Self.telemetryPayload(outcome: outcome)
-        let digest = SHA256.hash(data: blob).map { String(format: "%02x", $0) }.joined()
+        // Gzipped, and written at each sensor's real resolution: ~6.7× less
+        // to send from a car on a mobile connection, and ~6.7× less to store
+        // forever. The declared hash is over the COMPRESSED bytes, because
+        // that is what the server fetches and checks before decompressing.
+        let blob = try TelemetryBlob.upload(gps: outcome.rawGPS, imu: outcome.rawIMU)
         let runStart = outcome.rawGPS.first?.timestamp ?? Date().timeIntervalSince1970
 
         // 1. Blob first — the run row only exists once its data is safe.
-        let storagePath = "\(userId)/\(UUID().uuidString.lowercased()).json"
-        try await api.uploadTelemetry(path: storagePath, data: blob)
+        let storagePath = TelemetryBlob.storagePath(userId: userId)
+        try await api.uploadTelemetry(path: storagePath, data: blob.bytes)
 
         // 2. Run row (status uploaded → server enqueues the scoring job).
         let runResponse = try await api.insert("runs", json: [
@@ -77,8 +60,8 @@ struct RunUploader {
             "storage_path": storagePath,
             "gps_count": outcome.rawGPS.count,
             "imu_count": outcome.rawIMU.count,
-            "byte_size": blob.count,
-            "sha256": digest,
+            "byte_size": blob.byteSize,
+            "sha256": blob.sha256,
         ])
 
         // 4. Fast-path authoritative scoring (the queue sweep is the retry net).

@@ -62,6 +62,18 @@ case "course-proposal":
         seed: UInt64(argumentValue("--seed", in: arguments) ?? "7") ?? 7
     ))
 
+case "telemetry-blob":
+    // Emits a gzipped telemetry blob exactly as the app uploads one, so the
+    // server is tested against Swift's real output rather than a fixture
+    // somebody typed. The hash semantics — sha256 over the COMPRESSED bytes
+    // — are the part most easily got backwards, and score-run refuses to
+    // score a blob whose hash does not match.
+    print(TelemetryBlobDump.emit(
+        profile: SimulationProfile(rawValue: argumentValue("--profile", in: arguments) ?? "normal")
+            ?? .normal,
+        seed: UInt64(argumentValue("--seed", in: arguments) ?? "3") ?? 3
+    ))
+
 case "version", "--version":
     print("sogen \(KitInfo.version)")
 

@@ -43,7 +43,7 @@ export interface ScoreRunDeps {
   scoringConfigJson?: string;
 }
 
-interface UploadedTelemetry {
+export interface UploadedTelemetry {
   formatVersion: number;
   gps: number[][];
   imu: number[][];
@@ -51,7 +51,7 @@ interface UploadedTelemetry {
 
 const ABSENT = -9999;
 
-function parseUpload(json: UploadedTelemetry): {
+export function parseUpload(json: UploadedTelemetry): {
   gps: GPSSample[];
   imu: IMUSample[];
 } {
@@ -75,7 +75,7 @@ function parseUpload(json: UploadedTelemetry): {
   return { gps, imu };
 }
 
-async function sha256Hex(bytes: Uint8Array): Promise<string> {
+export async function sha256Hex(bytes: Uint8Array): Promise<string> {
   const digest = await crypto.subtle.digest(
     "SHA-256",
     bytes.buffer as ArrayBuffer,
