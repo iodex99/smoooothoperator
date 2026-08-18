@@ -22,9 +22,11 @@ db-test:
 edge-test:
 	cd supabase/functions && $(DENO) test --allow-read=../../fixtures,../../configs
 
-## End-to-end: golden run through storage + score-run against the LOCAL stack
-## (requires `supabase start`; skips itself when the stack is down).
+## End-to-end: golden run through storage + score-run against the LOCAL stack.
+## The preflight is not optional: each test skips itself when the stack is
+## down, so without it a half-started stack reports "0 passed" as success.
 e2e-test:
+	tools/e2e-preflight.sh
 	cd supabase/functions && $(DENO) test --allow-read=../../fixtures,../../configs --allow-net \
 		tests/score_run_integration_test.ts \
 		tests/course_creation_integration_test.ts \

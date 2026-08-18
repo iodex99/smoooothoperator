@@ -51,6 +51,29 @@ jobs:
       - name: Run pgTAP tests
         run: supabase test db
 
+  e2e:
+    name: End-to-end (live stack)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      # PostgREST and Storage are both required here and both excluded from
+      # the `db` job's list — the e2e tests upload blobs and talk to REST.
+      # edge-runtime is still excluded: these tests import the handlers
+      # directly rather than going over HTTP to a deployed function.
+      - name: Start stack
+        run: supabase start -x studio,imgproxy,mailpit,logflare,vector,postgres-meta,edge-runtime,realtime
+      # The preflight is the point of this job as much as the tests are.
+      # Every e2e test skips itself when the stack is down, so without it a
+      # broken runner would report "0 passed" and pass.
+      - name: Run end-to-end suite
+        run: make e2e-test
+
   edge:
     name: Edge functions (deno test)
     runs-on: ubuntu-24.04
