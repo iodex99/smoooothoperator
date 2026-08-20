@@ -25,7 +25,7 @@ for when it cannot.
 
   python3 tools/store-screenshots.py <input-dir> <output-dir>
 """
-import sys, os, hashlib
+import sys, re, hashlib
 from pathlib import Path
 
 try:
@@ -41,58 +41,75 @@ SIZES = {
 
 # ── Which frames, and how they are found ──────────────────────────────────
 #
-# ONBOARDING is addressed by POSITION IN THE SEQUENCE, not by filename.
-# It is six static screens in a fixed order, so deduplicating the captures
-# in filename order yields exactly those six, whatever the capture cadence
-# happened to be. Frame numbers drift between runs; the order never does.
+# Both sequences are addressed by POSITION AMONG STABLE SCREENS, never by
+# filename. Filenames moved on all three August 2026 runs; the order of the
+# tour never does.
+#
+# "Stable" means a screen that was photographed more than once in a row.
+# That filter is doing real work: a tab change or a page turn caught
+# mid-animation appears as a single distinct frame, and the first version of
+# this tool happily picked those transition blurs as screens — CI run
+# 32341477503 mapped "Pick a course" onto a fade between two other pages.
+# Every real stage now dwells long enough (DemoTour.stageDwell) to be caught
+# at least three times, so anything seen once is by definition not a stage.
+
+MIN_DWELL = 2
+
 ONBOARDING_SCREENS = 6
-ONBOARDING_PICKS = {          # position in the deduped sequence -> output name
-    1: "08-pick-a-course",    # "Pick a course. Beat the benchmark."
-    2: "04-four-disciplines", # "One score. Four disciplines."
+ONBOARDING_PICKS = {          # index among stable screens -> output name
+    1: "08-pick-a-course",
+    2: "04-four-disciplines",
     3: "06-every-run-verified",
     4: "10-drive-safe",       # the safety gate — App Review wants this one
-    5: "09-roads-near-you",   # the location ask
+    5: "09-roads-near-you",
 }
-# Position 0 is the opening title card, which says less than any of the above.
+# Index 0 is the opening title card, which says less than any of the above.
 
-# THE TOUR cannot use the same trick: the live-run map moves continuously,
-# so deduplicating yields dozens of distinct frames rather than a screen
-# list. These are filename-addressed and therefore DRIFT BETWEEN RUNS —
-# 2026-08-20 moved every one of them. Re-check against the contact sheet
-# after any change to the tour, and read the mapping this script prints.
-# Verified by eye against run 32341477503 (2026-08-20). These moved between
-# EVERY run so far: 09->12->08 for course detail alone. Re-check the mapping
-# this script prints before uploading anything.
-TOUR_PICKS = [
-    ("tour-11.png", "02-run-complete-verified"),
-    ("tour-08.png", "03-course-detail"),
-    ("tour-24.png", "05-share-card"),
-    ("tour-30.png", "07-flying-start-not-ranked"),
-]
+# The tour's stable stages, in the fixed order DemoTourView walks them.
+# Indices 0-3 are Home / Explore / Leaderboards / Profile, all of which
+# render signed-out against CI's absent backend and are deliberately unused.
+TOUR_STAGES = 9
+TOUR_PICKS = {
+    4: "03-course-detail",
+    5: "02-run-complete-verified",   # DriveView's own result, after the drive
+    6: "05-share-card",
+    7: None,                         # garage — signed-out, not shipped
+    8: "07-flying-start-not-ranked",
+}
 
-# 01-live-run-ghost-delta is NOT here. The live-run screen is the only one
-# the tour can miss entirely — run 32341477503 went from course detail
-# straight to the result, capturing no drive frame at all, because the
-# capture cadence aliased past the whole drive. There is no filename that
-# reliably holds it, so slot 01 is selected by hand from whichever run has a
-# good one and kept out of the automated set rather than silently omitted.
-
-# Deliberately excluded: Home, Explore, Leaderboards, Profile and Garage.
-# All render signed-out or empty against CI's absent backend, and Explore
-# shows an outright error. Re-shoot on a signed-in device once the backend
-# is deployed.
+# The live run is NOT a stable screen: the map moves, so every frame differs.
+# It is found as the longest run of never-repeated frames, which is the drive
+# and nothing else — a transition blur is one frame, the drive is six or
+# seven. Taking the middle of that run avoids the start and finish overlays.
+LIVE_RUN_OUTPUT = "01-live-run-ghost-delta"
 
 
-def onboarding_sequence(src):
-    """The distinct onboarding screens, in the order they were shown."""
-    frames = sorted(src.glob("onboard-*.png"))
-    sequence, previous = [], None
+def segments(src, pattern):
+    """[(path, dwell)] — consecutive identical captures collapsed."""
+    frames = sorted(src.glob(pattern),
+                    key=lambda p: int(re.search(r"(\d+)", p.name).group(1)))
+    out, previous = [], None
     for frame in frames:
         digest = hashlib.md5(frame.read_bytes()).hexdigest()
-        if digest != previous:          # collapse runs of identical captures
-            sequence.append(frame)
+        if digest != previous:
+            out.append([frame, 1])
             previous = digest
-    return sequence
+        else:
+            out[-1][1] += 1
+    return out
+
+
+def longest_transient_run(segs):
+    """The drive: the longest stretch of frames that never repeated."""
+    best, current = [], []
+    for path, dwell in segs:
+        if dwell < MIN_DWELL:
+            current.append(path)
+            if len(current) > len(best):
+                best = list(current)
+        else:
+            current = []
+    return best
 
 
 def fit(img, target):
@@ -112,44 +129,59 @@ def main():
     if not src.is_dir():
         sys.exit(f"no such directory: {src}")
 
-    # ── onboarding, by position ──────────────────────────────────────────
-    sequence = onboarding_sequence(src)
-    if len(sequence) < ONBOARDING_SCREENS:
-        # Loud, because this is how the safety gate went missing: the
-        # capture cadence aliased with the auto-advance and skipped screens,
-        # and every file the old check looked for still existed.
-        sys.exit(
-            f"onboarding capture is incomplete: {len(sequence)} distinct "
-            f"screens, expected {ONBOARDING_SCREENS}.\n"
-            f"The capture cadence is aliasing with the 4s auto-advance — "
-            f"screens are being skipped. Capture more often, not less."
+    problems, selected = [], []
+
+    # ── onboarding ───────────────────────────────────────────────────────
+    onboarding = [p for p, dwell in segments(src, "onboard-*.png")
+                  if dwell >= MIN_DWELL]
+    if len(onboarding) < ONBOARDING_SCREENS:
+        problems.append(
+            f"onboarding: {len(onboarding)} stable screens, expected "
+            f"{ONBOARDING_SCREENS}. Screens are being skipped or the last one "
+            f"is cut off — capture more frames, or lengthen DemoTour dwells."
         )
+    else:
+        selected += [(onboarding[i], name) for i, name in ONBOARDING_PICKS.items()]
 
-    selected = []
-    for position, name in ONBOARDING_PICKS.items():
-        selected.append((sequence[position], name))
+    # ── tour: stable stages ──────────────────────────────────────────────
+    tour = segments(src, "tour-*.png")
+    stages = [p for p, dwell in tour if dwell >= MIN_DWELL]
+    if len(stages) < TOUR_STAGES:
+        problems.append(
+            f"tour: {len(stages)} stable stages, expected {TOUR_STAGES}. "
+            f"The tour did not complete, or a stage is dwelling too briefly "
+            f"to be photographed twice."
+        )
+    else:
+        selected += [(stages[i], name)
+                     for i, name in TOUR_PICKS.items() if name]
 
-    # ── tour, by filename ────────────────────────────────────────────────
-    missing = [f for f, _ in TOUR_PICKS if not (src / f).exists()]
-    if missing:
-        sys.exit(f"missing tour capture(s): {', '.join(missing)}\n"
-                 f"The tour's frame numbering changed — update TOUR_PICKS.")
-    selected += [(src / f, name) for f, name in TOUR_PICKS]
+    # ── tour: the live run ───────────────────────────────────────────────
+    drive = longest_transient_run(tour)
+    if len(drive) < 3:
+        problems.append(
+            f"live run: found {len(drive)} moving frames, expected several. "
+            f"The mock drive is finishing faster than the capture interval — "
+            f"lower `speedup` in DemoTour.swift."
+        )
+    else:
+        selected.append((drive[len(drive) // 2], LIVE_RUN_OUTPUT))
 
-    # Duplicate detection catches the loudest symptom of drift: two picks
-    # that resolved to the same screen. It is not proof the rest are right.
+    if problems:
+        # Refuse rather than emit a set with a hole in it. A duplicated slot
+        # looks like a finished screenshot set right up until Apple sees it.
+        sys.exit("cannot build a complete set:\n  " + "\n  ".join(problems))
+
+    # Distinctness is the last backstop: if two picks resolved to the same
+    # screen, the mapping is wrong however plausible the counts looked.
     digests = {}
     for path, name in selected:
         digests.setdefault(hashlib.md5(path.read_bytes()).hexdigest(), []).append(name)
     collisions = [g for g in digests.values() if len(g) > 1]
     if collisions:
-        print("WARNING: two picks resolved to the same screen:", file=sys.stderr)
-        for group in collisions:
-            print(f"  {', '.join(group)}", file=sys.stderr)
-        print("  Check the mapping below against the raw captures.\n", file=sys.stderr)
+        sys.exit("two picks resolved to the same screen:\n  "
+                 + "\n  ".join(", ".join(g) for g in collisions))
 
-    # Print the mapping, because the tour picks cannot be verified any other
-    # way than by a person looking at them.
     print("mapping:")
     for path, name in sorted(selected, key=lambda pair: pair[1]):
         print(f"  {name:<28} <- {path.name}")
@@ -160,8 +192,8 @@ def main():
         out = dst / label
         out.mkdir(parents=True, exist_ok=True)
         for path, name in selected:
-            img = Image.open(path).convert("RGB")
-            fit(img, target).save(out / f"{name}.png", "PNG", optimize=True)
+            fit(Image.open(path).convert("RGB"), target).save(
+                out / f"{name}.png", "PNG", optimize=True)
             written += 1
         print(f"{label}: {len(selected)} screenshots -> {out}")
 

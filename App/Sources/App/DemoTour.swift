@@ -14,6 +14,17 @@ import SwiftUI
 /// pipeline (spec §89) — so CI screenshots show the core loop end to end.
 /// DEBUG only; the user develops without Apple hardware and CI Macs are
 /// the only window.
+///
+/// EVERY DWELL HERE IS COUPLED TO THE CAPTURE CADENCE IN ios-nightly.yml.
+/// `xcrun simctl io screenshot` costs about two seconds, and the workflow
+/// sleeps two more, so frames land roughly every four seconds. A stage that
+/// dwells for less than about three of those intervals can be photographed
+/// once, or missed altogether when the phases align badly — which is not
+/// hypothetical: three consecutive runs in August 2026 each produced a
+/// different set of frames, and one skipped the live drive entirely.
+///
+/// So no stage below dwells for less than `stageDwell`. Making the tour
+/// slower is free; a screenshot set with a hole in it is not.
 struct DemoTourView: View {
     @Environment(AppEnvironment.self) private var environment
     @State private var selection = 0
@@ -22,6 +33,11 @@ struct DemoTourView: View {
     static var isRequested: Bool {
         ProcessInfo.processInfo.environment["SMOOOOTH_DEMO_TOUR"] == "1"
     }
+
+    /// Minimum time any static screen stays on-screen: three capture
+    /// intervals plus margin, so every stage yields at least three frames
+    /// and shows up as a run of identical captures downstream.
+    static let stageDwell = Duration.seconds(12)
 
     var body: some View {
         TabView(selection: $selection) {
@@ -44,10 +60,10 @@ struct DemoTourView: View {
         }
         .task {
             for tab in 1...3 {
-                try? await Task.sleep(for: .seconds(6))
+                try? await Task.sleep(for: Self.stageDwell)
                 selection = tab
             }
-            try? await Task.sleep(for: .seconds(6))
+            try? await Task.sleep(for: Self.stageDwell)
             showDriveFlow = true
         }
     }
@@ -62,6 +78,12 @@ private struct DemoDriveFlow: View {
     @State private var stage = Stage.course
 
     enum Stage { case course, driving, shareCard, garage, flyingStart }
+
+    /// The drive needs room for two distinct things to be photographed: the
+    /// moving map, and the result DriveView shows once the run is scored.
+    /// At 8x the drive lasts ~25s, so 45s leaves ~20s of settled result —
+    /// five or six captures each, with margin.
+    private static let drivingDwell = Duration.seconds(45)
 
     /// A run that crossed the start line at speed.
     ///
@@ -96,10 +118,23 @@ private struct DemoDriveFlow: View {
                     // A real rival: a faster ghost built from its own run.
                     ghost: DemoCourse.rivalGhost,
                     courseId: "demo",
+                    // 8x, not 30x. THIS IS THE BUG THAT LOST THE LIVE-RUN
+                    // SCREENSHOT. At 30x a 3:15 drive is over in about six
+                    // seconds — barely one capture interval — and DriveView
+                    // then sits on its own result screen for the remaining
+                    // forty-odd seconds of this stage. The moving map, which
+                    // is the single most compelling thing the app does and
+                    // screenshot number one on the listing, existed for one
+                    // frame if it existed at all. Run 32341477503 captured
+                    // none of it.
+                    //
+                    // 8x spreads the drive over roughly twenty-five seconds
+                    // — six or seven captures — and still leaves time inside
+                    // `drivingDwell` for the result to appear and settle.
                     debugEvents: MockSensorFeed.stream(
                         profile: .fastSmooth,
                         route: DemoCourse.route,
-                        speedup: 30
+                        speedup: 8
                     )
                 )
             case .shareCard:
@@ -144,16 +179,17 @@ private struct DemoDriveFlow: View {
         }
         .environment(environment)
         .task {
-            try? await Task.sleep(for: .seconds(10))
+            try? await Task.sleep(for: DemoTourView.stageDwell)
             stage = .driving
-            // Long enough for the 30x mock drive to finish and be scored.
-            try? await Task.sleep(for: .seconds(50))
+            try? await Task.sleep(for: Self.drivingDwell)
             stage = .shareCard
-            try? await Task.sleep(for: .seconds(8))
+            try? await Task.sleep(for: DemoTourView.stageDwell)
             stage = .garage
-            try? await Task.sleep(for: .seconds(8))
+            try? await Task.sleep(for: DemoTourView.stageDwell)
             stage = .flyingStart
-            try? await Task.sleep(for: .seconds(10))
+            // The last stage gets extra: the capture loop must still be
+            // running when it appears, and it is the tail of the tour.
+            try? await Task.sleep(for: DemoTourView.stageDwell)
         }
     }
 }

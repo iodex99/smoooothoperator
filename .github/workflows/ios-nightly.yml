@@ -103,10 +103,14 @@ jobs:
           # Review most wants to see.
           #
           # Screenshot latency alone paces this at ~2s, i.e. two captures per
-          # screen, and 20 frames covers the ~24s walk with margin. Frames
-          # are deduplicated downstream, so extras cost nothing.
+          # screen. 28 frames rather than 20 because the walk must be caught
+          # RESTING on its final screen: run 32341477503 ended the loop on
+          # the same frame the location page appeared, so "Find the roads
+          # near you" was seen exactly once and the tool could not tell it
+          # from a transition. Frames are deduplicated downstream, so extras
+          # cost nothing but a few seconds of Mac time.
           SIMCTL_CHILD_SMOOOOTH_DEMO_ONBOARDING=1 xcrun simctl launch "${{ steps.sim.outputs.udid }}" app.smooooth.operator
-          for i in $(seq -w 1 20); do
+          for i in $(seq -w 1 28); do
             xcrun simctl io "${{ steps.sim.outputs.udid }}" screenshot "shots/onboard-$i.png" || true
           done
           xcrun simctl terminate "${{ steps.sim.outputs.udid }}" app.smooooth.operator || true
