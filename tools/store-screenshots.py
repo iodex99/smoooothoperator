@@ -60,13 +60,22 @@ ONBOARDING_PICKS = {          # position in the deduped sequence -> output name
 # list. These are filename-addressed and therefore DRIFT BETWEEN RUNS —
 # 2026-08-20 moved every one of them. Re-check against the contact sheet
 # after any change to the tour, and read the mapping this script prints.
+# Verified by eye against run 32341477503 (2026-08-20). These moved between
+# EVERY run so far: 09->12->08 for course detail alone. Re-check the mapping
+# this script prints before uploading anything.
 TOUR_PICKS = [
-    ("tour-12.png", "01-live-run-ghost-delta"),
-    ("tour-13.png", "02-run-complete-verified"),
-    ("tour-09.png", "03-course-detail"),
-    ("tour-22.png", "05-share-card"),
-    ("tour-27.png", "07-flying-start-not-ranked"),
+    ("tour-11.png", "02-run-complete-verified"),
+    ("tour-08.png", "03-course-detail"),
+    ("tour-24.png", "05-share-card"),
+    ("tour-30.png", "07-flying-start-not-ranked"),
 ]
+
+# 01-live-run-ghost-delta is NOT here. The live-run screen is the only one
+# the tour can miss entirely — run 32341477503 went from course detail
+# straight to the result, capturing no drive frame at all, because the
+# capture cadence aliased past the whole drive. There is no filename that
+# reliably holds it, so slot 01 is selected by hand from whichever run has a
+# good one and kept out of the automated set rather than silently omitted.
 
 # Deliberately excluded: Home, Explore, Leaderboards, Profile and Garage.
 # All render signed-out or empty against CI's absent backend, and Explore
