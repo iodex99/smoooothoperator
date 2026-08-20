@@ -69,11 +69,25 @@ struct OnboardingView: View {
             // CI capture: walk the pages, never complete (screenshots stop
             // at the last page).
             for next in 1..<Self.pageCount {
-                try? await Task.sleep(for: .seconds(4))
+                try? await Task.sleep(for: Self.demoPageDwell)
                 page = next
             }
         }
     }
+
+    /// How long each page stays up in CI capture mode.
+    ///
+    /// COUPLED TO THE CAPTURE CADENCE IN ios-nightly.yml, which photographs
+    /// the onboarding walk roughly every two seconds. This was four seconds
+    /// and it aliased: a page could be caught once, or stepped over
+    /// entirely. Runs on 2026-08-19 and -20 each lost a different page, one
+    /// of them the safety gate, and nothing failed — the tooling downstream
+    /// cannot tell a page seen once from an animation frame.
+    ///
+    /// Eight seconds is four captures per page. The tour uses twelve for the
+    /// same three-to-four captures, because its loop sleeps between shots
+    /// and this one does not; the captures matter, not the seconds.
+    static let demoPageDwell = Duration.seconds(8)
 
     private var locationDenied: Bool {
         environment.sensors.authorizationStatus == .denied
