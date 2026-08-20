@@ -444,9 +444,10 @@ The CI demo tour already produces a usable starting set — download the
 `screenshots` artifact from the most recent **iOS nightly build** run on
 GitHub. Those are simulator captures of the real app.
 
-You also need: **Description**, **Keywords**, **Support URL**
-(`https://smoooothoperator.com/support`), **Privacy Policy URL**
-(`https://smoooothoperator.com/privacy`), and an **App Review** note.
+You also need **Description**, **Keywords**, **Support URL**, **Privacy
+Policy URL** and an **App Review** note. All of them are written and
+character-counted in **`docs/STORE-LISTING.md`** — copy from there rather
+than composing in the form.
 
 **Write the review note carefully.** This app is scored by driving a car,
 which a reviewer at a desk cannot do. Tell them so explicitly, and give them

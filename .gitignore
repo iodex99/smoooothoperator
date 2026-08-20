@@ -33,3 +33,6 @@ tools/seed-courses/gen.log
 
 # Authoring helpers compile to bytecode; the .py files are the source.
 tools/seed-courses/__pycache__/
+
+# Wrangler build cache (Cloudflare Pages deploys)
+.wrangler/
