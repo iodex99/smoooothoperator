@@ -93,10 +93,20 @@ jobs:
           APP=$(find App/build/Build/Products -name "*.app" -maxdepth 2 | head -1)
           xcrun simctl install "${{ steps.sim.outputs.udid }}" "$APP"
           mkdir -p shots
-          # Onboarding walk (auto-advances every 4s, ends on the safety gate).
+          # Onboarding walk: six screens, auto-advancing every 4s.
+          #
+          # NO SLEEP HERE, DELIBERATELY. `simctl io screenshot` takes about
+          # two seconds by itself, so `sleep 2` produced a ~4s cadence that
+          # aliased exactly with the 4s advance — the capture landed on the
+          # same phase of every screen and skipped whole ones. The 2026-08-20
+          # run lost the safety gate entirely, which is the single screen App
+          # Review most wants to see.
+          #
+          # Screenshot latency alone paces this at ~2s, i.e. two captures per
+          # screen, and 20 frames covers the ~24s walk with margin. Frames
+          # are deduplicated downstream, so extras cost nothing.
           SIMCTL_CHILD_SMOOOOTH_DEMO_ONBOARDING=1 xcrun simctl launch "${{ steps.sim.outputs.udid }}" app.smooooth.operator
-          for i in $(seq -w 1 11); do
-            sleep 2
+          for i in $(seq -w 1 20); do
             xcrun simctl io "${{ steps.sim.outputs.udid }}" screenshot "shots/onboard-$i.png" || true
           done
           xcrun simctl terminate "${{ steps.sim.outputs.udid }}" app.smooooth.operator || true
