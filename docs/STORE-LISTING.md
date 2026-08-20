@@ -128,6 +128,66 @@ Drive a real road, get scored on smoothness rather than speed, and race the ghos
 
 ---
 
+## Sign-In Information — leave it UNCHECKED
+
+App Store Connect asks for "a user name and password so we can sign in to
+your app." **There is none to give, and that is the correct answer, not a
+gap.**
+
+The app offers exactly two sign-in methods — **Sign in with Apple** and
+**Google** — and no email/password path exists anywhere in the UI. Ticking
+*Sign-in required* and inventing credentials would hand the reviewer a
+username and password with no field to type them into, which fails review
+more surely than leaving it blank.
+
+**More to the point, sign-in is genuinely not required.** Verified against
+the code, not assumed:
+
+- `grant select on public.courses to anon`, and the visibility policy admits
+  `visibility = 'public' and status = 'active'` — all 803 platform courses
+  are readable with no account.
+- `AppEnvironment.canStartRun` consults `DailyRunAllowance` and nothing else.
+  It never looks at the session.
+
+So a signed-out reviewer can browse Explore, open a course, drive it, get a
+score, see the four sub-scores, share the card, and open the paywall. The
+result screen says so itself: *"Saved on this phone. Sign in and it uploads
+automatically."*
+
+**What they cannot reach without signing in:** Leaderboards, Friends,
+Garage, Today's Challenge, and cross-device history. Say this plainly rather
+than letting them discover it — the notes below do.
+
+### What to do in the form
+
+1. Leave **Sign-in required** unchecked.
+2. Paste the notes below into **Notes**.
+
+### If a reviewer asks for credentials anyway
+
+It happens with Sign in with Apple-only apps. Reply in Resolution Center
+with the paragraph from the notes: there is no password-based account,
+sign-in is optional, and Sign in with Apple works with the reviewer's own
+Apple ID. It is normally resolved in one round.
+
+**Do not "solve" this by adding an email/password login.** Apple does not
+require one, and it would add an auth path, a UI, a password-reset flow and
+a whole class of attack surface to satisfy a form field.
+
+### The dependency that will actually get you rejected
+
+Sign in with Apple has to **work** for the reviewer who tries it. That needs
+Phase 0b step 3c (Services ID, correct return URL) and Phase 1 step 5
+(Supabase Apple provider: Services ID, `.p8`, Team ID `44R2VVGF8G`, Key ID)
+both done and tested on a real device first.
+
+And the Apple client secret is a **JWT that expires** — Apple caps it at six
+months. `tools/apple-client-secret.mjs` mints it and prints the expiry.
+**When it lapses, sign-in breaks for everyone, silently, with no error
+anywhere.** Put the date in a calendar the day you generate it.
+
+---
+
 ## App Review notes
 
 Paste into *App Review Information → Notes*. The reviewer is at a desk and
@@ -136,70 +196,21 @@ cannot drive; an app whose core feature appears not to work gets rejected.
 ```
 Smooooth Operator scores real driving using GPS and motion sensors, so the core loop requires being in a moving vehicle.
 
-At a desk or as a passenger, the app will show courses, leaderboards, profiles and the paywall normally, but a challenge run cannot be scored — a stationary run is correctly reported as INELIGIBLE with the reason shown on screen, rather than being given a fabricated score. That is intended behaviour, not a failure.
+At a desk or as a passenger, the app browses courses, opens a course, and shows the paywall normally, but a challenge run cannot be scored — a stationary run is correctly reported as INELIGIBLE with the reason shown on screen, rather than being given a fabricated score. That is intended behaviour, not a failure.
 
-To see a completed run without driving, use the demo account below, which has verified runs already attached:
+SIGN-IN: there is no username and password to provide. The app offers only Sign in with Apple and Google, and no email/password path exists in the UI. Sign-in is also OPTIONAL — browsing courses, driving a challenge, being scored, and sharing the result card all work with no account, so the core loop can be reviewed without signing in at all.
 
-  Email: <demo@…>
-  Password: <…>
+Signing in unlocks Leaderboards, Friends, Garage, Today's Challenge and cross-device history. To review those, please use Sign in with Apple with your own Apple ID; it creates a normal account in seconds.
 
 Safety: the app requires an explicit safety acknowledgement before the first run, does not reward speed (speed limit compliance is a scored component and exceeding the limit loses points), and shows a single large control during an active run.
 
 Location: used only during an active challenge, for timing and scoring. Background location is requested because a run continues while the phone is locked and mounted. Precise routes are never shown to other users; shared "ghosts" contain pace only.
 ```
 
-**Create the demo account before you submit** and leave verified runs on it.
-A reviewer who sees only empty states has no way to evaluate the app.
-
----
-
-## Screenshots
-
-App Store Connect accepts a fixed list of pixel sizes and rejects anything
-else. The two portrait slots this listing targets:
-
-| Slot | Pixels | Native device |
-|---|---|---|
-| 6.5" | **1242 × 2688** | iPhone 11 Pro Max, XS Max |
-| 6.7" | **1284 × 2778** | iPhone 14 Plus, 13/12 Pro Max |
-
-The nightly tour used to capture on whatever iPhone the runner listed first
-— an iPhone 16 Pro, at **1206 × 2622**, which is not a valid size at any
-slot. Two changes fixed that:
-
-1. The workflow now **prefers a simulator whose native resolution is a store
-   size**, so captures need no resampling at all.
-2. `tools/store-screenshots.py` converts any capture set to both exact
-   sizes, and picks the ten frames worth uploading, in display order:
-
-   ```bash
-   python3 tools/store-screenshots.py shots store-screenshots
-   ```
-
-   Every nightly run now uploads the result as the **`app-store-screenshots`**
-   artifact alongside the raw contact sheet.
-
-**The ten, in order.** Screenshot 1 is what most people see, so it leads
-with the product in motion rather than an onboarding slide:
-
-| # | Screen | Why it earns the slot |
-|---|---|---|
-| 1 | Live run, ghost delta | the product actually doing its thing |
-| 2 | Run complete — verified | the payoff, with four sub-scores |
-| 3 | Course detail | how a run starts, and the benchmark idea |
-| 4 | One score, four disciplines | the differentiator, in one chart |
-| 5 | Share card | what leaves the app |
-| 6 | Every run is verified | integrity, which is the moat |
-| 7 | Flying start — not ranked | honesty; it scores you and says why it won't count |
-| 8 | Pick a course | the premise, plainly |
-| 9 | Find the roads near you | the location ask, justified |
-| 10 | Drive safe | the safety gate — also what App Review wants to see |
-
-**Not included, and why.** Home, Explore, Leaderboards, Profile and Garage
-all render signed-out or empty against CI's absent backend, and Explore
-shows an outright *"Couldn't load courses."* Re-shoot those five on a real
-signed-in device after Phase 1 is deployed, and they can replace the weaker
-onboarding frames.
+**Nothing to prepare before submitting.** There is no demo account to
+create — that was the plan while this file assumed a password login existed,
+and the app has never had one. What must be true instead is that Sign in
+with Apple actually works, so test it on a real device before you submit.
 
 ---
 
