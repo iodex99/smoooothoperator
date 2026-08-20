@@ -4,9 +4,37 @@
 > **YOU** need an account, a card, or a physical device and cannot be done from
 > this Codespace. Items marked **ME** I can do once the thing above it exists.
 
-**Status 2026-08-18:** the Apple Developer Program and the domain are bought,
-and the prices are decided. That clears Phase 0 entirely and unblocks
-everything except the two things only a physical iPhone can settle.
+**Status 2026-08-20:** the Apple Developer Program, the domain and the Team
+ID are all in place, the prices are set, the store listing is written and
+the screenshots are produced. What remains needs an account, a card, or a
+physical iPhone.
+
+## If you started this runbook before 2026-08-20, read this first
+
+Four things changed. **Nothing you have already done is invalidated** — no
+identifier, key, agreement or subscription needs redoing. Two are new
+required steps, one changes a form you may already have filled in, and one
+is work that is now finished for you.
+
+| # | What changed | Where | Action |
+|---|---|---|---|
+| 1 | **Email sign-in was added to the app.** A third way in, alongside Apple and Google: type an email, get a six-digit code. No password anywhere. | Phase 1 | **New required step.** Enable the Email provider, turn *Confirm email* OFF, and **configure custom SMTP** |
+| 2 | **Privacy nutrition labels now need a fourth entry** — Contact Info → Email Address, because the app now has a field people type an address into | Phase 2 · 13 | **If you already submitted the labels, go back and add it.** Apple checks them against `PrivacyInfo.xcprivacy` and rejects mismatches |
+| 3 | **The Sign-In Information question is answered** — leave it unchecked and give no credentials | Phase 2 · 12a | Read the step; it is a two-minute decision that is easy to get wrong |
+| 4 | **Screenshots are done**, ten per size, at the exact pixel sizes App Store Connect accepts | Phase 2 · 14 | Upload from `store-screenshots/` |
+
+**The one that will bite you is SMTP.** Supabase's built-in mail sender is a
+shared development convenience — single-digit messages per hour for the
+whole project. Past that it stops sending, the API still answers `200`, the
+app still says "code sent", and nothing arrives. That is indistinguishable
+from a user mistyping their address, and it will look like your app is
+broken rather than like a quota. Phase 1 has the setup.
+
+**If you have already run a TestFlight build**, it does not contain email
+sign-in. Run the workflow again when you want it on the phone — nothing
+about the build setup changed, so it is one button.
+
+---
 
 ## Nothing is blocked on me any more
 
@@ -493,29 +521,45 @@ ad SDK, no attribution, and no third-party analytics.
 
 ### 14. Screenshots and copy
 
-Required sizes: **6.9" or 6.7"** (iPhone 16 Pro Max / 15 Pro Max) and
-**6.5"**. Apple will scale one set down in some cases, but supply both to be
-safe.
+**The sizes App Store Connect asks for, and the only ones it accepts:**
 
-The CI demo tour already produces a usable starting set — download the
-`screenshots` artifact from the most recent **iOS nightly build** run on
-GitHub. Those are simulator captures of the real app.
+| Slot | Pixels | Ready |
+|---|---|---|
+| 6.5" | **1242 × 2688** | `store-screenshots/6.5-inch_1242x2688/` |
+| 6.7" | **1284 × 2778** | `store-screenshots/6.7-inch_1284x2778/` |
 
-You also need **Description**, **Keywords**, **Support URL**, **Privacy
-Policy URL** and an **App Review** note. All of them are written and
-character-counted in **`docs/STORE-LISTING.md`** — copy from there rather
-than composing in the form.
+**Ten screenshots per size are already produced**, in upload order — the
+numeric prefix is the display order, so upload them sorted by name.
 
-**Write the review note carefully.** This app is scored by driving a car,
-which a reviewer at a desk cannot do. Tell them so explicitly, and give them
-a demo account plus what to expect — a reviewer who cannot make the core
-feature work rejects the app. Something like:
+Regenerate at any time from the nightly build's **`app-store-screenshots`**
+artifact, or locally:
 
-> Smooooth Operator scores real driving using GPS and motion sensors, so the
-> core loop requires being in a moving vehicle. As a passenger or at a desk,
-> the app will show courses and leaderboards but a run cannot be scored — a
-> stationary run is correctly reported as ineligible rather than given a
-> fabricated score. Demo account: <email> / <password>.
+```bash
+gh run download <run-id> -n simulator-screenshots -D shots
+python3 tools/store-screenshots.py shots store-screenshots
+```
+
+Each screen is photographed from its own app launch and addressed by name,
+so the tool either produces a complete, correct set or refuses and says
+which capture is missing. It cannot quietly hand you a duplicate — which it
+did once, on 2026-08-20, when the slot labelled "run complete" held the
+course detail screen and every automated check passed.
+
+**Not included:** Home, Explore, Leaderboards, Profile and Garage all render
+signed-out or empty against CI's absent backend. Re-shoot those on a real
+signed-in device after Phase 1 if you want them; the ten shipped screens do
+not need them.
+
+**Copy.** Description, Keywords, Support URL, Privacy Policy URL, promotional
+text and the App Review note are all written and character-counted in
+**`docs/STORE-LISTING.md`**. Copy from there rather than composing in the
+form.
+
+**The review note matters more than usual.** This app is scored by driving a
+car, which a reviewer at a desk cannot do, and a reviewer who cannot make
+the core feature work rejects the app. The note in `STORE-LISTING.md` says
+so explicitly, and also handles the sign-in question — there is no demo
+account to give, because the app has no password anywhere. See step 12a.
 
 ---
 
