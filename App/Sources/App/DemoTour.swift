@@ -34,10 +34,37 @@ struct DemoTourView: View {
         ProcessInfo.processInfo.environment["SMOOOOTH_DEMO_TOUR"] == "1"
     }
 
+    /// One screen per app launch, from SMOOOOTH_DEMO_TOUR_STAGE.
+    ///
+    /// The timed walk below still exists and still works for watching the
+    /// flow by hand, but CI no longer infers anything from it. Inferring was
+    /// tried three ways — by filename, by position among distinct frames,
+    /// and by position among stable ones — and each broke differently: an
+    /// extra stable segment in run 32349143107 shifted every tour pick by
+    /// one, so the slot labelled "run complete" held the course detail
+    /// screen and nothing detected it. The mapping was plausible, ordered,
+    /// internally consistent, and wrong.
+    ///
+    /// Naming the stage removes the inference entirely.
+    static var stage: String? {
+        ProcessInfo.processInfo.environment["SMOOOOTH_DEMO_TOUR_STAGE"]
+    }
+
     /// Minimum time any static screen stays on-screen: three capture
     /// intervals plus margin, so every stage yields at least three frames
     /// and shows up as a run of identical captures downstream.
     static let stageDwell = Duration.seconds(12)
+
+    /// Tab index for a named tab stage, if this launch asked for one.
+    private var requestedTab: Int? {
+        switch Self.stage {
+        case "home": 0
+        case "explore": 1
+        case "leaderboards": 2
+        case "profile": 3
+        default: nil
+        }
+    }
 
     var body: some View {
         TabView(selection: $selection) {
@@ -55,10 +82,19 @@ struct DemoTourView: View {
                 .tag(3)
         }
         .fullScreenCover(isPresented: $showDriveFlow) {
-            DemoDriveFlow()
+            DemoDriveFlow(fixedStage: DemoDriveFlow.Stage(named: Self.stage))
                 .environment(environment)
         }
         .task {
+            // A named stage means one screen, this launch, no walking.
+            if let requestedTab {
+                selection = requestedTab
+                return
+            }
+            if DemoDriveFlow.Stage(named: Self.stage) != nil {
+                showDriveFlow = true
+                return
+            }
             for tab in 1...3 {
                 try? await Task.sleep(for: Self.stageDwell)
                 selection = tab
@@ -75,9 +111,26 @@ struct DemoTourView: View {
 /// the whole competitive path rather than a stubbed one.
 private struct DemoDriveFlow: View {
     @Environment(AppEnvironment.self) private var environment
+    /// When set, this launch shows exactly this stage and never advances.
+    var fixedStage: Stage? = nil
+
     @State private var stage = Stage.course
 
-    enum Stage { case course, driving, shareCard, garage, flyingStart }
+    enum Stage {
+        case course, driving, driveResult, shareCard, garage, flyingStart
+
+        init?(named name: String?) {
+            switch name {
+            case "course": self = .course
+            case "driving": self = .driving
+            case "driveResult": self = .driveResult
+            case "shareCard": self = .shareCard
+            case "garage": self = .garage
+            case "flyingStart": self = .flyingStart
+            default: return nil
+            }
+        }
+    }
 
     /// The drive needs room for two distinct things to be photographed: the
     /// moving map, and the result DriveView shows once the run is scored.
@@ -100,6 +153,30 @@ private struct DemoDriveFlow: View {
          "confidenceScore":88,"durationSeconds":181,"distanceMeters":5120,
          "gatesHit":5,"deviationDetected":false,
          "integrityFlags":["flyingStart"],"rawGPS":[],"rawIMU":[]}
+        """
+        return try! JSONDecoder().decode(DriveRunOutcome.self, from: Data(json.utf8))
+    }()
+
+    /// The result of a clean run, for the screenshot that shows what a good
+    /// drive looks like.
+    ///
+    /// A FIXTURE, like `flyingStartOutcome`, and for the same reason: this
+    /// screen appears partway through the live drive, so photographing the
+    /// real one means waiting an amount of time nobody can predict — the
+    /// simulator dilates the app's clock unpredictably under capture load.
+    /// Rendering it directly is the difference between a screenshot that is
+    /// always there and one that is there most of the time.
+    ///
+    /// The numbers match the share card in `.shareCard` so the two screens
+    /// tell one consistent story.
+    static let verifiedOutcome: DriveRunOutcome = {
+        let json = """
+        {"provisionalScore":8847,"provisionalVerdict":"verified",
+         "breakdown":{"paceBps":10000,"smoothnessBps":6700,
+                      "controlBps":10000,"complianceBps":10000},
+         "confidenceScore":96,"durationSeconds":195,"distanceMeters":4300,
+         "gatesHit":6,"deviationDetected":false,
+         "integrityFlags":[],"rawGPS":[],"rawIMU":[]}
         """
         return try! JSONDecoder().decode(DriveRunOutcome.self, from: Data(json.utf8))
     }()
@@ -143,6 +220,13 @@ private struct DemoDriveFlow: View {
                         speedup: 4
                     )
                 )
+            case .driveResult:
+                RunResultView(
+                    outcome: Self.verifiedOutcome,
+                    courseId: "demo",
+                    route: DemoCourse.route,
+                    onDismiss: {}
+                )
             case .shareCard:
                 // The card exactly as ImageRenderer renders it for sharing.
                 ZStack {
@@ -185,6 +269,10 @@ private struct DemoDriveFlow: View {
         }
         .environment(environment)
         .task {
+            if let fixedStage {
+                stage = fixedStage
+                return
+            }
             try? await Task.sleep(for: DemoTourView.stageDwell)
             stage = .driving
             try? await Task.sleep(for: Self.drivingDwell)
