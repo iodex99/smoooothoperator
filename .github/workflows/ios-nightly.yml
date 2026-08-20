@@ -102,23 +102,30 @@ jobs:
           # run lost the safety gate entirely, which is the single screen App
           # Review most wants to see.
           #
-          # Screenshot latency alone paces this at ~2s. With the page dwell
-          # raised to 8s (OnboardingView.demoPageDwell) the walk lasts ~48s,
-          # so 32 frames both cover it and catch it RESTING on its final
-          # screen: run 32341477503 ended the loop on
+          # MEASURED, not assumed: run 32344524536 took 32 frames in ~32s
+          # with no sleep, so a bare capture costs about ONE second, not the
+          # two guessed earlier. That is why 32 frames stopped after four of
+          # six pages — the loop simply ended mid-walk, and the missing pages
+          # looked identical to pages that were skipped.
+          #
+          # The walk is 6 pages x 8s = ~48s (OnboardingView.demoPageDwell),
+          # so 64 frames covers it with room to rest on the final page: run 32341477503 ended the loop on
           # the same frame the location page appeared, so "Find the roads
           # near you" was seen exactly once and the tool could not tell it
           # from a transition. Frames are deduplicated downstream, so extras
           # cost nothing but a few seconds of Mac time.
           SIMCTL_CHILD_SMOOOOTH_DEMO_ONBOARDING=1 xcrun simctl launch "${{ steps.sim.outputs.udid }}" app.smooooth.operator
-          for i in $(seq -w 1 32); do
+          for i in $(seq -w 1 64); do
             xcrun simctl io "${{ steps.sim.outputs.udid }}" screenshot "shots/onboard-$i.png" || true
           done
           xcrun simctl terminate "${{ steps.sim.outputs.udid }}" app.smooooth.operator || true
           # Scripted tour: tabs, course map, then a full mock drive (with the
           # drive follow-cam map) to the result screen.
           SIMCTL_CHILD_SMOOOOTH_DEMO_TOUR=1 xcrun simctl launch "${{ steps.sim.outputs.udid }}" app.smooooth.operator
-          for i in $(seq -w 1 60); do
+          # ~3s per frame with the sleep. The tour now runs ~176s, so 90
+          # frames rather than 60 — the old count ended while the tour was
+          # still going, which is why its last stages showed enormous dwells.
+          for i in $(seq -w 1 90); do
             sleep 2
             xcrun simctl io "${{ steps.sim.outputs.udid }}" screenshot "shots/tour-$i.png" || true
           done

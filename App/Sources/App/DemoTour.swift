@@ -81,9 +81,10 @@ private struct DemoDriveFlow: View {
 
     /// The drive needs room for two distinct things to be photographed: the
     /// moving map, and the result DriveView shows once the run is scored.
-    /// At 8x the drive lasts ~25s, so 45s leaves ~20s of settled result —
-    /// five or six captures each, with margin.
-    private static let drivingDwell = Duration.seconds(45)
+    /// At 4x the drive lasts ~49s, so 80s leaves ~30s of settled result.
+    /// Sized for the case where the drive runs FASTER than the arithmetic
+    /// predicts, which is what actually happens.
+    private static let drivingDwell = Duration.seconds(80)
 
     /// A run that crossed the start line at speed.
     ///
@@ -118,23 +119,28 @@ private struct DemoDriveFlow: View {
                     // A real rival: a faster ghost built from its own run.
                     ghost: DemoCourse.rivalGhost,
                     courseId: "demo",
-                    // 8x, not 30x. THIS IS THE BUG THAT LOST THE LIVE-RUN
-                    // SCREENSHOT. At 30x a 3:15 drive is over in about six
-                    // seconds — barely one capture interval — and DriveView
-                    // then sits on its own result screen for the remaining
-                    // forty-odd seconds of this stage. The moving map, which
-                    // is the single most compelling thing the app does and
-                    // screenshot number one on the listing, existed for one
-                    // frame if it existed at all. Run 32341477503 captured
-                    // none of it.
+                    // 4x, down from 30x and then 8x. THIS IS THE BUG THAT
+                    // LOST THE LIVE-RUN SCREENSHOT. At 30x a 3:15 drive was
+                    // over in about six seconds — barely one capture — and
+                    // DriveView then sat on its own result for the rest of
+                    // the stage. The moving map, the most compelling thing
+                    // the app does and screenshot one on the listing, existed
+                    // for one frame if it existed at all.
                     //
-                    // 8x spreads the drive over roughly twenty-five seconds
-                    // — six or seven captures — and still leaves time inside
-                    // `drivingDwell` for the result to appear and settle.
+                    // 8x was measured, not guessed, and was still not enough:
+                    // run 32343419245 caught the drive, run 32344524536 got a
+                    // single frame of it. The arithmetic says 8x is ~24s and
+                    // six captures; reality delivered one, so the pacing is
+                    // evidently variable on a loaded runner in a way the
+                    // arithmetic does not model.
+                    //
+                    // 4x buys margin instead of precision: ~49s of drive, so
+                    // even running three times faster than expected still
+                    // leaves four or five frames of moving map.
                     debugEvents: MockSensorFeed.stream(
                         profile: .fastSmooth,
                         route: DemoCourse.route,
-                        speedup: 8
+                        speedup: 4
                     )
                 )
             case .shareCard:
