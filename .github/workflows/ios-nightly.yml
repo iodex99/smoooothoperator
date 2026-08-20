@@ -102,20 +102,22 @@ jobs:
           # run lost the safety gate entirely, which is the single screen App
           # Review most wants to see.
           #
-          # MEASURED, not assumed: run 32344524536 took 32 frames in ~32s
-          # with no sleep, so a bare capture costs about ONE second, not the
-          # two guessed earlier. That is why 32 frames stopped after four of
-          # six pages — the loop simply ended mid-walk, and the missing pages
-          # looked identical to pages that were skipped.
+          # THE CAPTURE ITSELF SLOWS THE APP DOWN. `simctl io screenshot`
+          # stalls the simulator while it works, so hammering it with no
+          # pause starves the timer driving the onboarding walk: run
+          # 32345700041 asked for a fixed 8s per page and got advances at
+          # 7s, 10s and then 25s, each gap longer than the last as the
+          # pressure accumulated, and the walk never reached pages 5 or 6.
           #
-          # The walk is 6 pages x 8s = ~48s (OnboardingView.demoPageDwell),
-          # so 64 frames covers it with room to rest on the final page: run 32341477503 ended the loop on
-          # the same frame the location page appeared, so "Find the roads
-          # near you" was seen exactly once and the tool could not tell it
-          # from a transition. Frames are deduplicated downstream, so extras
-          # cost nothing but a few seconds of Mac time.
-          SIMCTL_CHILD_SMOOOOTH_DEMO_ONBOARDING=1 xcrun simctl launch "${{ steps.sim.outputs.udid }}" app.smooooth.operator
+          # Doubling the frame count did not help and could not have — the
+          # walk was not being outrun, it was being throttled. `sleep 1`
+          # gives the simulator room to actually run the app between shots,
+          # which is why the tour (which sleeps 2) never had this problem.
+          #
+          # ~2s per frame, a ~48s walk, 64 frames: every page caught several
+          # times with the loop still running well past the end.
           for i in $(seq -w 1 64); do
+            sleep 1
             xcrun simctl io "${{ steps.sim.outputs.udid }}" screenshot "shots/onboard-$i.png" || true
           done
           xcrun simctl terminate "${{ steps.sim.outputs.udid }}" app.smooooth.operator || true

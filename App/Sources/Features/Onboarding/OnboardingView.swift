@@ -77,16 +77,17 @@ struct OnboardingView: View {
 
     /// How long each page stays up in CI capture mode.
     ///
-    /// COUPLED TO THE CAPTURE CADENCE IN ios-nightly.yml, which photographs
-    /// the onboarding walk roughly every two seconds. This was four seconds
-    /// and it aliased: a page could be caught once, or stepped over
-    /// entirely. Runs on 2026-08-19 and -20 each lost a different page, one
-    /// of them the safety gate, and nothing failed — the tooling downstream
-    /// cannot tell a page seen once from an animation frame.
+    /// COUPLED TO THE CAPTURE CADENCE IN ios-nightly.yml, and not simply as
+    /// arithmetic: `simctl io screenshot` STALLS THE SIMULATOR while it
+    /// works, so a capture loop with no pause starves this very timer. Run
+    /// 32345700041 asked for a fixed eight seconds and got advances at 7s,
+    /// 10s and 25s, each gap longer than the last, never reaching the last
+    /// two pages. The walk was not being outrun; it was being throttled.
     ///
-    /// Eight seconds is four captures per page. The tour uses twelve for the
-    /// same three-to-four captures, because its loop sleeps between shots
-    /// and this one does not; the captures matter, not the seconds.
+    /// The workflow now sleeps a second between shots, which restores the
+    /// app's own clock. Eight seconds is then three or four captures per
+    /// page — and the number to change if this ever drifts again is the
+    /// SLEEP, not this constant.
     static let demoPageDwell = Duration.seconds(8)
 
     private var locationDenied: Bool {
