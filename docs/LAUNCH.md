@@ -419,6 +419,27 @@ Then press **Test**. It should return 200 — the function handles Apple's
 404s, and without `APPLE_ROOT_CA_SHA256` the function returns 503 by design.
 Both look like the same failure in Apple's UI.
 
+### 12a. Sign-In Information — leave it unchecked
+
+App Review asks for "a user name and password so we can sign in to your
+app." **There is none, and that is the correct answer.** The app offers only
+Sign in with Apple and Google; no email/password path exists in the UI, so
+credentials would arrive with no field to type them into.
+
+Sign-in is also optional — browsing courses, driving a challenge, being
+scored and sharing the card all work with no account. Leave the box
+unchecked and paste the notes from `docs/STORE-LISTING.md`, which also cover
+what to say if a reviewer asks for credentials anyway.
+
+**What this depends on.** Sign in with Apple must actually work for the
+reviewer who tries it: 0b step 3c and Phase 1 step 5 both done, and tested
+on a real device before you submit.
+
+**And it expires.** The Apple client secret is a JWT that Apple caps at six
+months. `tools/apple-client-secret.mjs` mints it and prints the date. When
+it lapses **sign-in breaks for everyone, silently, with no error anywhere** —
+put the expiry in a calendar the day you generate it.
+
 ### 13. Privacy nutrition labels
 
 **App Privacy** → *Get Started*. Declare exactly three collections:
