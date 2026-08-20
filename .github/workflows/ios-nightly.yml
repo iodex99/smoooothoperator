@@ -93,32 +93,29 @@ jobs:
           APP=$(find App/build/Build/Products -name "*.app" -maxdepth 2 | head -1)
           xcrun simctl install "${{ steps.sim.outputs.udid }}" "$APP"
           mkdir -p shots
-          # Onboarding walk: six screens, auto-advancing every 4s.
+          # ONE PAGE PER LAUNCH, NO TIMERS ANYWHERE.
           #
-          # NO SLEEP HERE, DELIBERATELY. `simctl io screenshot` takes about
-          # two seconds by itself, so `sleep 2` produced a ~4s cadence that
-          # aliased exactly with the 4s advance — the capture landed on the
-          # same phase of every screen and skipped whole ones. The 2026-08-20
-          # run lost the safety gate entirely, which is the single screen App
-          # Review most wants to see.
+          # The walk used to advance itself on an 8s timer while this loop
+          # photographed it, and that was never made to work: under
+          # screenshot load the simulator dilates the app's clock
+          # unpredictably. Run 32347289589 asked for 8s per page and got
+          # 20s, 54s and 52s — so the walk reached three pages out of six,
+          # and the safety gate, the one screen App Review most wants, was
+          # never photographed. Four attempts at tuning frame counts,
+          # dwells and sleeps each moved the number without fixing anything,
+          # because the fault was the dependency on the app's clock rather
+          # than any particular value.
           #
-          # THE CAPTURE ITSELF SLOWS THE APP DOWN. `simctl io screenshot`
-          # stalls the simulator while it works, so hammering it with no
-          # pause starves the timer driving the onboarding walk: run
-          # 32345700041 asked for a fixed 8s per page and got advances at
-          # 7s, 10s and then 25s, each gap longer than the last as the
-          # pressure accumulated, and the walk never reached pages 5 or 6.
-          #
-          # Doubling the frame count did not help and could not have — the
-          # walk was not being outrun, it was being throttled. `sleep 1`
-          # gives the simulator room to actually run the app between shots,
-          # which is why the tour (which sleeps 2) never had this problem.
-          #
-          # ~2s per frame, a ~48s walk, 64 frames: every page caught several
-          # times with the loop still running well past the end.
-          for i in $(seq -w 1 64); do
-            sleep 1
-            xcrun simctl io "${{ steps.sim.outputs.udid }}" screenshot "shots/onboard-$i.png" || true
+          # So: launch at a page, photograph it, quit. Six launches, six
+          # pages, deterministic. Slower in wall-clock and impossible to get
+          # wrong.
+          for page in 0 1 2 3 4 5; do
+            SIMCTL_CHILD_SMOOOOTH_DEMO_ONBOARDING=1 \
+            SIMCTL_CHILD_SMOOOOTH_DEMO_ONBOARDING_PAGE=$page \
+              xcrun simctl launch "${{ steps.sim.outputs.udid }}" app.smooooth.operator
+            sleep 4   # let the page render and its animations settle
+            xcrun simctl io "${{ steps.sim.outputs.udid }}" screenshot "shots/onboard-page-$page.png" || true
+            xcrun simctl terminate "${{ steps.sim.outputs.udid }}" app.smooooth.operator || true
           done
           xcrun simctl terminate "${{ steps.sim.outputs.udid }}" app.smooooth.operator || true
           # Scripted tour: tabs, course map, then a full mock drive (with the

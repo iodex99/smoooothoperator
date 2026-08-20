@@ -55,15 +55,23 @@ SIZES = {
 
 MIN_DWELL = 2
 
-ONBOARDING_SCREENS = 6
-ONBOARDING_PICKS = {          # index among stable screens -> output name
+# ONBOARDING is addressed by PAGE NUMBER, because CI now photographs each
+# page from its own app launch (SMOOOOTH_DEMO_ONBOARDING_PAGE) rather than
+# letting a timer advance a walk. There is nothing left to infer: page 4 is
+# in onboard-page-4.png or the file is absent.
+#
+# This replaced position-among-stable-screens, which replaced filename
+# indexing, both of which were attempts to recover a reliable signal from a
+# capture whose timing could not be relied upon. Removing the timing was the
+# fix; the heuristics were treatment of a symptom.
+ONBOARDING_PICKS = {          # onboarding page -> output name
     1: "08-pick-a-course",
     2: "04-four-disciplines",
     3: "06-every-run-verified",
     4: "10-drive-safe",       # the safety gate — App Review wants this one
     5: "09-roads-near-you",
 }
-# Index 0 is the opening title card, which says less than any of the above.
+# Page 0 is the opening title card, which says less than any of the above.
 
 # The tour's stable stages, in the fixed order DemoTourView walks them.
 # Indices 0-3 are Home / Explore / Leaderboards / Profile, all of which
@@ -131,17 +139,17 @@ def main():
 
     problems, selected = [], []
 
-    # ── onboarding ───────────────────────────────────────────────────────
-    onboarding = [p for p, dwell in segments(src, "onboard-*.png")
-                  if dwell >= MIN_DWELL]
-    if len(onboarding) < ONBOARDING_SCREENS:
+    # ── onboarding, one file per page ────────────────────────────────────
+    missing = [n for n in ONBOARDING_PICKS if not (src / f"onboard-page-{n}.png").exists()]
+    if missing:
         problems.append(
-            f"onboarding: {len(onboarding)} stable screens, expected "
-            f"{ONBOARDING_SCREENS}. Screens are being skipped or the last one "
-            f"is cut off — capture more frames, or lengthen DemoTour dwells."
+            f"onboarding: missing page(s) {', '.join(map(str, missing))}. "
+            f"Each page is captured from its own app launch, so a missing "
+            f"file means that launch failed — check the capture step's log."
         )
     else:
-        selected += [(onboarding[i], name) for i, name in ONBOARDING_PICKS.items()]
+        selected += [(src / f"onboard-page-{n}.png", name)
+                     for n, name in ONBOARDING_PICKS.items()]
 
     # ── tour: stable stages ──────────────────────────────────────────────
     tour = segments(src, "tour-*.png")

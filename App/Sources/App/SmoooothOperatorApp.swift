@@ -16,7 +16,8 @@ struct SmoooothOperatorApp: App {
                     DemoTourView()
                         .onAppear { environment.completeOnboarding() }
                 } else if OnboardingDemo.isRequested {
-                    OnboardingView(demoAutoAdvance: true)
+                    OnboardingView(demoAutoAdvance: true,
+                                   demoPage: OnboardingDemo.page)
                 } else if !environment.hasOnboarded {
                     OnboardingView()
                 } else {

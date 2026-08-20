@@ -8,6 +8,8 @@ import SwiftUI
 struct OnboardingView: View {
     @Environment(AppEnvironment.self) private var environment
     var demoAutoAdvance = false
+    /// Opens directly on one page for CI capture; suppresses auto-advance.
+    var demoPage: Int? = nil
 
     @State private var page = 0
     private static let pageCount = 6
@@ -64,10 +66,15 @@ struct OnboardingView: View {
             }
         }
         .preferredColorScheme(.dark)
+        .onAppear {
+            // One page per launch: deterministic, and the reason the timed
+            // walk below is no longer used by CI.
+            if let demoPage { page = min(max(demoPage, 0), Self.pageCount - 1) }
+        }
         .task {
-            guard demoAutoAdvance else { return }
-            // CI capture: walk the pages, never complete (screenshots stop
-            // at the last page).
+            guard demoAutoAdvance, demoPage == nil else { return }
+            // The timed walk, kept for driving the flow by hand on a Mac.
+            // CI does NOT use it — see OnboardingDemo.page.
             for next in 1..<Self.pageCount {
                 try? await Task.sleep(for: Self.demoPageDwell)
                 page = next
@@ -143,6 +150,24 @@ struct OnboardingView: View {
 enum OnboardingDemo {
     static var isRequested: Bool {
         ProcessInfo.processInfo.environment["SMOOOOTH_DEMO_ONBOARDING"] == "1"
+    }
+
+    /// Which page to open directly, from SMOOOOTH_DEMO_ONBOARDING_PAGE.
+    ///
+    /// CI photographs the onboarding walk one page per app launch rather
+    /// than letting a timer advance it, because the timer could not be
+    /// trusted: under screenshot load the simulator dilates the app's clock
+    /// unpredictably — an eight-second sleep was observed taking twenty,
+    /// fifty-four and fifty-two seconds in a single run (32347289589), so
+    /// the walk never reached its last two pages and the safety gate went
+    /// unphotographed.
+    ///
+    /// Nothing here waits for anything. The capture launches the app at a
+    /// page, takes one picture, and quits. Six launches, six pages, no
+    /// timing coupling of any kind.
+    static var page: Int? {
+        ProcessInfo.processInfo.environment["SMOOOOTH_DEMO_ONBOARDING_PAGE"]
+            .flatMap(Int.init)
     }
 }
 #endif
