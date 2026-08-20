@@ -153,6 +153,56 @@ A reviewer who sees only empty states has no way to evaluate the app.
 
 ---
 
+## Screenshots
+
+App Store Connect accepts a fixed list of pixel sizes and rejects anything
+else. The two portrait slots this listing targets:
+
+| Slot | Pixels | Native device |
+|---|---|---|
+| 6.5" | **1242 × 2688** | iPhone 11 Pro Max, XS Max |
+| 6.7" | **1284 × 2778** | iPhone 14 Plus, 13/12 Pro Max |
+
+The nightly tour used to capture on whatever iPhone the runner listed first
+— an iPhone 16 Pro, at **1206 × 2622**, which is not a valid size at any
+slot. Two changes fixed that:
+
+1. The workflow now **prefers a simulator whose native resolution is a store
+   size**, so captures need no resampling at all.
+2. `tools/store-screenshots.py` converts any capture set to both exact
+   sizes, and picks the ten frames worth uploading, in display order:
+
+   ```bash
+   python3 tools/store-screenshots.py shots store-screenshots
+   ```
+
+   Every nightly run now uploads the result as the **`app-store-screenshots`**
+   artifact alongside the raw contact sheet.
+
+**The ten, in order.** Screenshot 1 is what most people see, so it leads
+with the product in motion rather than an onboarding slide:
+
+| # | Screen | Why it earns the slot |
+|---|---|---|
+| 1 | Live run, ghost delta | the product actually doing its thing |
+| 2 | Run complete — verified | the payoff, with four sub-scores |
+| 3 | Course detail | how a run starts, and the benchmark idea |
+| 4 | One score, four disciplines | the differentiator, in one chart |
+| 5 | Share card | what leaves the app |
+| 6 | Every run is verified | integrity, which is the moat |
+| 7 | Flying start — not ranked | honesty; it scores you and says why it won't count |
+| 8 | Pick a course | the premise, plainly |
+| 9 | Find the roads near you | the location ask, justified |
+| 10 | Drive safe | the safety gate — also what App Review wants to see |
+
+**Not included, and why.** Home, Explore, Leaderboards, Profile and Garage
+all render signed-out or empty against CI's absent backend, and Explore
+shows an outright *"Couldn't load courses."* Re-shoot those five on a real
+signed-in device after Phase 1 is deployed, and they can replace the weaker
+onboarding frames.
+
+---
+
 ## Support URLs
 
 | Field | Value |

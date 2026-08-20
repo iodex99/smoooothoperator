@@ -30,11 +30,31 @@ jobs:
           cp App/Configs/Supabase.example.xcconfig App/Configs/Supabase.xcconfig
           cd App && xcodegen generate
 
+      # Prefer a simulator whose native resolution IS an App Store
+      # screenshot size, so the captures need no resampling.
+      #
+      #   1284x2778 (6.7") = 428x926pt @3x -> 14 Plus / 13 Pro Max / 12 Pro Max
+      #   1242x2688 (6.5") = 414x896pt @3x -> 11 Pro Max / XS Max
+      #
+      # This used to take whichever iPhone the runner listed first, which
+      # was an iPhone 16 Pro: 1206x2622, a size App Store Connect accepts
+      # at no slot at all. tools/store-screenshots.py can rescale to an
+      # exact size afterwards, but rescaling upsamples and softens text, so
+      # capturing at the real size is strictly better when it is available.
       - name: Pick a simulator
         id: sim
         run: |
-          UDID=$(xcrun simctl list devices available -j \
-            | python3 -c "import json,sys; d=json.load(sys.stdin)['devices']; print(next(dev['udid'] for devs in d.values() for dev in devs if dev['name'].startswith('iPhone')))")
+          read -r UDID NAME < <(xcrun simctl list devices available -j | python3 -c "
+          import json, sys
+          preferred = ['iPhone 14 Plus', 'iPhone 13 Pro Max', 'iPhone 12 Pro Max',
+                       'iPhone 11 Pro Max', 'iPhone XS Max']
+          devices = [d for runtime in json.load(sys.stdin)['devices'].values()
+                     for d in runtime if d['name'].startswith('iPhone')]
+          pick = next((d for name in preferred
+                         for d in devices if d['name'] == name), devices[0])
+          print(pick['udid'], pick['name'])
+          ")
+          echo "Capturing on: $NAME"
           echo "udid=$UDID" >> "$GITHUB_OUTPUT"
           xcrun simctl boot "$UDID" || true
 
@@ -94,4 +114,23 @@ jobs:
         with:
           name: simulator-screenshots
           path: shots/
+          if-no-files-found: ignore
+
+      # The raw tour is a contact sheet, not a deliverable: 71 files, 19 of
+      # them distinct, five showing signed-out or error states because CI
+      # has no backend. This turns it into the ten frames worth uploading,
+      # ordered, at the exact pixel sizes App Store Connect accepts.
+      - name: Build App Store screenshot sets
+        if: always()
+        run: |
+          python3 -m pip install --quiet --break-system-packages Pillow \
+            || python3 -m pip install --quiet Pillow
+          python3 tools/store-screenshots.py shots store-screenshots
+
+      - name: Upload App Store screenshot sets
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-store-screenshots
+          path: store-screenshots/
           if-no-files-found: ignore
