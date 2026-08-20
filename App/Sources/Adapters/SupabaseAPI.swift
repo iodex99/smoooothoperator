@@ -68,6 +68,9 @@ actor SupabaseAPI {
         case notConfigured
         case notAuthenticated
         case http(Int, String)
+        /// The address failed `EmailSignIn.normalize` before any request was
+        /// made — a typo caught locally rather than an email spent on it.
+        case invalidEmail
     }
 
     private let configuration: Configuration
@@ -183,6 +186,58 @@ actor SupabaseAPI {
             "provider": "apple",
             "id_token": identityToken,
             "nonce": nonce,
+        ])
+        let (data, response) = try await URLSession.shared.data(for: request)
+        try Self.ensureOK(response, data)
+        session = try JSONDecoder().decode(Session.self, from: data)
+        persistSession()
+    }
+
+    // MARK: - Auth (email one-time code → GoTrue OTP grant)
+
+    /// Asks GoTrue to email a six-digit code, creating the account if this
+    /// address has never been seen.
+    ///
+    /// `create_user: true` is what makes one screen serve both sign-up and
+    /// sign-in. The alternative — asking people whether they are new — is a
+    /// question they get wrong, and getting it wrong is a dead end rather
+    /// than a retry.
+    ///
+    /// Deliberately reports nothing about whether the address was already
+    /// known. GoTrue answers 200 either way and that is correct: a different
+    /// answer for a registered address turns this endpoint into a tool for
+    /// discovering who has an account here.
+    func sendEmailCode(email: String) async throws {
+        let url = configuration.baseURL.appendingPathComponent("auth/v1/otp")
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue(configuration.anonKey, forHTTPHeaderField: "apikey")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONSerialization.data(withJSONObject: [
+            "email": email,
+            "create_user": true,
+        ])
+        let (data, response) = try await URLSession.shared.data(for: request)
+        try Self.ensureOK(response, data)
+    }
+
+    /// Exchanges the emailed code for a session.
+    ///
+    /// `type: "email"` is the OTP verification type. The address must be
+    /// byte-identical to the one `sendEmailCode` used — both call sites go
+    /// through `EmailSignIn.normalize` for exactly that reason, because a
+    /// case difference here reports as an invalid code and sends you looking
+    /// at the wrong thing entirely.
+    func verifyEmailCode(email: String, code: String) async throws {
+        let url = configuration.baseURL.appendingPathComponent("auth/v1/verify")
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue(configuration.anonKey, forHTTPHeaderField: "apikey")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONSerialization.data(withJSONObject: [
+            "email": email,
+            "token": code,
+            "type": "email",
         ])
         let (data, response) = try await URLSession.shared.data(for: request)
         try Self.ensureOK(response, data)

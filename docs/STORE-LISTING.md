@@ -134,11 +134,14 @@ App Store Connect asks for "a user name and password so we can sign in to
 your app." **There is none to give, and that is the correct answer, not a
 gap.**
 
-The app offers exactly two sign-in methods — **Sign in with Apple** and
-**Google** — and no email/password path exists anywhere in the UI. Ticking
-*Sign-in required* and inventing credentials would hand the reviewer a
-username and password with no field to type them into, which fails review
-more surely than leaving it blank.
+The app offers three sign-in methods — **Sign in with Apple**, **Google**,
+and an **emailed six-digit code** — and not one of them involves a password.
+There is no password field anywhere in the UI, so credentials would arrive
+with nothing to type them into.
+
+The email door (added 2026-08-20) actually makes review *easier*: a reviewer
+can sign in with any address they control, without needing an Apple ID. Say
+so in the notes.
 
 **More to the point, sign-in is genuinely not required.** Verified against
 the code, not assumed:
@@ -198,9 +201,9 @@ Smooooth Operator scores real driving using GPS and motion sensors, so the core 
 
 At a desk or as a passenger, the app browses courses, opens a course, and shows the paywall normally, but a challenge run cannot be scored — a stationary run is correctly reported as INELIGIBLE with the reason shown on screen, rather than being given a fabricated score. That is intended behaviour, not a failure.
 
-SIGN-IN: there is no username and password to provide. The app offers only Sign in with Apple and Google, and no email/password path exists in the UI. Sign-in is also OPTIONAL — browsing courses, driving a challenge, being scored, and sharing the result card all work with no account, so the core loop can be reviewed without signing in at all.
+SIGN-IN: there is no username and password to provide. The app offers Sign in with Apple, Google, and an emailed six-digit code — none of which uses a password, and there is no password field anywhere in the UI. Sign-in is also OPTIONAL — browsing courses, driving a challenge, being scored, and sharing the result card all work with no account, so the core loop can be reviewed without signing in at all.
 
-Signing in unlocks Leaderboards, Friends, Garage, Today's Challenge and cross-device history. To review those, please use Sign in with Apple with your own Apple ID; it creates a normal account in seconds.
+Signing in unlocks Leaderboards, Friends, Garage, Today's Challenge and cross-device history. To review those, use any of the three methods with an account you control — the email option accepts any address and sends a six-digit code, which is the quickest path and needs no Apple ID.
 
 Safety: the app requires an explicit safety acknowledgement before the first run, does not reward speed (speed limit compliance is a scored component and exceeding the limit loses points), and shows a single large control during an active run.
 

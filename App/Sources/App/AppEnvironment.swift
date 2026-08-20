@@ -266,6 +266,47 @@ final class AppEnvironment {
         isSignedIn = await api.isSignedIn
         hasSeenSignIn = true
         await flushPendingRuns()
+        // Was missing until 2026-08-20, and only on this path. A driver who
+        // bought Pro signed out and then signed in with Google kept a local
+        // entitlement (StoreKit answers `hasPro` regardless) against a
+        // server row nobody owned — so the app showed Pro while every
+        // server-side Pro gate, course creation included, refused them.
+        await claimSubscriptionIfNeeded()
+    }
+
+    // MARK: - Account · email code
+
+    /// Emails a six-digit code, creating the account if the address is new.
+    ///
+    /// One screen serves sign-up and sign-in, because asking people which
+    /// they are is a question they get wrong, and getting it wrong is a dead
+    /// end rather than a retry.
+    ///
+    /// Returns the normalised address: the caller must hand this exact
+    /// string back to `verifyEmailCode`, since GoTrue matches the code
+    /// against the address it issued to.
+    @discardableResult
+    func sendEmailCode(to raw: String) async throws -> String {
+        guard let api else { throw SupabaseAPI.APIError.notConfigured }
+        guard let email = EmailSignIn.normalize(raw) else {
+            throw SupabaseAPI.APIError.invalidEmail
+        }
+        try await api.sendEmailCode(email: email)
+        return email
+    }
+
+    /// Exchanges an emailed code for a session. `email` must be the string
+    /// `sendEmailCode` returned, not what the driver typed.
+    func verifyEmailCode(email: String, code: String) async throws {
+        guard let api else { throw SupabaseAPI.APIError.notConfigured }
+        try await api.verifyEmailCode(
+            email: email,
+            code: EmailSignIn.normalizeCode(code)
+        )
+        isSignedIn = await api.isSignedIn
+        hasSeenSignIn = true
+        await flushPendingRuns()
+        await claimSubscriptionIfNeeded()
     }
 
     func signOut() async {

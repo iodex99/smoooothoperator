@@ -23,6 +23,28 @@
                 <string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
             </array>
         </dict>
+        <!-- Email. Added 2026-08-20 with email-code sign-in, where the
+             driver types an address that GoTrue then stores on the account.
+             Apple and Google sign-in already yielded one (a relay address,
+             in Apple's case), so this arguably belonged here before; typing
+             it into a field of our own removes any argument.
+
+             The App Store nutrition label must say the same thing —
+             Contact Info > Email Address, linked, not used for tracking.
+             Apple checks the manifest and the label agree, and a mismatch
+             is a routine rejection. -->
+        <dict>
+            <key>NSPrivacyCollectedDataType</key>
+            <string>NSPrivacyCollectedDataTypeEmailAddress</string>
+            <key>NSPrivacyCollectedDataTypeLinked</key>
+            <true/>
+            <key>NSPrivacyCollectedDataTypeTracking</key>
+            <false/>
+            <key>NSPrivacyCollectedDataTypePurposes</key>
+            <array>
+                <string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+            </array>
+        </dict>
         <dict>
             <key>NSPrivacyCollectedDataType</key>
             <string>NSPrivacyCollectedDataTypeUserID</string>

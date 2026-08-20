@@ -244,6 +244,35 @@ it is what `App/project.yml` registers as the URL scheme, and it is the only
 way the session gets back into the app. Without this entry sign-in appears to
 work and then hangs on a blank Safari sheet.
 
+### Email code — and the SMTP server it needs
+
+*Authentication → Sign In / Providers → **Email*** → enable. Turn **Confirm
+email** OFF: with one-time codes the code IS the confirmation, and leaving
+it on sends a second, separate link that confuses people into clicking the
+wrong thing.
+
+**Then configure custom SMTP, or email sign-in fails for almost everyone.**
+Supabase's built-in sender is a shared, heavily rate-limited convenience for
+development — a handful of messages per hour across the whole project. Past
+that it stops sending. The API still answers `200`, the app still says
+"code sent", and nothing arrives: a silent failure indistinguishable from a
+user mistyping their address.
+
+*Project Settings → Authentication → SMTP Settings* → enable custom SMTP.
+Any transactional provider works — Resend, Postmark and SendGrid all have
+free tiers that cover launch comfortably. Each needs `smoooothoperator.com`
+verified as a sending domain, which means adding their DKIM and SPF records
+in Cloudflare — the same dashboard as Phase 5.
+
+Set the sender to your own domain (`noreply@smoooothoperator.com`), not the
+provider's default. Mail from a shared provider domain lands in spam far
+more often, and a code in the spam folder is indistinguishable from a code
+that was never sent.
+
+**Send yourself one on a real device before trusting it**, and check
+*Authentication → Rate Limits* — the default OTP limit is low enough to bite
+during a launch spike.
+
 **Google is optional.** If you want it: Google Cloud console → *APIs &
 Services* → *Credentials* → *Create OAuth client ID* → **Web application** →
 authorised redirect URI
@@ -442,17 +471,24 @@ put the expiry in a calendar the day you generate it.
 
 ### 13. Privacy nutrition labels
 
-**App Privacy** → *Get Started*. Declare exactly three collections:
+**App Privacy** → *Get Started*. Declare exactly four collections:
 
 | Data | Purpose | Linked to identity | Tracking |
 |---|---|---|---|
 | **Precise Location** | App Functionality | Yes | No |
 | **Fitness** (motion) | App Functionality | Yes | No |
 | **Purchase History** | App Functionality | Yes | No |
+| **Email Address** (Contact Info) | App Functionality | Yes | No |
 
-`PrivacyInfo.xcprivacy` already declares the underlying API usage. The
-nutrition label is a **separate** form and Apple checks the two agree — a
-mismatch is a common rejection. Answer **No** to tracking: the app has no
+**Email Address** joined the list on 2026-08-20 with email-code sign-in,
+and `PrivacyInfo.xcprivacy` gained `NSPrivacyCollectedDataTypeEmailAddress`
+the same day. Apple and Google sign-in already yielded an address (a relay
+one, in Apple's case), so it arguably belonged here before; a field of our
+own that people type into removes the argument.
+
+The nutrition label is a **separate** form from the manifest and Apple
+checks the two agree — which is why both had to change together. A mismatch
+is a routine rejection. Answer **No** to tracking: the app has no
 ad SDK, no attribution, and no third-party analytics.
 
 ### 14. Screenshots and copy
