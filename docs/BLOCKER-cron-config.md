@@ -1,6 +1,10 @@
 # Step 6's two settings cannot work as written
 
-**Status:** blocked, needs a decision. Found 2026-08-21 while executing step 6.
+**Status: RESOLVED 2026-08-21.** Option A (Vault) implemented and applied as migration
+`20260821000037_cron_config_from_vault.sql`. Both functions verified reading Vault,
+neither reading the old GUC. One step remains: add the `service_role_key` secret.
+
+**Originally:** blocked, needs a decision. Found 2026-08-21 while executing step 6.
 
 ---
 

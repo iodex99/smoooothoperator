@@ -327,10 +327,18 @@ alter database postgres set app.functions_url =
 alter database postgres set app.service_role_key = '<service role key>';
 ```
 
-> **BLOCKED - do not attempt as written.** Both statements fail with
-> `ERROR: 42501: permission denied to set parameter`. `postgres` is not
-> superuser on Supabase, so no route can persist these. See
-> [BLOCKER-cron-config.md](BLOCKER-cron-config.md) for the evidence and the fix.
+> **FIXED 2026-08-21 - the SQL above is superseded, do not run it.** Both
+> statements fail with `42501`: `postgres` is not superuser on Supabase, so
+> no route can persist `app.*` settings. Migration `20260821000037` now reads
+> both values from **Supabase Vault** instead, and is already applied.
+> `functions_url` is set. **You still need to add the service-role key once:**
+>
+> ```sql
+> select vault.create_secret('<service role key>', 'service_role_key');
+> ```
+>
+> Until that secret exists the sweeper still returns 0 - same silent failure,
+> now with a reachable fix. See [BLOCKER-cron-config.md](BLOCKER-cron-config.md).
 
 Run them in the dashboard's **SQL Editor**. The service-role key is under
 *Project Settings → API → service_role*. **It bypasses every row-level
