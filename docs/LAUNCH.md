@@ -327,6 +327,11 @@ alter database postgres set app.functions_url =
 alter database postgres set app.service_role_key = '<service role key>';
 ```
 
+> **BLOCKED - do not attempt as written.** Both statements fail with
+> `ERROR: 42501: permission denied to set parameter`. `postgres` is not
+> superuser on Supabase, so no route can persist these. See
+> [BLOCKER-cron-config.md](BLOCKER-cron-config.md) for the evidence and the fix.
+
 Run them in the dashboard's **SQL Editor**. The service-role key is under
 *Project Settings → API → service_role*. **It bypasses every row-level
 security policy** — it belongs in this one SQL statement and in
