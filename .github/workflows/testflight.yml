@@ -125,9 +125,40 @@ jobs:
           PRIVATE_KEY: ${{ secrets.APPSTORE_PRIVATE_KEY }}
           KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
         run: |
+          KEY_PATH=~/private_keys/AuthKey_${KEY_ID}.p8
           mkdir -p ~/private_keys
-          printf '%s\n' "$PRIVATE_KEY" > ~/private_keys/AuthKey_${KEY_ID}.p8
-          chmod 600 ~/private_keys/AuthKey_${KEY_ID}.p8
+          printf '%s\n' "$PRIVATE_KEY" > "$KEY_PATH"
+
+          # A .p8 pasted into a GitHub secret often arrives with its line breaks
+          # collapsed. That is still the right key, but it is no longer valid PEM,
+          # and xcodebuild rejects it with CryptoKitASN1Error.invalidPEMDocument
+          # twenty minutes into the build. Rebuild the wrapping if it is missing.
+          if ! grep -q -- "-----BEGIN PRIVATE KEY-----" "$KEY_PATH"; then
+            echo "::error::APPSTORE_PRIVATE_KEY has no PEM header. Paste the whole .p8 file, both dashed lines included."
+            exit 1
+          fi
+          if [ "$(grep -c . "$KEY_PATH")" -le 2 ]; then
+            echo "Key arrived on one line; restoring 64-character PEM wrapping."
+            python3 - "$KEY_PATH" <<'NORMALISE'
+          import re, sys
+          p = sys.argv[1]
+          raw = open(p).read()
+          body = re.sub(r"-----(BEGIN|END) PRIVATE KEY-----", "", raw)
+          body = re.sub(r"\s+", "", body)
+          if not body:
+              sys.exit("APPSTORE_PRIVATE_KEY is empty")
+          wrapped = "\n".join(body[i:i + 64] for i in range(0, len(body), 64))
+          open(p, "w").write("-----BEGIN PRIVATE KEY-----\n" + wrapped + "\n-----END PRIVATE KEY-----\n")
+          NORMALISE
+          fi
+
+          # Fail here, in seconds, rather than after a full archive.
+          if ! openssl pkey -in "$KEY_PATH" -noout 2>/dev/null; then
+            echo "::error::APPSTORE_PRIVATE_KEY is not a valid private key. Check you used the App Store Connect .p8 from step 3e, not the Sign in with Apple one."
+            exit 1
+          fi
+          echo "App Store Connect API key parsed cleanly."
+          chmod 600 "$KEY_PATH"
 
       # TestFlight refuses a build number it has already seen for a given
       # version. The run number only ever increases, which is the whole
