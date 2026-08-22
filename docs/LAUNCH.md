@@ -603,6 +603,25 @@ and variables* → **Actions** → *New repository secret*, once per row:
 | `APPSTORE_KEY_ID` | ten characters | Phase 0b step 3e |
 | `APPSTORE_ISSUER_ID` | a UUID | Phase 0b step 3e, *above* the key table |
 | `APPSTORE_PRIVATE_KEY` | the **entire** `.p8`, `-----BEGIN` and `-----END` lines included | Phase 0b step 3e |
+
+> **Checked 2026-08-22 - this is where the TestFlight build kept failing.** All four
+> secrets existed, but their values did not agree with each other, and the symptoms
+> were unhelpful: first `CryptoKitASN1Error.invalidPEMDocument`, then a bare HTTP 401
+> from `listTeams` with nothing named. Two things now guard it:
+>
+> - The key-writing step rebuilds the PEM line wrapping. Pasting a `.p8` into a GitHub
+>   secret routinely strips the line breaks, and sometimes drops the `-----BEGIN` and
+>   `-----END` lines entirely. Either way the key is still correct but no longer parses.
+> - A new step mints an App Store Connect JWT from the same three secrets and calls the
+>   API before the archive starts, so a mismatch is named in about ten seconds rather
+>   than failing inside `xcodebuild` twenty minutes in. It also confirms the key can
+>   actually see `app.smooooth.operator`.
+>
+> All three must come from the **same** key row under **Users and Access ->
+> Integrations -> App Store Connect API**. The Sign in with Apple key is a different
+> key and will not authenticate here, even though it is also a P-256 `.p8` and parses
+> perfectly. Read the Key ID from that row and the Issuer ID from above the table.
+
 | `SUPABASE_URL` | `https://tsxyxgtjihycaoydyafp.supabase.co` | — |
 | `SUPABASE_ANON_KEY` | the publishable key | Supabase → *Settings* → *API* |
 
