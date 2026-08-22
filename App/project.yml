@@ -50,10 +50,18 @@ targets:
         CFBundleDisplayName: Smooooth
         UILaunchScreen:
           UIColorName: LaunchBackground
-        # Suffixed deliberately. The unsuffixed key applies to all device
-        # families, so App Store validation holds it to the iPad multitasking
-        # rule and demands all four orientations. This app is iPhone-only
-        # (TARGETED_DEVICE_FAMILY 1) and portrait-only by design.
+        # Both keys are needed, and they say different things on purpose.
+        # App Store validation reads only the unsuffixed key and applies the
+        # iPad multitasking rule to it whatever TARGETED_DEVICE_FAMILY says,
+        # so that one has to list all four or the upload is rejected (90474).
+        # UIKit prefers the ~iphone variant at runtime, and that is what keeps
+        # the app portrait-only on the only device family it ships to —
+        # which matters for something you use while driving.
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
         UISupportedInterfaceOrientations~iphone:
           - UIInterfaceOrientationPortrait
         ITSAppUsesNonExemptEncryption: false
