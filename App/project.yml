@@ -50,7 +50,11 @@ targets:
         CFBundleDisplayName: Smooooth
         UILaunchScreen:
           UIColorName: LaunchBackground
-        UISupportedInterfaceOrientations:
+        # Suffixed deliberately. The unsuffixed key applies to all device
+        # families, so App Store validation holds it to the iPad multitasking
+        # rule and demands all four orientations. This app is iPhone-only
+        # (TARGETED_DEVICE_FAMILY 1) and portrait-only by design.
+        UISupportedInterfaceOrientations~iphone:
           - UIInterfaceOrientationPortrait
         ITSAppUsesNonExemptEncryption: false
         # OAuth callback for provider sign-in (Google). Must match the

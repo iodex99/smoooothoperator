@@ -62,7 +62,7 @@ on:
 jobs:
   upload:
     name: archive, sign, upload
-    runs-on: macos-15
+    runs-on: macos-26   # Xcode 26.x — App Store Connect rejects anything built with an older SDK
     timeout-minutes: 60
 
     steps:
