@@ -158,6 +158,75 @@ jobs:
           echo "App Store Connect API key parsed cleanly."
           chmod 600 "$KEY_PATH"
 
+      - name: Verify the App Store Connect credentials
+        env:
+          KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
+          ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
+        run: |
+          # The 401 that xcodebuild reports for listTeams is opaque and arrives after
+          # a long checkout. Mint an App Store Connect JWT from the same three secrets
+          # and call the API directly, so a mismatched key, key ID, or issuer ID is
+          # named here in about a second.
+          python3 - <<'PREFLIGHT'
+          import base64, json, os, subprocess, sys, time, urllib.error, urllib.request
+
+          key_path = os.path.expanduser("~/private_keys/AuthKey_%s.p8" % os.environ["KEY_ID"])
+
+          def b64(raw):
+              return base64.urlsafe_b64encode(raw).rstrip(b"=")
+
+          def der_to_p1363(der):
+              # SEQUENCE { INTEGER r, INTEGER s } -> r||s, 32 bytes each
+              if der[0] != 0x30:
+                  sys.exit("openssl did not return a DER signature")
+              i = 4 if der[1] & 0x80 else 2
+              out = b""
+              for _ in range(2):
+                  if der[i] != 0x02:
+                      sys.exit("malformed DER signature")
+                  length = der[i + 1]
+                  out += der[i + 2:i + 2 + length].lstrip(b"\x00").rjust(32, b"\x00")
+                  i += 2 + length
+              return out
+
+          now = int(time.time())
+          header = {"alg": "ES256", "kid": os.environ["KEY_ID"], "typ": "JWT"}
+          claims = {
+              "iss": os.environ["ISSUER_ID"],
+              "iat": now,
+              "exp": now + 300,
+              "aud": "appstoreconnect-v1",
+          }
+          signing_input = b".".join(
+              b64(json.dumps(x, separators=(",", ":")).encode()) for x in (header, claims)
+          )
+          der = subprocess.run(
+              ["openssl", "dgst", "-sha256", "-sign", key_path],
+              input=signing_input, capture_output=True,
+          ).stdout
+          token = (signing_input + b"." + b64(der_to_p1363(der))).decode()
+
+          req = urllib.request.Request(
+              "https://api.appstoreconnect.apple.com/v1/apps?limit=200",
+              headers={"Authorization": "Bearer " + token},
+          )
+          try:
+              apps = json.load(urllib.request.urlopen(req, timeout=30))["data"]
+          except urllib.error.HTTPError as e:
+              print("::error::App Store Connect rejected these credentials (HTTP %d). The "
+                    "private key, APPSTORE_KEY_ID and APPSTORE_ISSUER_ID must all come from "
+                    "the same key under Users and Access -> Integrations -> App Store "
+                    "Connect API. A Sign in with Apple key will not work here." % e.code)
+              sys.exit(1)
+
+          bundle_ids = [a["attributes"]["bundleId"] for a in apps]
+          print("Credentials accepted. Visible apps: %s" % ", ".join(sorted(bundle_ids)))
+          if "app.smooooth.operator" not in bundle_ids:
+              print("::error::These credentials work but cannot see app.smooooth.operator. "
+                    "Give the key the App Manager role, or check the bundle ID.")
+              sys.exit(1)
+          PREFLIGHT
+
       # TestFlight refuses a build number it has already seen for a given
       # version. The run number only ever increases, which is the whole
       # requirement.
