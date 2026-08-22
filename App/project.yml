@@ -42,6 +42,14 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: app.smooooth.operator
         INFOPLIST_KEY_UIUserInterfaceStyle: Dark   # dark mode is the primary experience (spec §12)
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_STYLE: Automatic
+      configs:
+        # Without an explicit distribution identity Xcode falls back to
+        # "Apple Development" and tries to mint an iOS App Development
+        # profile, which requires at least one registered device and cannot
+        # be uploaded to TestFlight. A distribution profile needs no devices.
+        Release:
+          CODE_SIGN_IDENTITY: Apple Distribution
     info:
       path: Configs/Info.plist
       properties:
