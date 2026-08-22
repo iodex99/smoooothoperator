@@ -246,7 +246,13 @@ jobs:
             -authenticationKeyID "$KEY_ID" \
             -authenticationKeyIssuerID "$ISSUER_ID" \
             DEVELOPMENT_TEAM="$TEAM_ID" \
-            CURRENT_PROJECT_VERSION="${{ github.run_number }}"
+            CURRENT_PROJECT_VERSION="${{ github.run_number }}" \
+            CODE_SIGNING_ALLOWED=NO
+          # Archiving unsigned is deliberate. With automatic signing
+          # xcodebuild resolves a *development* profile for the archive,
+          # which requires a registered device and is useless for
+          # TestFlight anyway. The export step below signs the app for
+          # real, with a distribution profile it creates on demand.
 
       - name: Write export options
         env:
