@@ -129,32 +129,30 @@ jobs:
           mkdir -p ~/private_keys
           printf '%s\n' "$PRIVATE_KEY" > "$KEY_PATH"
 
-          # A .p8 pasted into a GitHub secret often arrives with its line breaks
-          # collapsed. That is still the right key, but it is no longer valid PEM,
-          # and xcodebuild rejects it with CryptoKitASN1Error.invalidPEMDocument
-          # twenty minutes into the build. Rebuild the wrapping if it is missing.
-          if ! grep -q -- "-----BEGIN PRIVATE KEY-----" "$KEY_PATH"; then
-            echo "::error::APPSTORE_PRIVATE_KEY has no PEM header. Paste the whole .p8 file, both dashed lines included."
-            exit 1
-          fi
-          if [ "$(grep -c . "$KEY_PATH")" -le 2 ]; then
-            echo "Key arrived on one line; restoring 64-character PEM wrapping."
-            python3 - "$KEY_PATH" <<'NORMALISE'
+          # A .p8 pasted into a GitHub secret routinely loses its line breaks, and
+          # sometimes only the base64 body gets copied without the dashed header and
+          # footer. Either way it is still the right key but no longer valid PEM, and
+          # xcodebuild rejects it with CryptoKitASN1Error.invalidPEMDocument twenty
+          # minutes into the archive. Rebuild canonical PEM from whatever arrived.
+          python3 - "$KEY_PATH" <<'NORMALISE'
           import re, sys
           p = sys.argv[1]
           raw = open(p).read()
-          body = re.sub(r"-----(BEGIN|END) PRIVATE KEY-----", "", raw)
+          m = re.search(r"-----BEGIN ([A-Z ]+)-----", raw)
+          label = m.group(1) if m else "PRIVATE KEY"
+          body = re.sub(r"-----(BEGIN|END)[A-Z ]*-----", "", raw)
           body = re.sub(r"\s+", "", body)
           if not body:
-              sys.exit("APPSTORE_PRIVATE_KEY is empty")
+              sys.exit("APPSTORE_PRIVATE_KEY is empty.")
           wrapped = "\n".join(body[i:i + 64] for i in range(0, len(body), 64))
-          open(p, "w").write("-----BEGIN PRIVATE KEY-----\n" + wrapped + "\n-----END PRIVATE KEY-----\n")
+          open(p, "w").write(
+              "-----BEGIN %s-----\n%s\n-----END %s-----\n" % (label, wrapped, label)
+          )
           NORMALISE
-          fi
 
           # Fail here, in seconds, rather than after a full archive.
           if ! openssl pkey -in "$KEY_PATH" -noout 2>/dev/null; then
-            echo "::error::APPSTORE_PRIVATE_KEY is not a valid private key. Check you used the App Store Connect .p8 from step 3e, not the Sign in with Apple one."
+            echo "::error::APPSTORE_PRIVATE_KEY is not a usable private key. Paste the entire contents of the AuthKey_<KEY_ID>.p8 downloaded from App Store Connect -> Users and Access -> Integrations, and check it is that key rather than the Sign in with Apple one."
             exit 1
           fi
           echo "App Store Connect API key parsed cleanly."
